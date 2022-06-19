@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<mavlink>
+  <version>4</version>
+  <dialect>4</dialect>
+  <enums>
+    <enum name="ENUM_00_OF_T04">
+    </enum>
+  </enums>
+
+  <messages>
+  </messages>
+</mavlink>

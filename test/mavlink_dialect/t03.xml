@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<mavlink>
+  <version>3</version>
+  <dialect>3</dialect>
+  <enums>
+    <enum name="ENUM_00">
+      <!-- empty -->
+    </enum>
+    <enum name="ENUM_01">
+      <description>Description of ENUM_01</description>
+      <deprecated since="2021-11" replaced_by="ENUM_02">USE ENUM_02</deprecated>
+      <entry value="0" name="ENUM_01_ENTRY_00">
+        <description>Description of ENUM_01_ENTRY_00</description>
+      </entry>
+      <entry value="1" name="ENUM_01_ENTRY_01">
+        <description>Description of ENUM_01_ENTRY_01</description>
+      </entry>
+    </enum>
+    <enum name="ENUM_02">
+      <description>Description of ENUM_02</description>
+      <entry value="0" name="ENUM_02_ENTRY_00">
+        <description>Description of ENUM_02_ENTRY_00</description>
+      </entry>
+      <entry value="1" name="ENUM_02_ENTRY_01">
+        <description>Description of ENUM_02_ENTRY_01</description>
+      </entry>
+    </enum>
+  </enums>
+
+  <messages>
+  </messages>
+</mavlink>

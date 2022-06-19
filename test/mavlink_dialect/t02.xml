@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<mavlink>
+  <version>2</version>
+  <dialect>1</dialect>
+  <enums>
+    <!-- empty -->
+  </enums>
+
+  <messages>
+    <!-- empty -->
+  </messages>
+</mavlink>

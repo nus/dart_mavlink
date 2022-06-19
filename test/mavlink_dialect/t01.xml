@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<mavlink>
+  <include>t00.xml</include>
+  <version>1</version>
+  <dialect>1</dialect>
+</mavlink>
