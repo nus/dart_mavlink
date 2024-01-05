@@ -87,14 +87,14 @@ abstract class MavlinkMessage {
   static void setInt8List(ByteData data, int offsetByte, List<int> list) {
     int len = list.length;
     for (int i = 0; i < len; i++) {
-      data.setInt8(offsetByte, list[i]);
+      data.setInt8(offsetByte + i, list[i]);
     }
   }
 
   static void setUint8List(ByteData data, int offsetByte, List<int> list) {
     int len = list.length;
     for (int i = 0; i < len; i++) {
-      data.setUint8(offsetByte, list[i]);
+      data.setUint8(offsetByte + i, list[i]);
     }
   }
 
