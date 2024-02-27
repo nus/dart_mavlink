@@ -233,15 +233,15 @@ const MavType mavTypeVtolTiltrotor = 21;
 /// MAV_TYPE_VTOL_FIXEDROTOR
 const MavType mavTypeVtolFixedrotor = 22;
 
-/// Tailsitter VTOL. Fuselage and wings orientation changes depending on flight phase: vertical for hover, horizontal for cruise. Use more specific VTOL MAV_TYPE_VTOL_DUOROTOR or MAV_TYPE_VTOL_QUADROTOR if appropriate.
+/// Tailsitter VTOL. Fuselage and wings orientation changes depending on flight phase: vertical for hover, horizontal for cruise. Use more specific VTOL MAV_TYPE_VTOL_TAILSITTER_DUOROTOR or MAV_TYPE_VTOL_TAILSITTER_QUADROTOR if appropriate.
 ///
 /// MAV_TYPE_VTOL_TAILSITTER
 const MavType mavTypeVtolTailsitter = 23;
 
-/// VTOL reserved 4
+/// Tiltwing VTOL. Fuselage stays horizontal in all flight phases. The whole wing, along with any attached engine, can tilt between vertical and horizontal mode.
 ///
-/// MAV_TYPE_VTOL_RESERVED4
-const MavType mavTypeVtolReserved4 = 24;
+/// MAV_TYPE_VTOL_TILTWING
+const MavType mavTypeVtolTiltwing = 24;
 
 /// VTOL reserved 5
 ///
@@ -332,6 +332,11 @@ const MavType mavTypeGps = 41;
 ///
 /// MAV_TYPE_WINCH
 const MavType mavTypeWinch = 42;
+
+/// Generic multirotor that does not fit into a specific type or whose type is unknown
+///
+/// MAV_TYPE_GENERIC_MULTIROTOR
+const MavType mavTypeGenericMultirotor = 43;
 
 /// These flags encode the MAV mode.
 ///
@@ -452,12 +457,12 @@ const MavState mavStateStandby = 3;
 /// MAV_STATE_ACTIVE
 const MavState mavStateActive = 4;
 
-/// System is in a non-normal flight mode. It can however still navigate.
+/// System is in a non-normal flight mode (failsafe). It can however still navigate.
 ///
 /// MAV_STATE_CRITICAL
 const MavState mavStateCritical = 5;
 
-/// System is in a non-normal flight mode. It lost control over parts or over the whole airframe. It is in mayday and going down.
+/// System is in a non-normal flight mode (failsafe). It lost control over parts or over the whole airframe. It is in mayday and going down.
 ///
 /// MAV_STATE_EMERGENCY
 const MavState mavStateEmergency = 6;
@@ -467,7 +472,7 @@ const MavState mavStateEmergency = 6;
 /// MAV_STATE_POWEROFF
 const MavState mavStatePoweroff = 7;
 
-/// System is terminating itself.
+/// System is terminating itself (failsafe or commanded).
 ///
 /// MAV_STATE_FLIGHT_TERMINATION
 const MavState mavStateFlightTermination = 8;
@@ -1006,6 +1011,11 @@ const MavComponent mavCompIdFlarm = 160;
 /// MAV_COMP_ID_PARACHUTE
 const MavComponent mavCompIdParachute = 161;
 
+/// Winch component.
+///
+/// MAV_COMP_ID_WINCH
+const MavComponent mavCompIdWinch = 169;
+
 /// Gimbal #2.
 ///
 /// MAV_COMP_ID_GIMBAL2
@@ -1146,11 +1156,11 @@ const MavComponent mavCompIdUartBridge = 241;
 /// MAV_COMP_ID_TUNNEL_NODE
 const MavComponent mavCompIdTunnelNode = 242;
 
-/// Component for handling system messages (e.g. to ARM, takeoff, etc.).
+/// Deprecated, don't use. Component for handling system messages (e.g. to ARM, takeoff, etc.).
 ///
 /// MAV_COMP_ID_SYSTEM_CONTROL
 @Deprecated(
-    "Replaced by [MAV_COMP_ID_ALL] since 2018-11. System control does not require a separate component ID.")
+    "Replaced by [MAV_COMP_ID_ALL] since 2018-11. System control does not require a separate component ID. Instead, system commands should be sent with target_component=MAV_COMP_ID_ALL allowing the target component to use any appropriate component id.")
 const MavComponent mavCompIdSystemControl = 250;
 
 /// These values define the type of firmware release.  These values indicate the first version or release of this type.  For example the first alpha release would be 64, the second would be 65.
@@ -1183,7 +1193,7 @@ const FirmwareVersionType firmwareVersionTypeRc = 192;
 /// FIRMWARE_VERSION_TYPE_OFFICIAL
 const FirmwareVersionType firmwareVersionTypeOfficial = 255;
 
-/// Flags to report failure cases over the high latency telemtry.
+/// Flags to report failure cases over the high latency telemetry.
 ///
 /// HL_FAILURE_FLAG
 typedef HlFailureFlag = int;
@@ -1228,7 +1238,7 @@ const HlFailureFlag hlFailureFlagTerrain = 64;
 /// HL_FAILURE_FLAG_BATTERY
 const HlFailureFlag hlFailureFlagBattery = 128;
 
-/// RC receiver failure/no rc connection.
+/// RC receiver failure/no RC connection.
 ///
 /// HL_FAILURE_FLAG_RC_RECEIVER
 const HlFailureFlag hlFailureFlagRcReceiver = 256;
@@ -1429,7 +1439,7 @@ const MavSysStatusSensor mavSysStatusSensorXyPositionControl = 16384;
 /// MAV_SYS_STATUS_SENSOR_MOTOR_OUTPUTS
 const MavSysStatusSensor mavSysStatusSensorMotorOutputs = 32768;
 
-/// 0x10000 rc receiver
+/// 0x10000 RC receiver
 ///
 /// MAV_SYS_STATUS_SENSOR_RC_RECEIVER
 const MavSysStatusSensor mavSysStatusSensorRcReceiver = 65536;
@@ -1519,10 +1529,10 @@ typedef MavSysStatusSensorExtended = int;
 /// MAV_SYS_STATUS_RECOVERY_SYSTEM
 const MavSysStatusSensorExtended mavSysStatusRecoverySystem = 1;
 
-/// Co-ordinate frames used by MAVLink. Not all frames are supported by all commands, messages, or vehicles.
+/// Coordinate frames used by MAVLink. Not all frames are supported by all commands, messages, or vehicles.
 ///
 /// Global frames use the following naming conventions:
-/// - "GLOBAL": Global co-ordinate frame with WGS84 latitude/longitude and altitude positive over mean sea level (MSL) by default.
+/// - "GLOBAL": Global coordinate frame with WGS84 latitude/longitude and altitude positive over mean sea level (MSL) by default.
 /// The following modifiers may be used with "GLOBAL":
 /// - "RELATIVE_ALT": Altitude is relative to the vehicle home position rather than MSL.
 /// - "TERRAIN_ALT": Altitude is relative to ground level rather than MSL.
@@ -1585,7 +1595,7 @@ const MavFrame mavFrameGlobalRelativeAltInt = 6;
 /// MAV_FRAME_LOCAL_OFFSET_NED
 const MavFrame mavFrameLocalOffsetNed = 7;
 
-/// Same as MAV_FRAME_LOCAL_NED when used to represent position values. Same as MAV_FRAME_BODY_FRD when used with velocity/accelaration values.
+/// Same as MAV_FRAME_LOCAL_NED when used to represent position values. Same as MAV_FRAME_BODY_FRD when used with velocity/acceleration values.
 ///
 /// MAV_FRAME_BODY_NED
 @Deprecated("Replaced by [MAV_FRAME_BODY_FRD] since 2019-08. ")
@@ -1607,7 +1617,7 @@ const MavFrame mavFrameGlobalTerrainAlt = 10;
 /// MAV_FRAME_GLOBAL_TERRAIN_ALT_INT
 const MavFrame mavFrameGlobalTerrainAltInt = 11;
 
-/// FRD local tangent frame (x: Forward, y: Right, z: Down) with origin that travels with vehicle. The forward axis is aligned to the front of the vehicle in the horizontal plane.
+/// FRD local frame aligned to the vehicle's attitude (x: Forward, y: Right, z: Down) with an origin that travels with vehicle.
 ///
 /// MAV_FRAME_BODY_FRD
 const MavFrame mavFrameBodyFrd = 12;
@@ -1792,7 +1802,7 @@ const FenceMitigate fenceMitigateVelLimit = 2;
 /// MAV_MOUNT_MODE
 typedef MavMountMode = int;
 
-/// Load and keep safe position (Roll,Pitch,Yaw) from permant memory and stop stabilization
+/// Load and keep safe position (Roll,Pitch,Yaw) from permanent memory and stop stabilization
 ///
 /// MAV_MOUNT_MODE_RETRACT
 const MavMountMode mavMountModeRetract = 0;
@@ -1827,17 +1837,17 @@ const MavMountMode mavMountModeSysidTarget = 5;
 /// MAV_MOUNT_MODE_HOME_LOCATION
 const MavMountMode mavMountModeHomeLocation = 6;
 
-/// Gimbal device (low level) capability flags (bitmap)
+/// Gimbal device (low level) capability flags (bitmap).
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS
 typedef GimbalDeviceCapFlags = int;
 
-/// Gimbal device supports a retracted position
+/// Gimbal device supports a retracted position.
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_RETRACT
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasRetract = 1;
 
-/// Gimbal device supports a horizontal, forward looking position, stabilized
+/// Gimbal device supports a horizontal, forward looking position, stabilized.
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_NEUTRAL
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasNeutral = 2;
@@ -1847,12 +1857,12 @@ const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasNeutral = 2;
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_AXIS
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasRollAxis = 4;
 
-/// Gimbal device supports to follow a roll angle relative to the vehicle
+/// Gimbal device supports to follow a roll angle relative to the vehicle.
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_FOLLOW
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasRollFollow = 8;
 
-/// Gimbal device supports locking to an roll angle (generally that's the default with roll stabilized)
+/// Gimbal device supports locking to a roll angle (generally that's the default with roll stabilized).
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_LOCK
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasRollLock = 16;
@@ -1862,12 +1872,12 @@ const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasRollLock = 16;
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_AXIS
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasPitchAxis = 32;
 
-/// Gimbal device supports to follow a pitch angle relative to the vehicle
+/// Gimbal device supports to follow a pitch angle relative to the vehicle.
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_FOLLOW
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasPitchFollow = 64;
 
-/// Gimbal device supports locking to an pitch angle (generally that's the default with pitch stabilized)
+/// Gimbal device supports locking to a pitch angle (generally that's the default with pitch stabilized).
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_LOCK
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasPitchLock = 128;
@@ -1877,20 +1887,30 @@ const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasPitchLock = 128;
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_AXIS
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasYawAxis = 256;
 
-/// Gimbal device supports to follow a yaw angle relative to the vehicle (generally that's the default)
+/// Gimbal device supports to follow a yaw angle relative to the vehicle (generally that's the default).
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_FOLLOW
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasYawFollow = 512;
 
-/// Gimbal device supports locking to an absolute heading (often this is an option available)
+/// Gimbal device supports locking to an absolute heading, i.e., yaw angle relative to North (earth frame, often this is an option available).
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_LOCK
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasYawLock = 1024;
 
-/// Gimbal device supports yawing/panning infinetely (e.g. using slip disk).
+/// Gimbal device supports yawing/panning infinitely (e.g. using slip disk).
 ///
 /// GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_INFINITE_YAW
 const GimbalDeviceCapFlags gimbalDeviceCapFlagsSupportsInfiniteYaw = 2048;
+
+/// Gimbal device supports yaw angles and angular velocities relative to North (earth frame). This usually requires support by an autopilot via AUTOPILOT_STATE_FOR_GIMBAL_DEVICE. Support can go on and off during runtime, which is reported by the flag GIMBAL_DEVICE_FLAGS_CAN_ACCEPT_YAW_IN_EARTH_FRAME.
+///
+/// GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_YAW_IN_EARTH_FRAME
+const GimbalDeviceCapFlags gimbalDeviceCapFlagsSupportsYawInEarthFrame = 4096;
+
+/// Gimbal device supports radio control inputs as an alternative input for controlling the gimbal orientation.
+///
+/// GIMBAL_DEVICE_CAP_FLAGS_HAS_RC_INPUTS
+const GimbalDeviceCapFlags gimbalDeviceCapFlagsHasRcInputs = 8192;
 
 /// Gimbal manager high level capability flags (bitmap). The first 16 bits are identical to the GIMBAL_DEVICE_CAP_FLAGS. However, the gimbal manager does not need to copy the flags from the gimbal but can also enhance the capabilities and thus add flags.
 ///
@@ -1957,6 +1977,16 @@ const GimbalManagerCapFlags gimbalManagerCapFlagsHasYawLock = 1024;
 /// GIMBAL_MANAGER_CAP_FLAGS_SUPPORTS_INFINITE_YAW
 const GimbalManagerCapFlags gimbalManagerCapFlagsSupportsInfiniteYaw = 2048;
 
+/// Based on GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_YAW_IN_EARTH_FRAME.
+///
+/// GIMBAL_MANAGER_CAP_FLAGS_SUPPORTS_YAW_IN_EARTH_FRAME
+const GimbalManagerCapFlags gimbalManagerCapFlagsSupportsYawInEarthFrame = 4096;
+
+/// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_RC_INPUTS.
+///
+/// GIMBAL_MANAGER_CAP_FLAGS_HAS_RC_INPUTS
+const GimbalManagerCapFlags gimbalManagerCapFlagsHasRcInputs = 8192;
+
 /// Gimbal manager supports to point to a local position.
 ///
 /// GIMBAL_MANAGER_CAP_FLAGS_CAN_POINT_LOCATION_LOCAL
@@ -1973,60 +2003,110 @@ const GimbalManagerCapFlags gimbalManagerCapFlagsCanPointLocationGlobal =
 /// GIMBAL_DEVICE_FLAGS
 typedef GimbalDeviceFlags = int;
 
-/// Set to retracted safe position (no stabilization), takes presedence over all other flags.
+/// Set to retracted safe position (no stabilization), takes precedence over all other flags.
 ///
 /// GIMBAL_DEVICE_FLAGS_RETRACT
 const GimbalDeviceFlags gimbalDeviceFlagsRetract = 1;
 
-/// Set to neutral/default position, taking precedence over all other flags except RETRACT. Neutral is commonly forward-facing and horizontal (pitch=yaw=0) but may be any orientation.
+/// Set to neutral/default position, taking precedence over all other flags except RETRACT. Neutral is commonly forward-facing and horizontal (roll=pitch=yaw=0) but may be any orientation.
 ///
 /// GIMBAL_DEVICE_FLAGS_NEUTRAL
 const GimbalDeviceFlags gimbalDeviceFlagsNeutral = 2;
 
-/// Lock roll angle to absolute angle relative to horizon (not relative to drone). This is generally the default with a stabilizing gimbal.
+/// Lock roll angle to absolute angle relative to horizon (not relative to vehicle). This is generally the default with a stabilizing gimbal.
 ///
 /// GIMBAL_DEVICE_FLAGS_ROLL_LOCK
 const GimbalDeviceFlags gimbalDeviceFlagsRollLock = 4;
 
-/// Lock pitch angle to absolute angle relative to horizon (not relative to drone). This is generally the default.
+/// Lock pitch angle to absolute angle relative to horizon (not relative to vehicle). This is generally the default with a stabilizing gimbal.
 ///
 /// GIMBAL_DEVICE_FLAGS_PITCH_LOCK
 const GimbalDeviceFlags gimbalDeviceFlagsPitchLock = 8;
 
-/// Lock yaw angle to absolute angle relative to North (not relative to drone). If this flag is set, the quaternion is in the Earth frame with the x-axis pointing North (yaw absolute). If this flag is not set, the quaternion frame is in the Earth frame rotated so that the x-axis is pointing forward (yaw relative to vehicle).
+/// Lock yaw angle to absolute angle relative to North (not relative to vehicle). If this flag is set, the yaw angle and z component of angular velocity are relative to North (earth frame, x-axis pointing North), else they are relative to the vehicle heading (vehicle frame, earth frame rotated so that the x-axis is pointing forward).
 ///
 /// GIMBAL_DEVICE_FLAGS_YAW_LOCK
 const GimbalDeviceFlags gimbalDeviceFlagsYawLock = 16;
+
+/// Yaw angle and z component of angular velocity are relative to the vehicle heading (vehicle frame, earth frame rotated such that the x-axis is pointing forward).
+///
+/// GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME
+const GimbalDeviceFlags gimbalDeviceFlagsYawInVehicleFrame = 32;
+
+/// Yaw angle and z component of angular velocity are relative to North (earth frame, x-axis is pointing North).
+///
+/// GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME
+const GimbalDeviceFlags gimbalDeviceFlagsYawInEarthFrame = 64;
+
+/// Gimbal device can accept yaw angle inputs relative to North (earth frame). This flag is only for reporting (attempts to set this flag are ignored).
+///
+/// GIMBAL_DEVICE_FLAGS_ACCEPTS_YAW_IN_EARTH_FRAME
+const GimbalDeviceFlags gimbalDeviceFlagsAcceptsYawInEarthFrame = 128;
+
+/// The gimbal orientation is set exclusively by the RC signals feed to the gimbal's radio control inputs. MAVLink messages for setting the gimbal orientation (GIMBAL_DEVICE_SET_ATTITUDE) are ignored.
+///
+/// GIMBAL_DEVICE_FLAGS_RC_EXCLUSIVE
+const GimbalDeviceFlags gimbalDeviceFlagsRcExclusive = 256;
+
+/// The gimbal orientation is determined by combining/mixing the RC signals feed to the gimbal's radio control inputs and the MAVLink messages for setting the gimbal orientation (GIMBAL_DEVICE_SET_ATTITUDE). How these two controls are combined or mixed is not defined by the protocol but is up to the implementation.
+///
+/// GIMBAL_DEVICE_FLAGS_RC_MIXED
+const GimbalDeviceFlags gimbalDeviceFlagsRcMixed = 512;
 
 /// Flags for high level gimbal manager operation The first 16 bits are identical to the GIMBAL_DEVICE_FLAGS.
 ///
 /// GIMBAL_MANAGER_FLAGS
 typedef GimbalManagerFlags = int;
 
-/// Based on GIMBAL_DEVICE_FLAGS_RETRACT
+/// Based on GIMBAL_DEVICE_FLAGS_RETRACT.
 ///
 /// GIMBAL_MANAGER_FLAGS_RETRACT
 const GimbalManagerFlags gimbalManagerFlagsRetract = 1;
 
-/// Based on GIMBAL_DEVICE_FLAGS_NEUTRAL
+/// Based on GIMBAL_DEVICE_FLAGS_NEUTRAL.
 ///
 /// GIMBAL_MANAGER_FLAGS_NEUTRAL
 const GimbalManagerFlags gimbalManagerFlagsNeutral = 2;
 
-/// Based on GIMBAL_DEVICE_FLAGS_ROLL_LOCK
+/// Based on GIMBAL_DEVICE_FLAGS_ROLL_LOCK.
 ///
 /// GIMBAL_MANAGER_FLAGS_ROLL_LOCK
 const GimbalManagerFlags gimbalManagerFlagsRollLock = 4;
 
-/// Based on GIMBAL_DEVICE_FLAGS_PITCH_LOCK
+/// Based on GIMBAL_DEVICE_FLAGS_PITCH_LOCK.
 ///
 /// GIMBAL_MANAGER_FLAGS_PITCH_LOCK
 const GimbalManagerFlags gimbalManagerFlagsPitchLock = 8;
 
-/// Based on GIMBAL_DEVICE_FLAGS_YAW_LOCK
+/// Based on GIMBAL_DEVICE_FLAGS_YAW_LOCK.
 ///
 /// GIMBAL_MANAGER_FLAGS_YAW_LOCK
 const GimbalManagerFlags gimbalManagerFlagsYawLock = 16;
+
+/// Based on GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME.
+///
+/// GIMBAL_MANAGER_FLAGS_YAW_IN_VEHICLE_FRAME
+const GimbalManagerFlags gimbalManagerFlagsYawInVehicleFrame = 32;
+
+/// Based on GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME.
+///
+/// GIMBAL_MANAGER_FLAGS_YAW_IN_EARTH_FRAME
+const GimbalManagerFlags gimbalManagerFlagsYawInEarthFrame = 64;
+
+/// Based on GIMBAL_DEVICE_FLAGS_ACCEPTS_YAW_IN_EARTH_FRAME.
+///
+/// GIMBAL_MANAGER_FLAGS_ACCEPTS_YAW_IN_EARTH_FRAME
+const GimbalManagerFlags gimbalManagerFlagsAcceptsYawInEarthFrame = 128;
+
+/// Based on GIMBAL_DEVICE_FLAGS_RC_EXCLUSIVE.
+///
+/// GIMBAL_MANAGER_FLAGS_RC_EXCLUSIVE
+const GimbalManagerFlags gimbalManagerFlagsRcExclusive = 256;
+
+/// Based on GIMBAL_DEVICE_FLAGS_RC_MIXED.
+///
+/// GIMBAL_MANAGER_FLAGS_RC_MIXED
+const GimbalManagerFlags gimbalManagerFlagsRcMixed = 512;
 
 /// Gimbal device (low level) error flags (bitmap, 0 means no error)
 ///
@@ -2058,7 +2138,7 @@ const GimbalDeviceErrorFlags gimbalDeviceErrorFlagsEncoderError = 8;
 /// GIMBAL_DEVICE_ERROR_FLAGS_POWER_ERROR
 const GimbalDeviceErrorFlags gimbalDeviceErrorFlagsPowerError = 16;
 
-/// There is an error with the gimbal motor's.
+/// There is an error with the gimbal motors.
 ///
 /// GIMBAL_DEVICE_ERROR_FLAGS_MOTOR_ERROR
 const GimbalDeviceErrorFlags gimbalDeviceErrorFlagsMotorError = 32;
@@ -2073,10 +2153,15 @@ const GimbalDeviceErrorFlags gimbalDeviceErrorFlagsSoftwareError = 64;
 /// GIMBAL_DEVICE_ERROR_FLAGS_COMMS_ERROR
 const GimbalDeviceErrorFlags gimbalDeviceErrorFlagsCommsError = 128;
 
-/// Gimbal is currently calibrating.
+/// Gimbal device is currently calibrating.
 ///
 /// GIMBAL_DEVICE_ERROR_FLAGS_CALIBRATION_RUNNING
 const GimbalDeviceErrorFlags gimbalDeviceErrorFlagsCalibrationRunning = 256;
+
+/// Gimbal device is not assigned to a gimbal manager.
+///
+/// GIMBAL_DEVICE_ERROR_FLAGS_NO_MANAGER
+const GimbalDeviceErrorFlags gimbalDeviceErrorFlagsNoManager = 512;
 
 /// Gripper actions.
 ///
@@ -2142,6 +2227,11 @@ const WinchActions winchLoadLine = 7;
 ///
 /// WINCH_ABANDON_LINE
 const WinchActions winchAbandonLine = 8;
+
+/// Spools out just enough to present the hook to the user to load the payload. Only action and instance command parameters are used, others are ignored
+///
+/// WINCH_LOAD_PAYLOAD
+const WinchActions winchLoadPayload = 9;
 
 /// Generalized UAVCAN node health
 ///
@@ -2824,7 +2914,7 @@ const PreflightStorageMissionAction missionResetDefault = 2;
 /// MAV_CMD
 typedef MavCmd = int;
 
-/// Navigate to waypoint.
+/// Navigate to waypoint. This is intended for use in missions (for guided commands outside of missions use MAV_CMD_DO_REPOSITION).
 ///
 /// MAV_CMD_NAV_WAYPOINT
 const MavCmd mavCmdNavWaypoint = 16;
@@ -2981,7 +3071,7 @@ const MavCmd mavCmdDoSetMode = 176;
 /// MAV_CMD_DO_JUMP
 const MavCmd mavCmdDoJump = 177;
 
-/// Change speed and/or throttle set points.
+/// Change speed and/or throttle set points. The value persists until it is overridden or there is a mode change
 ///
 /// MAV_CMD_DO_CHANGE_SPEED
 const MavCmd mavCmdDoChangeSpeed = 178;
@@ -3022,7 +3112,7 @@ const MavCmd mavCmdDoSetServo = 183;
 const MavCmd mavCmdDoRepeatServo = 184;
 
 /// Terminate flight immediately.
-/// Flight termination immediately and irreversably terminates the current flight, returning the vehicle to ground.
+/// Flight termination immediately and irreversibly terminates the current flight, returning the vehicle to ground.
 /// The vehicle will ignore RC or other input until it has been power-cycled.
 /// Termination may trigger safety measures, including: disabling motors and deployment of parachute on multicopters, and setting flight surfaces to initiate a landing pattern on fixed-wing).
 /// On multicopters without a parachute it may trigger a crash landing.
@@ -3043,7 +3133,10 @@ const MavCmd mavCmdDoChangeAltitude = 186;
 /// MAV_CMD_DO_SET_ACTUATOR
 const MavCmd mavCmdDoSetActuator = 187;
 
-/// Mission command to perform a landing. This is used as a marker in a mission to tell the autopilot where a sequence of mission items that represents a landing starts. It may also be sent via a COMMAND_LONG to trigger a landing, in which case the nearest (geographically) landing sequence in the mission will be used. The Latitude/Longitude is optional, and may be set to 0 if not needed. If specified then it will be used to help find the closest landing sequence.
+/// Mission command to perform a landing. This is used as a marker in a mission to tell the autopilot where a sequence of mission items that represents a landing starts.
+/// It may also be sent via a COMMAND_LONG to trigger a landing, in which case the nearest (geographically) landing sequence in the mission will be used.
+/// The Latitude/Longitude/Altitude is optional, and may be set to 0 if not needed. If specified then it will be used to help find the closest landing sequence.
+///
 ///
 /// MAV_CMD_DO_LAND_START
 const MavCmd mavCmdDoLandStart = 189;
@@ -3058,7 +3151,7 @@ const MavCmd mavCmdDoRallyLand = 190;
 /// MAV_CMD_DO_GO_AROUND
 const MavCmd mavCmdDoGoAround = 191;
 
-/// Reposition the vehicle to a specific WGS84 global position.
+/// Reposition the vehicle to a specific WGS84 global position. This command is intended for guided commands (for missions use MAV_CMD_NAV_WAYPOINT instead).
 ///
 /// MAV_CMD_DO_REPOSITION
 const MavCmd mavCmdDoReposition = 192;
@@ -3194,7 +3287,21 @@ const MavCmd mavCmdDoGuidedLimits = 222;
 /// MAV_CMD_DO_ENGINE_CONTROL
 const MavCmd mavCmdDoEngineControl = 223;
 
-/// Set the mission item with sequence number seq as current item. This means that the MAV will continue to this mission item on the shortest path (not following the mission items in-between).
+///
+/// Set the mission item with sequence number seq as the current item and emit MISSION_CURRENT (whether or not the mission number changed).
+/// If a mission is currently being executed, the system will continue to this new mission item on the shortest path, skipping any intermediate mission items.
+/// Note that mission jump repeat counters are not reset unless param2 is set (see MAV_CMD_DO_JUMP param2).
+///
+/// This command may trigger a mission state-machine change on some systems: for example from MISSION_STATE_NOT_STARTED or MISSION_STATE_PAUSED to MISSION_STATE_ACTIVE.
+/// If the system is in mission mode, on those systems this command might therefore start, restart or resume the mission.
+/// If the system is not in mission mode this command must not trigger a switch to mission mode.
+///
+/// The mission may be "reset" using param2.
+/// Resetting sets jump counters to initial values (to reset counters without changing the current mission item set the param1 to `-1`).
+/// Resetting also explicitly changes a mission state of MISSION_STATE_COMPLETE to MISSION_STATE_PAUSED or MISSION_STATE_ACTIVE, potentially allowing it to resume when it is (next) in a mission mode.
+///
+/// The command will ACK with MAV_RESULT_FAILED if the sequence number is out of range (including if there is no mission item).
+///
 ///
 /// MAV_CMD_DO_SET_MISSION_CURRENT
 const MavCmd mavCmdDoSetMissionCurrent = 224;
@@ -3259,13 +3366,18 @@ const MavCmd mavCmdConfigureActuator = 311;
 /// MAV_CMD_COMPONENT_ARM_DISARM
 const MavCmd mavCmdComponentArmDisarm = 400;
 
-/// Instructs system to run pre-arm checks. This command should return MAV_RESULT_TEMPORARILY_REJECTED in the case the system is armed, otherwise MAV_RESULT_ACCEPTED. Note that the return value from executing this command does not indicate whether the vehicle is armable or not, just whether the system has successfully run/is currently running the checks.  The result of the checks is reflected in the SYS_STATUS message.
+/// Instructs a target system to run pre-arm checks.
+/// This allows preflight checks to be run on demand, which may be useful on systems that normally run them at low rate, or which do not trigger checks when the armable state might have changed.
+/// This command should return MAV_RESULT_ACCEPTED if it will run the checks.
+/// The results of the checks are usually then reported in SYS_STATUS messages (this is system-specific).
+/// The command should return MAV_RESULT_TEMPORARILY_REJECTED if the system is already armed.
+///
 ///
 /// MAV_CMD_RUN_PREARM_CHECKS
 const MavCmd mavCmdRunPrearmChecks = 401;
 
 /// WIP.
-/// Turns illuminators ON/OFF. An illuminator is a light source that is used for lighting up dark areas external to the sytstem: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
+/// Turns illuminators ON/OFF. An illuminator is a light source that is used for lighting up dark areas external to the system: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
 ///
 /// MAV_CMD_ILLUMINATOR_ON_OFF
 const MavCmd mavCmdIlluminatorOnOff = 405;
@@ -3392,24 +3504,48 @@ const MavCmd mavCmdJumpTag = 600;
 /// MAV_CMD_DO_JUMP_TAG
 const MavCmd mavCmdDoJumpTag = 601;
 
-/// WIP.
-/// High level setpoint to be sent to a gimbal manager to set a gimbal attitude. It is possible to set combinations of the values below. E.g. an angle as well as a desired angular rate can be used to get to this angle at a certain angular rate, or an angular rate only will result in continuous turning. NaN is to be used to signal unset. Note: a gimbal is never to react to this command but only the gimbal manager.
+/// Set gimbal manager pitch/yaw setpoints (low rate command). It is possible to set combinations of the values below. E.g. an angle as well as a desired angular rate can be used to get to this angle at a certain angular rate, or an angular rate only will result in continuous turning. NaN is to be used to signal unset. Note: only the gimbal manager will react to this command - it will be ignored by a gimbal device. Use GIMBAL_MANAGER_SET_PITCHYAW if you need to stream pitch/yaw setpoints at higher rate.
 ///
 /// MAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW
 const MavCmd mavCmdDoGimbalManagerPitchyaw = 1000;
 
-/// WIP.
 /// Gimbal configuration to set which sysid/compid is in primary and secondary control.
 ///
 /// MAV_CMD_DO_GIMBAL_MANAGER_CONFIGURE
 const MavCmd mavCmdDoGimbalManagerConfigure = 1001;
 
-/// Start image capture sequence. Sends CAMERA_IMAGE_CAPTURED after each capture. Use NaN for reserved values.
+/// Start image capture sequence. CAMERA_IMAGE_CAPTURED must be emitted after each capture.
+///
+/// Param1 (id) may be used to specify the target camera: 0: all cameras, 1 to 6: autopilot-connected cameras, 7-255: MAVLink camera component ID.
+/// It is needed in order to target specific cameras connected to the autopilot, or specific sensors in a multi-sensor camera (neither of which have a distinct MAVLink component ID).
+/// It is also needed to specify the target camera in missions.
+///
+/// When used in a mission, an autopilot should execute the MAV_CMD for a specified local camera (param1 = 1-6), or resend it as a command if it is intended for a MAVLink camera (param1 = 7 - 255), setting the command's target_component as the param1 value (and setting param1 in the command to zero).
+/// If the param1 is 0 the autopilot should do both.
+///
+/// When sent in a command the target MAVLink address is set using target_component.
+/// If addressed specifically to an autopilot: param1 should be used in the same way as it is for missions (though command should NACK with MAV_RESULT_DENIED if a specified local camera does not exist).
+/// If addressed to a MAVLink camera, param 1 can be used to address all cameras (0), or to separately address 1 to 7 individual sensors. Other values should be NACKed with MAV_RESULT_DENIED.
+/// If the command is broadcast (target_component is 0) then param 1 should be set to 0 (any other value should be NACKED with MAV_RESULT_DENIED). An autopilot would trigger any local cameras and forward the command to all channels.
+///
 ///
 /// MAV_CMD_IMAGE_START_CAPTURE
 const MavCmd mavCmdImageStartCapture = 2000;
 
-/// Stop image capture sequence Use NaN for reserved values.
+/// Stop image capture sequence.
+///
+/// Param1 (id) may be used to specify the target camera: 0: all cameras, 1 to 6: autopilot-connected cameras, 7-255: MAVLink camera component ID.
+/// It is needed in order to target specific cameras connected to the autopilot, or specific sensors in a multi-sensor camera (neither of which have a distinct MAVLink component ID).
+/// It is also needed to specify the target camera in missions.
+///
+/// When used in a mission, an autopilot should execute the MAV_CMD for a specified local camera (param1 = 1-6), or resend it as a command if it is intended for a MAVLink camera (param1 = 7 - 255), setting the command's target_component as the param1 value (and setting param1 in the command to zero).
+/// If the param1 is 0 the autopilot should do both.
+///
+/// When sent in a command the target MAVLink address is set using target_component.
+/// If addressed specifically to an autopilot: param1 should be used in the same way as it is for missions (though command should NACK with MAV_RESULT_DENIED if a specified local camera does not exist).
+/// If addressed to a MAVLink camera, param1 can be used to address all cameras (0), or to separately address 1 to 7 individual sensors. Other values should be NACKed with MAV_RESULT_DENIED.
+/// If the command is broadcast (target_component is 0) then param 1 should be set to 0 (any other value should be NACKED with MAV_RESULT_DENIED). An autopilot would trigger any local cameras and forward the command to all channels.
+///
 ///
 /// MAV_CMD_IMAGE_STOP_CAPTURE
 const MavCmd mavCmdImageStopCapture = 2001;
@@ -3425,19 +3561,16 @@ const MavCmd mavCmdRequestCameraImageCapture = 2002;
 /// MAV_CMD_DO_TRIGGER_CONTROL
 const MavCmd mavCmdDoTriggerControl = 2003;
 
-/// WIP.
 /// If the camera supports point visual tracking (CAMERA_CAP_FLAGS_HAS_TRACKING_POINT is set), this command allows to initiate the tracking.
 ///
 /// MAV_CMD_CAMERA_TRACK_POINT
 const MavCmd mavCmdCameraTrackPoint = 2004;
 
-/// WIP.
 /// If the camera supports rectangle visual tracking (CAMERA_CAP_FLAGS_HAS_TRACKING_RECTANGLE is set), this command allows to initiate the tracking.
 ///
 /// MAV_CMD_CAMERA_TRACK_RECTANGLE
 const MavCmd mavCmdCameraTrackRectangle = 2005;
 
-/// WIP.
 /// Stops ongoing tracking.
 ///
 /// MAV_CMD_CAMERA_STOP_TRACKING
@@ -3505,7 +3638,9 @@ const MavCmd mavCmdPanoramaCreate = 2800;
 /// MAV_CMD_DO_VTOL_TRANSITION
 const MavCmd mavCmdDoVtolTransition = 3000;
 
-/// Request authorization to arm the vehicle to a external entity, the arm authorizer is responsible to request all data that is needs from the vehicle before authorize or deny the request. If approved the progress of command_ack message should be set with period of time that this authorization is valid in seconds or in case it was denied it should be set with one of the reasons in ARM_AUTH_DENIED_REASON.
+/// Request authorization to arm the vehicle to a external entity, the arm authorizer is responsible to request all data that is needs from the vehicle before authorize or deny the request.
+/// If approved the COMMAND_ACK message progress field should be set with period of time that this authorization is valid in seconds.
+/// If the authorization is denied COMMAND_ACK.result_param2 should be set with one of the reasons in ARM_AUTH_DENIED_REASON.
 ///
 ///
 /// MAV_CMD_ARM_AUTHORIZATION_REQUEST
@@ -3569,6 +3704,11 @@ const MavCmd mavCmdNavRallyPoint = 5100;
 /// MAV_CMD_UAVCAN_GET_NODE_INFO
 const MavCmd mavCmdUavcanGetNodeInfo = 5200;
 
+/// Change state of safety switch.
+///
+/// MAV_CMD_DO_SET_SAFETY_SWITCH_STATE
+const MavCmd mavCmdDoSetSafetySwitchState = 5300;
+
 /// Trigger the start of an ADSB-out IDENT. This should only be used when requested to do so by an Air Traffic Controller in controlled airspace. This starts the IDENT which is then typically held for 18 seconds by the hardware per the Mode A, C, and S transponder spec.
 ///
 /// MAV_CMD_DO_ADSB_OUT_IDENT
@@ -3595,6 +3735,11 @@ const MavCmd mavCmdFixedMagCalYaw = 42006;
 ///
 /// MAV_CMD_DO_WINCH
 const MavCmd mavCmdDoWinch = 42600;
+
+/// Provide an external position estimate for use when dead-reckoning. This is meant to be used for occasional position resets that may be provided by a external system such as a remote pilot using landmarks over a video link.
+///
+/// MAV_CMD_EXTERNAL_POSITION_ESTIMATE
+const MavCmd mavCmdExternalPositionEstimate = 43003;
 
 /// User defined waypoint item. Ground Station will show the Vehicle as flying through this item.
 ///
@@ -3760,56 +3905,6 @@ const MavRoi mavRoiLocation = 3;
 /// MAV_ROI_TARGET
 const MavRoi mavRoiTarget = 4;
 
-/// ACK / NACK / ERROR values as a result of MAV_CMDs and for mission item transmission.
-///
-/// MAV_CMD_ACK
-typedef MavCmdAck = int;
-
-/// Command / mission item is ok.
-///
-/// MAV_CMD_ACK_OK
-const MavCmdAck mavCmdAckOk = 0;
-
-/// Generic error message if none of the other reasons fails or if no detailed error reporting is implemented.
-///
-/// MAV_CMD_ACK_ERR_FAIL
-const MavCmdAck mavCmdAckErrFail = 1;
-
-/// The system is refusing to accept this command from this source / communication partner.
-///
-/// MAV_CMD_ACK_ERR_ACCESS_DENIED
-const MavCmdAck mavCmdAckErrAccessDenied = 2;
-
-/// Command or mission item is not supported, other commands would be accepted.
-///
-/// MAV_CMD_ACK_ERR_NOT_SUPPORTED
-const MavCmdAck mavCmdAckErrNotSupported = 3;
-
-/// The coordinate frame of this command / mission item is not supported.
-///
-/// MAV_CMD_ACK_ERR_COORDINATE_FRAME_NOT_SUPPORTED
-const MavCmdAck mavCmdAckErrCoordinateFrameNotSupported = 4;
-
-/// The coordinate frame of this command is ok, but he coordinate values exceed the safety limits of this system. This is a generic error, please use the more specific error messages below if possible.
-///
-/// MAV_CMD_ACK_ERR_COORDINATES_OUT_OF_RANGE
-const MavCmdAck mavCmdAckErrCoordinatesOutOfRange = 5;
-
-/// The X or latitude value is out of range.
-///
-/// MAV_CMD_ACK_ERR_X_LAT_OUT_OF_RANGE
-const MavCmdAck mavCmdAckErrXLatOutOfRange = 6;
-
-/// The Y or longitude value is out of range.
-///
-/// MAV_CMD_ACK_ERR_Y_LON_OUT_OF_RANGE
-const MavCmdAck mavCmdAckErrYLonOutOfRange = 7;
-
-/// The Z or altitude value is out of range.
-///
-/// MAV_CMD_ACK_ERR_Z_ALT_OUT_OF_RANGE
-const MavCmdAck mavCmdAckErrZAltOutOfRange = 8;
-
 /// Specifies the datatype of a MAVLink parameter.
 ///
 /// MAV_PARAM_TYPE
@@ -3964,6 +4059,21 @@ const MavResult mavResultInProgress = 5;
 ///
 /// MAV_RESULT_CANCELLED
 const MavResult mavResultCancelled = 6;
+
+/// Command is only accepted when sent as a COMMAND_LONG.
+///
+/// MAV_RESULT_COMMAND_LONG_ONLY
+const MavResult mavResultCommandLongOnly = 7;
+
+/// Command is only accepted when sent as a COMMAND_INT.
+///
+/// MAV_RESULT_COMMAND_INT_ONLY
+const MavResult mavResultCommandIntOnly = 8;
+
+/// Command is invalid because a frame is required and the specified frame is not supported.
+///
+/// MAV_RESULT_COMMAND_UNSUPPORTED_MAV_FRAME
+const MavResult mavResultCommandUnsupportedMavFrame = 9;
 
 /// Result of mission operation (in a MISSION_ACK message).
 ///
@@ -4517,7 +4627,7 @@ const MavProtocolCapability mavProtocolCapabilityMissionInt = 4;
 const MavProtocolCapability mavProtocolCapabilityCommandInt = 8;
 
 /// Parameter protocol uses byte-wise encoding of parameter values into param_value (float) fields: https://mavlink.io/en/services/parameter.html#parameter-encoding.
-/// Note that either this flag or MAV_PROTOCOL_CAPABILITY_PARAM_ENCODE_BYTEWISE should be set if the parameter protocol is supported.
+/// Note that either this flag or MAV_PROTOCOL_CAPABILITY_PARAM_ENCODE_C_CAST should be set if the parameter protocol is supported.
 ///
 ///
 /// MAV_PROTOCOL_CAPABILITY_PARAM_ENCODE_BYTEWISE
@@ -4550,10 +4660,10 @@ const MavProtocolCapability mavProtocolCapabilitySetPositionTargetGlobalInt =
 /// MAV_PROTOCOL_CAPABILITY_TERRAIN
 const MavProtocolCapability mavProtocolCapabilityTerrain = 512;
 
-/// Autopilot supports direct actuator control.
+/// Reserved for future use.
 ///
-/// MAV_PROTOCOL_CAPABILITY_SET_ACTUATOR_TARGET
-const MavProtocolCapability mavProtocolCapabilitySetActuatorTarget = 1024;
+/// MAV_PROTOCOL_CAPABILITY_RESERVED3
+const MavProtocolCapability mavProtocolCapabilityReserved3 = 1024;
 
 /// Autopilot supports the MAV_CMD_DO_FLIGHTTERMINATION command (flight termination).
 ///
@@ -4724,8 +4834,8 @@ const MavBatteryFunction mavBatteryFunctionAvionics = 3;
 
 /// Payload battery
 ///
-/// MAV_BATTERY_TYPE_PAYLOAD
-const MavBatteryFunction mavBatteryTypePayload = 4;
+/// MAV_BATTERY_FUNCTION_PAYLOAD
+const MavBatteryFunction mavBatteryFunctionPayload = 4;
 
 /// Enumeration for battery charge states.
 ///
@@ -5181,6 +5291,31 @@ typedef MavDoRepositionFlags = int;
 ///
 /// MAV_DO_REPOSITION_FLAGS_CHANGE_MODE
 const MavDoRepositionFlags mavDoRepositionFlagsChangeMode = 1;
+
+/// Speed setpoint types used in MAV_CMD_DO_CHANGE_SPEED
+///
+/// SPEED_TYPE
+typedef SpeedType = int;
+
+/// Airspeed
+///
+/// SPEED_TYPE_AIRSPEED
+const SpeedType speedTypeAirspeed = 0;
+
+/// Groundspeed
+///
+/// SPEED_TYPE_GROUNDSPEED
+const SpeedType speedTypeGroundspeed = 1;
+
+/// Climb speed
+///
+/// SPEED_TYPE_CLIMB_SPEED
+const SpeedType speedTypeClimbSpeed = 2;
+
+/// Descent speed
+///
+/// SPEED_TYPE_DESCENT_SPEED
+const SpeedType speedTypeDescentSpeed = 3;
 
 /// Flags in ESTIMATOR_STATUS message
 ///
@@ -5716,15 +5851,20 @@ const CameraZoomType zoomTypeStep = 0;
 /// ZOOM_TYPE_CONTINUOUS
 const CameraZoomType zoomTypeContinuous = 1;
 
-/// Zoom value as proportion of full camera range (a value between 0.0 and 100.0)
+/// Zoom value as proportion of full camera range (a percentage value between 0.0 and 100.0)
 ///
 /// ZOOM_TYPE_RANGE
 const CameraZoomType zoomTypeRange = 2;
 
-/// Zoom value/variable focal length in milimetres. Note that there is no message to get the valid zoom range of the camera, so this can type can only be used for cameras where the zoom range is known (implying that this cannot reliably be used in a GCS for an arbitrary camera)
+/// Zoom value/variable focal length in millimetres. Note that there is no message to get the valid zoom range of the camera, so this can type can only be used for cameras where the zoom range is known (implying that this cannot reliably be used in a GCS for an arbitrary camera)
 ///
 /// ZOOM_TYPE_FOCAL_LENGTH
 const CameraZoomType zoomTypeFocalLength = 3;
+
+/// Zoom value as horizontal field of view in degrees.
+///
+/// ZOOM_TYPE_HORIZONTAL_FOV
+const CameraZoomType zoomTypeHorizontalFov = 4;
 
 /// Focus types for MAV_CMD_SET_CAMERA_FOCUS
 ///
@@ -5786,7 +5926,7 @@ const ParamAck paramAckValueUnsupported = 1;
 /// PARAM_ACK_FAILED
 const ParamAck paramAckFailed = 2;
 
-/// Parameter value received but not yet set/accepted. A subsequent PARAM_ACK_TRANSACTION or PARAM_EXT_ACK with the final result will follow once operation is completed. This is returned immediately for parameters that take longer to set, indicating taht the the parameter was recieved and does not need to be resent.
+/// Parameter value received but not yet set/accepted. A subsequent PARAM_ACK_TRANSACTION or PARAM_EXT_ACK with the final result will follow once operation is completed. This is returned immediately for parameters that take longer to set, indicating that the the parameter was received and does not need to be resent.
 ///
 /// PARAM_ACK_IN_PROGRESS
 const ParamAck paramAckInProgress = 3;
@@ -6125,7 +6265,7 @@ const CellularNetworkFailedReason cellularNetworkFailedReasonUnknown = 1;
 /// CELLULAR_NETWORK_FAILED_REASON_SIM_MISSING
 const CellularNetworkFailedReason cellularNetworkFailedReasonSimMissing = 2;
 
-/// SIM is available, but not usuable for connection
+/// SIM is available, but not usable for connection
 ///
 /// CELLULAR_NETWORK_FAILED_REASON_SIM_ERROR
 const CellularNetworkFailedReason cellularNetworkFailedReasonSimError = 3;
@@ -6794,6 +6934,20 @@ typedef MavOdidOperatorIdType = int;
 /// MAV_ODID_OPERATOR_ID_TYPE_CAA
 const MavOdidOperatorIdType mavOdidOperatorIdTypeCaa = 0;
 
+///
+/// MAV_ODID_ARM_STATUS
+typedef MavOdidArmStatus = int;
+
+/// Passing arming checks.
+///
+/// MAV_ODID_ARM_STATUS_GOOD_TO_ARM
+const MavOdidArmStatus mavOdidArmStatusGoodToArm = 0;
+
+/// Generic arming failure, see error string for details.
+///
+/// MAV_ODID_ARM_STATUS_PRE_ARM_FAIL_GENERIC
+const MavOdidArmStatus mavOdidArmStatusPreArmFailGeneric = 1;
+
 /// Tune formats (used for vehicle buzzer/tone generation).
 ///
 /// TUNE_FORMAT
@@ -7075,8 +7229,8 @@ const AisType aisTypePassengerHazardousA = 61;
 const AisType aisTypePassengerHazardousB = 62;
 
 ///
-/// AIS_TYPE_AIS_TYPE_PASSENGER_HAZARDOUS_C
-const AisType aisTypeAisTypePassengerHazardousC = 63;
+/// AIS_TYPE_PASSENGER_HAZARDOUS_C
+const AisType aisTypePassengerHazardousC = 63;
 
 ///
 /// AIS_TYPE_PASSENGER_HAZARDOUS_D
@@ -7095,8 +7249,8 @@ const AisType aisTypePassengerReserved2 = 66;
 const AisType aisTypePassengerReserved3 = 67;
 
 ///
-/// AIS_TYPE_AIS_TYPE_PASSENGER_RESERVED_4
-const AisType aisTypeAisTypePassengerReserved4 = 68;
+/// AIS_TYPE_PASSENGER_RESERVED_4
+const AisType aisTypePassengerReserved4 = 68;
 
 ///
 /// AIS_TYPE_PASSENGER_UNKNOWN
@@ -7484,7 +7638,7 @@ const NavVtolLandOptions navVtolLandOptionsDefault = 0;
 /// NAV_VTOL_LAND_OPTIONS_FW_DESCENT
 const NavVtolLandOptions navVtolLandOptionsFwDescent = 1;
 
-/// Land in multicopter mode on reaching the landing co-ordinates (the whole landing is by "hover descent").
+/// Land in multicopter mode on reaching the landing coordinates (the whole landing is by "hover descent").
 ///
 /// NAV_VTOL_LAND_OPTIONS_HOVER_DESCENT
 const NavVtolLandOptions navVtolLandOptionsHoverDescent = 2;
@@ -7544,10 +7698,25 @@ const MavWinchStatusFlag mavWinchStatusRetracting = 256;
 /// MAV_WINCH_STATUS_REDELIVER
 const MavWinchStatusFlag mavWinchStatusRedeliver = 512;
 
-/// Winch is abandoning the line and possibly payload. Winch unspools the entire calculated line length. This is a failover state from REDELIVER if the number of attemps exceeds a threshold.
+/// Winch is abandoning the line and possibly payload. Winch unspools the entire calculated line length. This is a failover state from REDELIVER if the number of attempts exceeds a threshold.
 ///
 /// MAV_WINCH_STATUS_ABANDON_LINE
 const MavWinchStatusFlag mavWinchStatusAbandonLine = 1024;
+
+/// Winch is engaging the locking mechanism.
+///
+/// MAV_WINCH_STATUS_LOCKING
+const MavWinchStatusFlag mavWinchStatusLocking = 2048;
+
+/// Winch is spooling on line.
+///
+/// MAV_WINCH_STATUS_LOAD_LINE
+const MavWinchStatusFlag mavWinchStatusLoadLine = 4096;
+
+/// Winch is loading a payload.
+///
+/// MAV_WINCH_STATUS_LOAD_PAYLOAD
+const MavWinchStatusFlag mavWinchStatusLoadPayload = 8192;
 
 ///
 /// MAG_CAL_STATUS
@@ -7937,6 +8106,62 @@ const MavFtpOpcode mavFtpOpcodeAck = 128;
 /// MAV_FTP_OPCODE_NAK
 const MavFtpOpcode mavFtpOpcodeNak = 129;
 
+///
+/// States of the mission state machine.
+/// Note that these states are independent of whether the mission is in a mode that can execute mission items or not (is suspended).
+/// They may not all be relevant on all vehicles.
+///
+///
+/// MISSION_STATE
+typedef MissionState = int;
+
+/// The mission status reporting is not supported.
+///
+/// MISSION_STATE_UNKNOWN
+const MissionState missionStateUnknown = 0;
+
+/// No mission on the vehicle.
+///
+/// MISSION_STATE_NO_MISSION
+const MissionState missionStateNoMission = 1;
+
+/// Mission has not started. This is the case after a mission has uploaded but not yet started executing.
+///
+/// MISSION_STATE_NOT_STARTED
+const MissionState missionStateNotStarted = 2;
+
+/// Mission is active, and will execute mission items when in auto mode.
+///
+/// MISSION_STATE_ACTIVE
+const MissionState missionStateActive = 3;
+
+/// Mission is paused when in auto mode.
+///
+/// MISSION_STATE_PAUSED
+const MissionState missionStatePaused = 4;
+
+/// Mission has executed all mission items.
+///
+/// MISSION_STATE_COMPLETE
+const MissionState missionStateComplete = 5;
+
+///
+/// Possible safety switch states.
+///
+///
+/// SAFETY_SWITCH_STATE
+typedef SafetySwitchState = int;
+
+/// Safety switch is engaged and vehicle should be safe to approach.
+///
+/// SAFETY_SWITCH_STATE_SAFE
+const SafetySwitchState safetySwitchStateSafe = 0;
+
+/// Safety switch is NOT engaged and motors, propellers and other actuators should be considered active.
+///
+/// SAFETY_SWITCH_STATE_DANGEROUS
+const SafetySwitchState safetySwitchStateDangerous = 1;
+
 /// WiFi wireless security protocols.
 ///
 /// WIFI_NETWORK_SECURITY
@@ -7972,35 +8197,20 @@ const WifiNetworkSecurity wifiNetworkSecurityWpa2 = 4;
 /// WIFI_NETWORK_SECURITY_WPA3
 const WifiNetworkSecurity wifiNetworkSecurityWpa3 = 5;
 
-/// Types of airspeed sensor/data. May be be used in AIRSPEED message to estimate accuracy of indicated speed.
+/// Airspeed sensor flags
 ///
-/// AIRSPEED_SENSOR_TYPE
-typedef AirspeedSensorType = int;
+/// AIRSPEED_SENSOR_FLAGS
+typedef AirspeedSensorFlags = int;
 
-/// Airspeed sensor type unknown/not supplied.
+/// Airspeed sensor is unhealthy
 ///
-/// AIRSPEED_SENSOR_TYPE_UNKNOWN
-const AirspeedSensorType airspeedSensorTypeUnknown = 0;
+/// AIRSPEED_SENSOR_UNHEALTHY
+const AirspeedSensorFlags airspeedSensorUnhealthy = 0;
 
-/// Differential airspeed sensor
+/// True if the data from this sensor is being actively used by the flight controller for guidance, navigation or control.
 ///
-/// AIRSPEED_SENSOR_TYPE_DIFFERENTIAL
-const AirspeedSensorType airspeedSensorTypeDifferential = 1;
-
-/// Mass-flow airspeed sensor.
-///
-/// AIRSPEED_SENSOR_TYPE_MASS_FLOW
-const AirspeedSensorType airspeedSensorTypeMassFlow = 2;
-
-/// Windvane airspeed sensor.
-///
-/// AIRSPEED_SENSOR_TYPE_WINDVANE
-const AirspeedSensorType airspeedSensorTypeWindvane = 3;
-
-/// Synthetic/calculated airspeed.
-///
-/// AIRSPEED_SENSOR_TYPE_SYNTHETIC
-const AirspeedSensorType airspeedSensorTypeSynthetic = 4;
+/// AIRSPEED_SENSOR_USING
+const AirspeedSensorFlags airspeedSensorUsing = 1;
 
 /// Possible transport layers to set and get parameters via mavlink during a parameter transaction.
 ///
@@ -8143,6 +8353,234 @@ const MavStandardMode mavStandardModeLand = 8;
 ///
 /// MAV_STANDARD_MODE_TAKEOFF
 const MavStandardMode mavStandardModeTakeoff = 9;
+
+/// Mode properties.
+///
+///
+/// MAV_MODE_PROPERTY
+typedef MavModeProperty = int;
+
+/// If set, this mode is an advanced mode.
+/// For example a rate-controlled manual mode might be advanced, whereas a position-controlled manual mode is not.
+/// A GCS can optionally use this flag to configure the UI for its intended users.
+///
+///
+/// MAV_MODE_PROPERTY_ADVANCED
+const MavModeProperty mavModePropertyAdvanced = 1;
+
+/// If set, this mode should not be added to the list of selectable modes.
+/// The mode might still be selected by the FC directly (for example as part of a failsafe).
+///
+///
+/// MAV_MODE_PROPERTY_NOT_USER_SELECTABLE
+const MavModeProperty mavModePropertyNotUserSelectable = 2;
+
+/// Battery status flags for fault, health and state indication.
+///
+/// MAV_BATTERY_STATUS_FLAGS
+typedef MavBatteryStatusFlags = int;
+
+///
+/// The battery is not ready to use (fly).
+/// Set if the battery has faults or other conditions that make it unsafe to fly with.
+/// Note: It will be the logical OR of other status bits (chosen by the manufacturer/integrator).
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_NOT_READY_TO_USE
+const MavBatteryStatusFlags mavBatteryStatusFlagsNotReadyToUse = 1;
+
+///
+/// Battery is charging.
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_CHARGING
+const MavBatteryStatusFlags mavBatteryStatusFlagsCharging = 2;
+
+///
+/// Battery is cell balancing (during charging).
+/// Not ready to use (MAV_BATTERY_STATUS_FLAGS_NOT_READY_TO_USE may be set).
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_CELL_BALANCING
+const MavBatteryStatusFlags mavBatteryStatusFlagsCellBalancing = 4;
+
+///
+/// Battery cells are not balanced.
+/// Not ready to use.
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_CELL_IMBALANCE
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultCellImbalance = 8;
+
+///
+/// Battery is auto discharging (towards storage level).
+/// Not ready to use (MAV_BATTERY_STATUS_FLAGS_NOT_READY_TO_USE would be set).
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_AUTO_DISCHARGING
+const MavBatteryStatusFlags mavBatteryStatusFlagsAutoDischarging = 16;
+
+///
+/// Battery requires service (not safe to fly).
+/// This is set at vendor discretion.
+/// It is likely to be set for most faults, and may also be set according to a maintenance schedule (such as age, or number of recharge cycles, etc.).
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_REQUIRES_SERVICE
+const MavBatteryStatusFlags mavBatteryStatusFlagsRequiresService = 32;
+
+///
+/// Battery is faulty and cannot be repaired (not safe to fly).
+/// This is set at vendor discretion.
+/// The battery should be disposed of safely.
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_BAD_BATTERY
+const MavBatteryStatusFlags mavBatteryStatusFlagsBadBattery = 64;
+
+///
+/// Automatic battery protection monitoring is enabled.
+/// When enabled, the system will monitor for certain kinds of faults, such as cells being over-voltage.
+/// If a fault is triggered then and protections are enabled then a safety fault (MAV_BATTERY_STATUS_FLAGS_FAULT_PROTECTION_SYSTEM) will be set and power from the battery will be stopped.
+/// Note that battery protection monitoring should only be enabled when the vehicle is landed. Once the vehicle is armed, or starts moving, the protections should be disabled to prevent false positives from disabling the output.
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_PROTECTIONS_ENABLED
+const MavBatteryStatusFlags mavBatteryStatusFlagsProtectionsEnabled = 128;
+
+///
+/// The battery fault protection system had detected a fault and cut all power from the battery.
+/// This will only trigger if MAV_BATTERY_STATUS_FLAGS_PROTECTIONS_ENABLED is set.
+/// Other faults like MAV_BATTERY_STATUS_FLAGS_FAULT_OVER_VOLT may also be set, indicating the cause of the protection fault.
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_PROTECTION_SYSTEM
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultProtectionSystem = 256;
+
+/// One or more cells are above their maximum voltage rating.
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_OVER_VOLT
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultOverVolt = 512;
+
+///
+/// One or more cells are below their minimum voltage rating.
+/// A battery that had deep-discharged might be irrepairably damaged, and set both MAV_BATTERY_STATUS_FLAGS_FAULT_UNDER_VOLT and MAV_BATTERY_STATUS_FLAGS_BAD_BATTERY.
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_UNDER_VOLT
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultUnderVolt = 1024;
+
+/// Over-temperature fault.
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_OVER_TEMPERATURE
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultOverTemperature = 2048;
+
+/// Under-temperature fault.
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_UNDER_TEMPERATURE
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultUnderTemperature = 4096;
+
+/// Over-current fault.
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_OVER_CURRENT
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultOverCurrent = 8192;
+
+///
+/// Short circuit event detected.
+/// The battery may or may not be safe to use (check other flags).
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_SHORT_CIRCUIT
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultShortCircuit = 16384;
+
+/// Voltage not compatible with power rail voltage (batteries on same power rail should have similar voltage).
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_INCOMPATIBLE_VOLTAGE
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultIncompatibleVoltage =
+    32768;
+
+/// Battery firmware is not compatible with current autopilot firmware.
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_INCOMPATIBLE_FIRMWARE
+const MavBatteryStatusFlags mavBatteryStatusFlagsFaultIncompatibleFirmware =
+    65536;
+
+/// Battery is not compatible due to cell configuration (e.g. 5s1p when vehicle requires 6s).
+///
+/// MAV_BATTERY_STATUS_FLAGS_FAULT_INCOMPATIBLE_CELLS_CONFIGURATION
+const MavBatteryStatusFlags
+    mavBatteryStatusFlagsFaultIncompatibleCellsConfiguration = 131072;
+
+///
+/// Battery capacity_consumed and capacity_remaining values are relative to a full battery (they sum to the total capacity of the battery).
+/// This flag would be set for a smart battery that can accurately determine its remaining charge across vehicle reboots and discharge/recharge cycles.
+/// If unset the capacity_consumed indicates the consumption since vehicle power-on, as measured using a power monitor. The capacity_remaining, if provided, indicates the estimated remaining capacity on the assumption that the battery was full on vehicle boot.
+/// If unset a GCS is recommended to advise that users fully charge the battery on power on.
+///
+///
+/// MAV_BATTERY_STATUS_FLAGS_CAPACITY_RELATIVE_TO_FULL
+const MavBatteryStatusFlags mavBatteryStatusFlagsCapacityRelativeToFull =
+    262144;
+
+/// Reserved (not used). If set, this will indicate that an additional status field exists for higher status values.
+///
+/// MAV_BATTERY_STATUS_FLAGS_EXTENDED
+const MavBatteryStatusFlags mavBatteryStatusFlagsExtended = 4294967295;
+
+/// These flags indicate the sensor reporting capabilities for TARGET_ABSOLUTE.
+///
+/// TARGET_ABSOLUTE_SENSOR_CAPABILITY_FLAGS
+typedef TargetAbsoluteSensorCapabilityFlags = int;
+
+///
+/// TARGET_ABSOLUTE_SENSOR_CAPABILITY_POSITION
+const TargetAbsoluteSensorCapabilityFlags
+    targetAbsoluteSensorCapabilityPosition = 1;
+
+///
+/// TARGET_ABSOLUTE_SENSOR_CAPABILITY_VELOCITY
+const TargetAbsoluteSensorCapabilityFlags
+    targetAbsoluteSensorCapabilityVelocity = 2;
+
+///
+/// TARGET_ABSOLUTE_SENSOR_CAPABILITY_ACCELERATION
+const TargetAbsoluteSensorCapabilityFlags
+    targetAbsoluteSensorCapabilityAcceleration = 4;
+
+///
+/// TARGET_ABSOLUTE_SENSOR_CAPABILITY_ATTITUDE
+const TargetAbsoluteSensorCapabilityFlags
+    targetAbsoluteSensorCapabilityAttitude = 8;
+
+///
+/// TARGET_ABSOLUTE_SENSOR_CAPABILITY_RATES
+const TargetAbsoluteSensorCapabilityFlags targetAbsoluteSensorCapabilityRates =
+    16;
+
+/// The frame of a target observation from an onboard sensor.
+///
+/// TARGET_OBS_FRAME
+typedef TargetObsFrame = int;
+
+/// NED local tangent frame (x: North, y: East, z: Down) with origin fixed relative to earth.
+///
+/// TARGET_OBS_FRAME_LOCAL_NED
+const TargetObsFrame targetObsFrameLocalNed = 0;
+
+/// FRD local frame aligned to the vehicle's attitude (x: Forward, y: Right, z: Down) with an origin that travels with vehicle.
+///
+/// TARGET_OBS_FRAME_BODY_FRD
+const TargetObsFrame targetObsFrameBodyFrd = 1;
+
+/// NED local tangent frame (x: North, y: East, z: Down) with an origin that travels with vehicle.
+///
+/// TARGET_OBS_FRAME_LOCAL_OFFSET_NED
+const TargetObsFrame targetObsFrameLocalOffsetNed = 2;
+
+/// Other sensor frame for target observations neither in local NED nor in body FRD.
+///
+/// TARGET_OBS_FRAME_OTHER
+const TargetObsFrame targetObsFrameOther = 3;
 
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 ///
@@ -10409,7 +10847,7 @@ class ScaledPressure implements MavlinkMessage {
   }
 }
 
-/// The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
+/// The attitude in the aeronautical frame (right-handed, Z-down, Y-right, X-front, ZYX, intrinsic).
 ///
 /// ATTITUDE
 class Attitude implements MavlinkMessage {
@@ -10956,7 +11394,7 @@ class GlobalPositionInt implements MavlinkMessage {
   }
 }
 
-/// The scaled values of the RC channels received: (-100%) -10000, (0%) 0, (100%) 10000. Channels that are inactive should be set to UINT16_MAX.
+/// The scaled values of the RC channels received: (-100%) -10000, (0%) 0, (100%) 10000. Channels that are inactive should be set to INT16_MAX.
 ///
 /// RC_CHANNELS_SCALED
 class RcChannelsScaled implements MavlinkMessage {
@@ -11878,7 +12316,7 @@ class MissionItem implements MavlinkMessage {
   /// current
   final uint8_t current;
 
-  /// Autocontinue to next waypoint
+  /// Autocontinue to next waypoint. 0: false, 1: true. Set false to pause mission after the item completes.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -12060,7 +12498,15 @@ class MissionRequest implements MavlinkMessage {
   }
 }
 
-/// Set the mission item with sequence number seq as current item. This means that the MAV will continue to this mission item on the shortest path (not following the mission items in-between).
+///
+/// Set the mission item with sequence number seq as the current item and emit MISSION_CURRENT (whether or not the mission number changed).
+/// If a mission is currently being executed, the system will continue to this new mission item on the shortest path, skipping any intermediate mission items.
+/// Note that mission jump repeat counters are not reset (see MAV_CMD_DO_JUMP param2).
+///
+/// This message may trigger a mission state-machine change on some systems: for example from MISSION_STATE_NOT_STARTED or MISSION_STATE_PAUSED to MISSION_STATE_ACTIVE.
+/// If the system is in mission mode, on those systems this command might therefore start, restart or resume the mission.
+/// If the system is not in mission mode this message must not trigger a switch to mission mode.
+///
 ///
 /// MISSION_SET_CURRENT
 class MissionSetCurrent implements MavlinkMessage {
@@ -12127,7 +12573,11 @@ class MissionSetCurrent implements MavlinkMessage {
   }
 }
 
-/// Message that announces the sequence number of the current active mission item. The MAV will fly towards this mission item.
+///
+/// Message that announces the sequence number of the current target mission item (that the system will fly towards/execute when the mission is running).
+/// This message should be streamed all the time (nominally at 1Hz).
+/// This message should be emitted following a call to MAV_CMD_DO_SET_MISSION_CURRENT or SET_MISSION_CURRENT.
+///
 ///
 /// MISSION_CURRENT
 class MissionCurrent implements MavlinkMessage {
@@ -12135,7 +12585,7 @@ class MissionCurrent implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 28;
 
-  static const int mavlinkEncodedLength = 2;
+  static const int mavlinkEncodedLength = 18;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -12150,8 +12600,70 @@ class MissionCurrent implements MavlinkMessage {
   /// seq
   final uint16_t seq;
 
+  /// Total number of mission items on vehicle (on last item, sequence == total). If the autopilot stores its home location as part of the mission this will be excluded from the total. 0: Not supported, UINT16_MAX if no mission is present on the vehicle.
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// total
+  final uint16_t total;
+
+  /// Mission state machine state. MISSION_STATE_UNKNOWN if state reporting not supported.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [MissionState]
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// mission_state
+  final MissionState missionState;
+
+  /// Vehicle is in a mode that can execute mission items or suspended. 0: Unknown, 1: In mission mode, 2: Suspended (not in mission mode).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// mission_mode
+  final uint8_t missionMode;
+
+  /// Id of current on-vehicle mission plan, or 0 if IDs are not supported or there is no mission loaded. GCS can use this to track changes to the mission plan type. The same value is returned on mission upload (in the MISSION_ACK).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// mission_id
+  final uint32_t missionId;
+
+  /// Id of current on-vehicle fence plan, or 0 if IDs are not supported or there is no fence loaded. GCS can use this to track changes to the fence plan type. The same value is returned on fence upload (in the MISSION_ACK).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// fence_id
+  final uint32_t fenceId;
+
+  /// Id of current on-vehicle rally point plan, or 0 if IDs are not supported or there are no rally points loaded. GCS can use this to track changes to the rally point plan type. The same value is returned on rally point upload (in the MISSION_ACK).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// rally_points_id
+  final uint32_t rallyPointsId;
+
   MissionCurrent({
     required this.seq,
+    required this.total,
+    required this.missionState,
+    required this.missionMode,
+    required this.missionId,
+    required this.fenceId,
+    required this.rallyPointsId,
   });
 
   factory MissionCurrent.parse(ByteData data_) {
@@ -12161,14 +12673,33 @@ class MissionCurrent implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var seq = data_.getUint16(0, Endian.little);
+    var total = data_.getUint16(2, Endian.little);
+    var missionState = data_.getUint8(4);
+    var missionMode = data_.getUint8(5);
+    var missionId = data_.getUint32(6, Endian.little);
+    var fenceId = data_.getUint32(10, Endian.little);
+    var rallyPointsId = data_.getUint32(14, Endian.little);
 
-    return MissionCurrent(seq: seq);
+    return MissionCurrent(
+        seq: seq,
+        total: total,
+        missionState: missionState,
+        missionMode: missionMode,
+        missionId: missionId,
+        fenceId: fenceId,
+        rallyPointsId: rallyPointsId);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint16(0, seq, Endian.little);
+    data_.setUint16(2, total, Endian.little);
+    data_.setUint8(4, missionState);
+    data_.setUint8(5, missionMode);
+    data_.setUint32(6, missionId, Endian.little);
+    data_.setUint32(10, fenceId, Endian.little);
+    data_.setUint32(14, rallyPointsId, Endian.little);
     return data_;
   }
 }
@@ -12254,7 +12785,7 @@ class MissionCount implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 221;
 
-  static const int mavlinkEncodedLength = 5;
+  static const int mavlinkEncodedLength = 9;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -12294,11 +12825,27 @@ class MissionCount implements MavlinkMessage {
   /// mission_type
   final MavMissionType missionType;
 
+  /// Id of current on-vehicle mission, fence, or rally point plan (on download from vehicle).
+  /// This field is used when downloading a plan from a vehicle to a GCS.
+  /// 0 on upload to the vehicle from GCS.
+  /// 0 if plan ids are not supported.
+  /// The current on-vehicle plan ids are streamed in `MISSION_CURRENT`, allowing a GCS to determine if any part of the plan has changed and needs to be re-uploaded.
+  /// The ids are recalculated by the vehicle when any part of the on-vehicle plan changes (when a new plan is uploaded, the vehicle returns the new id to the GCS in MISSION_ACK).
+  ///
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// opaque_id
+  final uint32_t opaqueId;
+
   MissionCount({
     required this.count,
     required this.targetSystem,
     required this.targetComponent,
     required this.missionType,
+    required this.opaqueId,
   });
 
   factory MissionCount.parse(ByteData data_) {
@@ -12311,12 +12858,14 @@ class MissionCount implements MavlinkMessage {
     var targetSystem = data_.getUint8(2);
     var targetComponent = data_.getUint8(3);
     var missionType = data_.getUint8(4);
+    var opaqueId = data_.getUint32(5, Endian.little);
 
     return MissionCount(
         count: count,
         targetSystem: targetSystem,
         targetComponent: targetComponent,
-        missionType: missionType);
+        missionType: missionType,
+        opaqueId: opaqueId);
   }
 
   @override
@@ -12326,6 +12875,7 @@ class MissionCount implements MavlinkMessage {
     data_.setUint8(2, targetSystem);
     data_.setUint8(3, targetComponent);
     data_.setUint8(4, missionType);
+    data_.setUint32(5, opaqueId, Endian.little);
     return data_;
   }
 }
@@ -12457,7 +13007,7 @@ class MissionAck implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 153;
 
-  static const int mavlinkEncodedLength = 4;
+  static const int mavlinkEncodedLength = 8;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -12499,11 +13049,27 @@ class MissionAck implements MavlinkMessage {
   /// mission_type
   final MavMissionType missionType;
 
+  /// Id of new on-vehicle mission, fence, or rally point plan (on upload to vehicle).
+  /// The id is calculated and returned by a vehicle when a new plan is uploaded by a GCS.
+  /// The only requirement on the id is that it must change when there is any change to the on-vehicle plan type (there is no requirement that the id be globally unique).
+  /// 0 on download from the vehicle to the GCS (on download the ID is set in MISSION_COUNT).
+  /// 0 if plan ids are not supported.
+  /// The current on-vehicle plan ids are streamed in `MISSION_CURRENT`, allowing a GCS to determine if any part of the plan has changed and needs to be re-uploaded.
+  ///
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// opaque_id
+  final uint32_t opaqueId;
+
   MissionAck({
     required this.targetSystem,
     required this.targetComponent,
     required this.type,
     required this.missionType,
+    required this.opaqueId,
   });
 
   factory MissionAck.parse(ByteData data_) {
@@ -12516,12 +13082,14 @@ class MissionAck implements MavlinkMessage {
     var targetComponent = data_.getUint8(1);
     var type = data_.getUint8(2);
     var missionType = data_.getUint8(3);
+    var opaqueId = data_.getUint32(4, Endian.little);
 
     return MissionAck(
         targetSystem: targetSystem,
         targetComponent: targetComponent,
         type: type,
-        missionType: missionType);
+        missionType: missionType,
+        opaqueId: opaqueId);
   }
 
   @override
@@ -12531,11 +13099,12 @@ class MissionAck implements MavlinkMessage {
     data_.setUint8(1, targetComponent);
     data_.setUint8(2, type);
     data_.setUint8(3, missionType);
+    data_.setUint32(4, opaqueId, Endian.little);
     return data_;
   }
 }
 
-/// Sets the GPS co-ordinates of the vehicle local origin (0,0,0) position. Vehicle should emit GPS_GLOBAL_ORIGIN irrespective of whether the origin is changed. This enables transform between the local coordinate frame and the global (GPS) coordinate frame, which may be necessary when (for example) indoor and outdoor settings are connected and the MAV should move from in- to outdoor.
+/// Sets the GPS coordinates of the vehicle local origin (0,0,0) position. Vehicle should emit GPS_GLOBAL_ORIGIN irrespective of whether the origin is changed. This enables transform between the local coordinate frame and the global (GPS) coordinate frame, which may be necessary when (for example) indoor and outdoor settings are connected and the MAV should move from in- to outdoor.
 ///
 /// SET_GPS_GLOBAL_ORIGIN
 class SetGpsGlobalOrigin implements MavlinkMessage {
@@ -12636,7 +13205,7 @@ class SetGpsGlobalOrigin implements MavlinkMessage {
   }
 }
 
-/// Publishes the GPS co-ordinates of the vehicle local origin (0,0,0) position. Emitted whenever a new GPS-Local position mapping is requested or set - e.g. following SET_GPS_GLOBAL_ORIGIN message.
+/// Publishes the GPS coordinates of the vehicle local origin (0,0,0) position. Emitted whenever a new GPS-Local position mapping is requested or set - e.g. following SET_GPS_GLOBAL_ORIGIN message.
 ///
 /// GPS_GLOBAL_ORIGIN
 class GpsGlobalOrigin implements MavlinkMessage {
@@ -14301,7 +14870,7 @@ class ManualControl implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 243;
 
-  static const int mavlinkEncodedLength = 18;
+  static const int mavlinkEncodedLength = 30;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -14360,7 +14929,7 @@ class ManualControl implements MavlinkMessage {
   /// buttons2
   final uint16_t buttons2;
 
-  /// Set bits to 1 to indicate which of the following extension fields contain valid data: bit 0: pitch, bit 1: roll.
+  /// Set bits to 1 to indicate which of the following extension fields contain valid data: bit 0: pitch, bit 1: roll, bit 2: aux1, bit 3: aux2, bit 4: aux3, bit 5: aux4, bit 6: aux5, bit 7: aux6
   ///
   /// MAVLink type: uint8_t
   ///
@@ -14387,6 +14956,60 @@ class ManualControl implements MavlinkMessage {
   /// t
   final int16_t t;
 
+  /// Aux continuous input field 1. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 2 of enabled_extensions field is set. 0 if bit 2 is unset.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// aux1
+  final int16_t aux1;
+
+  /// Aux continuous input field 2. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 3 of enabled_extensions field is set. 0 if bit 3 is unset.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// aux2
+  final int16_t aux2;
+
+  /// Aux continuous input field 3. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 4 of enabled_extensions field is set. 0 if bit 4 is unset.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// aux3
+  final int16_t aux3;
+
+  /// Aux continuous input field 4. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 5 of enabled_extensions field is set. 0 if bit 5 is unset.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// aux4
+  final int16_t aux4;
+
+  /// Aux continuous input field 5. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 6 of enabled_extensions field is set. 0 if bit 6 is unset.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// aux5
+  final int16_t aux5;
+
+  /// Aux continuous input field 6. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 7 of enabled_extensions field is set. 0 if bit 7 is unset.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// aux6
+  final int16_t aux6;
+
   ManualControl({
     required this.x,
     required this.y,
@@ -14398,6 +15021,12 @@ class ManualControl implements MavlinkMessage {
     required this.enabledExtensions,
     required this.s,
     required this.t,
+    required this.aux1,
+    required this.aux2,
+    required this.aux3,
+    required this.aux4,
+    required this.aux5,
+    required this.aux6,
   });
 
   factory ManualControl.parse(ByteData data_) {
@@ -14416,6 +15045,12 @@ class ManualControl implements MavlinkMessage {
     var enabledExtensions = data_.getUint8(13);
     var s = data_.getInt16(14, Endian.little);
     var t = data_.getInt16(16, Endian.little);
+    var aux1 = data_.getInt16(18, Endian.little);
+    var aux2 = data_.getInt16(20, Endian.little);
+    var aux3 = data_.getInt16(22, Endian.little);
+    var aux4 = data_.getInt16(24, Endian.little);
+    var aux5 = data_.getInt16(26, Endian.little);
+    var aux6 = data_.getInt16(28, Endian.little);
 
     return ManualControl(
         x: x,
@@ -14427,7 +15062,13 @@ class ManualControl implements MavlinkMessage {
         buttons2: buttons2,
         enabledExtensions: enabledExtensions,
         s: s,
-        t: t);
+        t: t,
+        aux1: aux1,
+        aux2: aux2,
+        aux3: aux3,
+        aux4: aux4,
+        aux5: aux5,
+        aux6: aux6);
   }
 
   @override
@@ -14443,6 +15084,12 @@ class ManualControl implements MavlinkMessage {
     data_.setUint8(13, enabledExtensions);
     data_.setInt16(14, s, Endian.little);
     data_.setInt16(16, t, Endian.little);
+    data_.setInt16(18, aux1, Endian.little);
+    data_.setInt16(20, aux2, Endian.little);
+    data_.setInt16(22, aux3, Endian.little);
+    data_.setInt16(24, aux4, Endian.little);
+    data_.setInt16(26, aux5, Endian.little);
+    data_.setInt16(28, aux6, Endian.little);
     return data_;
   }
 }
@@ -14871,7 +15518,7 @@ class MissionItemInt implements MavlinkMessage {
   /// current
   final uint8_t current;
 
-  /// Autocontinue to next waypoint
+  /// Autocontinue to next waypoint. 0: false, 1: true. Set false to pause mission after the item completes.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -15083,7 +15730,7 @@ class VfrHud implements MavlinkMessage {
   }
 }
 
-/// Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. NaN or INT32_MAX may be used in float/integer params (respectively) to indicate optional/default values (e.g. to use the component's current latitude, yaw rather than a specific value). The command microservice is documented at https://mavlink.io/en/services/command.html
+/// Send a command with up to seven parameters to the MAV, where params 5 and 6 are integers and the other values are floats. This is preferred over COMMAND_LONG as it allows the MAV_FRAME to be specified for interpreting positional information, such as altitude. COMMAND_INT is also preferred when sending latitude and longitude data in params 5 and 6, as it allows for greater precision. Param 5 and 6 encode positional data as scaled integers, where the scaling depends on the actual command value. NaN or INT32_MAX may be used in float/integer params (respectively) to indicate optional/default values (e.g. to use the component's current latitude, yaw rather than a specific value). The command microservice is documented at https://mavlink.io/en/services/command.html
 ///
 /// COMMAND_INT
 class CommandInt implements MavlinkMessage {
@@ -15266,7 +15913,7 @@ class CommandInt implements MavlinkMessage {
   }
 }
 
-/// Send a command with up to seven parameters to the MAV. The command microservice is documented at https://mavlink.io/en/services/command.html
+/// Send a command with up to seven parameters to the MAV. COMMAND_INT is generally preferred when sending MAV_CMD commands that include positional information; it offers higher precision and allows the MAV_FRAME to be specified (which may otherwise be ambiguous, particularly for altitude). The command microservice is documented at https://mavlink.io/en/services/command.html
 ///
 /// COMMAND_LONG
 class CommandLong implements MavlinkMessage {
@@ -15459,16 +16106,18 @@ class CommandAck implements MavlinkMessage {
   /// result
   final MavResult result;
 
-  /// Also used as result_param1, it can be set with an enum containing the errors reasons of why the command was denied, or the progress percentage when result is MAV_RESULT_IN_PROGRESS (UINT8_MAX if the progress is unknown).
+  /// The progress percentage when result is MAV_RESULT_IN_PROGRESS. Values: [0-100], or UINT8_MAX if the progress is unknown.
   ///
   /// MAVLink type: uint8_t
+  ///
+  /// units: %
   ///
   /// Extensions field for MAVLink 2.
   ///
   /// progress
   final uint8_t progress;
 
-  /// Additional parameter of the result, example: which parameter of MAV_CMD_NAV_WAYPOINT caused it to be denied.
+  /// Additional result information. Can be set with a command-specific enum containing command-specific error reasons for why the command might be denied. If used, the associated enum must be documented in the corresponding MAV_CMD (this enum should have a 0 value to indicate "unused" or "unknown").
   ///
   /// MAVLink type: int32_t
   ///
@@ -15756,7 +16405,7 @@ class SetAttitudeTarget implements MavlinkMessage {
   /// time_boot_ms
   final uint32_t timeBootMs;
 
-  /// Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
+  /// Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0) from MAV_FRAME_LOCAL_NED to MAV_FRAME_BODY_FRD
   ///
   /// MAVLink type: float[4]
   ///
@@ -19173,7 +19822,7 @@ class SimState implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 32;
 
-  static const int mavlinkEncodedLength = 84;
+  static const int mavlinkEncodedLength = 92;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -19284,7 +19933,7 @@ class SimState implements MavlinkMessage {
   /// zgyro
   final float zgyro;
 
-  /// Latitude
+  /// Latitude (lower precision). Both this and the lat_int field should be set.
   ///
   /// MAVLink type: float
   ///
@@ -19293,7 +19942,7 @@ class SimState implements MavlinkMessage {
   /// lat
   final float lat;
 
-  /// Longitude
+  /// Longitude (lower precision). Both this and the lon_int field should be set.
   ///
   /// MAVLink type: float
   ///
@@ -19352,6 +20001,28 @@ class SimState implements MavlinkMessage {
   /// vd
   final float vd;
 
+  /// Latitude (higher precision). If 0, recipients should use the lat field value (otherwise this field is preferred).
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// lat_int
+  final int32_t latInt;
+
+  /// Longitude (higher precision). If 0, recipients should use the lon field value (otherwise this field is preferred).
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// lon_int
+  final int32_t lonInt;
+
   SimState({
     required this.q1,
     required this.q2,
@@ -19374,6 +20045,8 @@ class SimState implements MavlinkMessage {
     required this.vn,
     required this.ve,
     required this.vd,
+    required this.latInt,
+    required this.lonInt,
   });
 
   factory SimState.parse(ByteData data_) {
@@ -19403,6 +20076,8 @@ class SimState implements MavlinkMessage {
     var vn = data_.getFloat32(72, Endian.little);
     var ve = data_.getFloat32(76, Endian.little);
     var vd = data_.getFloat32(80, Endian.little);
+    var latInt = data_.getInt32(84, Endian.little);
+    var lonInt = data_.getInt32(88, Endian.little);
 
     return SimState(
         q1: q1,
@@ -19425,7 +20100,9 @@ class SimState implements MavlinkMessage {
         stdDevVert: stdDevVert,
         vn: vn,
         ve: ve,
-        vd: vd);
+        vd: vd,
+        latInt: latInt,
+        lonInt: lonInt);
   }
 
   @override
@@ -19452,6 +20129,8 @@ class SimState implements MavlinkMessage {
     data_.setFloat32(72, vn, Endian.little);
     data_.setFloat32(76, ve, Endian.little);
     data_.setFloat32(80, vd, Endian.little);
+    data_.setInt32(84, latInt, Endian.little);
+    data_.setInt32(88, lonInt, Endian.little);
     return data_;
   }
 }
@@ -19486,7 +20165,7 @@ class RadioStatus implements MavlinkMessage {
   /// fixed
   final uint16_t fixed;
 
-  /// Local (message sender) recieved signal strength indication in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
+  /// Local (message sender) received signal strength indication in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -19651,7 +20330,16 @@ class FileTransferProtocol implements MavlinkMessage {
   }
 }
 
+///
 /// Time synchronization message.
+/// The message is used for both timesync requests and responses.
+/// The request is sent with `ts1=syncing component timestamp` and `tc1=0`, and may be broadcast or targeted to a specific system/component.
+/// The response is sent with `ts1=syncing component timestamp` (mirror back unchanged), and `tc1=responding component timestamp`, with the `target_system` and `target_component` set to ids of the original request.
+/// Systems can determine if they are receiving a request or response based on the value of `tc`.
+/// If the response has `target_system==target_component==0` the remote system has not been updated to use the component IDs and cannot reliably timesync; the requestor may report an error.
+/// Timestamps are UNIX Epoch time or time since system boot in nanoseconds (the timestamp format can be inferred by checking for the magnitude of the number; generally it doesn't matter as only the offset is used).
+/// The message sequence is repeated numerous times with results being filtered/averaged to estimate the offset.
+///
 ///
 /// TIMESYNC
 class Timesync implements MavlinkMessage {
@@ -19659,7 +20347,7 @@ class Timesync implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 34;
 
-  static const int mavlinkEncodedLength = 16;
+  static const int mavlinkEncodedLength = 18;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -19667,23 +20355,47 @@ class Timesync implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// Time sync timestamp 1
+  /// Time sync timestamp 1. Syncing: 0. Responding: Timestamp of responding component.
   ///
   /// MAVLink type: int64_t
+  ///
+  /// units: ns
   ///
   /// tc1
   final int64_t tc1;
 
-  /// Time sync timestamp 2
+  /// Time sync timestamp 2. Timestamp of syncing component (mirrored in response).
   ///
   /// MAVLink type: int64_t
+  ///
+  /// units: ns
   ///
   /// ts1
   final int64_t ts1;
 
+  /// Target system id. Request: 0 (broadcast) or id of specific system. Response must contain system id of the requesting component.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Target component id. Request: 0 (broadcast) or id of specific component. Response must contain component id of the requesting component.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
   Timesync({
     required this.tc1,
     required this.ts1,
+    required this.targetSystem,
+    required this.targetComponent,
   });
 
   factory Timesync.parse(ByteData data_) {
@@ -19694,8 +20406,14 @@ class Timesync implements MavlinkMessage {
     }
     var tc1 = data_.getInt64(0, Endian.little);
     var ts1 = data_.getInt64(8, Endian.little);
+    var targetSystem = data_.getUint8(16);
+    var targetComponent = data_.getUint8(17);
 
-    return Timesync(tc1: tc1, ts1: ts1);
+    return Timesync(
+        tc1: tc1,
+        ts1: ts1,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent);
   }
 
   @override
@@ -19703,6 +20421,8 @@ class Timesync implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setInt64(0, tc1, Endian.little);
     data_.setInt64(8, ts1, Endian.little);
+    data_.setUint8(16, targetSystem);
+    data_.setUint8(17, targetComponent);
     return data_;
   }
 }
@@ -19766,7 +20486,7 @@ class CameraTrigger implements MavlinkMessage {
 }
 
 /// The global position, as returned by the Global Positioning System (GPS). This is
-/// NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION_INT for the global position estimate.
+/// NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION_INT for the global position estimate.
 ///
 /// HIL_GPS
 class HilGps implements MavlinkMessage {
@@ -24047,7 +24767,7 @@ class ControlSystemState implements MavlinkMessage {
   }
 }
 
-/// Battery information. Updates GCS with flight controller battery status. Smart batteries also use this message, but may additionally send SMART_BATTERY_INFO.
+/// Battery information. Updates GCS with flight controller battery status. Smart batteries also use this message, but may additionally send BATTERY_INFO.
 ///
 /// BATTERY_STATUS
 class BatteryStatus implements MavlinkMessage {
@@ -25026,7 +25746,7 @@ class EfiStatus implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 208;
 
-  static const int mavlinkEncodedLength = 69;
+  static const int mavlinkEncodedLength = 73;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -25190,6 +25910,17 @@ class EfiStatus implements MavlinkMessage {
   /// ignition_voltage
   final float ignitionVoltage;
 
+  /// Fuel pressure. Zero in this value means "unknown", so if the fuel pressure really is zero kPa use 0.0001 instead.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: kPa
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// fuel_pressure
+  final float fuelPressure;
+
   EfiStatus({
     required this.ecuIndex,
     required this.rpm,
@@ -25209,6 +25940,7 @@ class EfiStatus implements MavlinkMessage {
     required this.ptCompensation,
     required this.health,
     required this.ignitionVoltage,
+    required this.fuelPressure,
   });
 
   factory EfiStatus.parse(ByteData data_) {
@@ -25235,6 +25967,7 @@ class EfiStatus implements MavlinkMessage {
     var ptCompensation = data_.getFloat32(60, Endian.little);
     var health = data_.getUint8(64);
     var ignitionVoltage = data_.getFloat32(65, Endian.little);
+    var fuelPressure = data_.getFloat32(69, Endian.little);
 
     return EfiStatus(
         ecuIndex: ecuIndex,
@@ -25254,7 +25987,8 @@ class EfiStatus implements MavlinkMessage {
         throttleOut: throttleOut,
         ptCompensation: ptCompensation,
         health: health,
-        ignitionVoltage: ignitionVoltage);
+        ignitionVoltage: ignitionVoltage,
+        fuelPressure: fuelPressure);
   }
 
   @override
@@ -25278,6 +26012,7 @@ class EfiStatus implements MavlinkMessage {
     data_.setFloat32(60, ptCompensation, Endian.little);
     data_.setUint8(64, health);
     data_.setFloat32(65, ignitionVoltage, Endian.little);
+    data_.setFloat32(69, fuelPressure, Endian.little);
     return data_;
   }
 }
@@ -26813,7 +27548,7 @@ class HomePosition implements MavlinkMessage {
   /// altitude
   final int32_t altitude;
 
-  /// Local X position of this position in the local coordinate frame
+  /// Local X position of this position in the local coordinate frame (NED)
   ///
   /// MAVLink type: float
   ///
@@ -26822,7 +27557,7 @@ class HomePosition implements MavlinkMessage {
   /// x
   final float x;
 
-  /// Local Y position of this position in the local coordinate frame
+  /// Local Y position of this position in the local coordinate frame (NED)
   ///
   /// MAVLink type: float
   ///
@@ -26831,7 +27566,7 @@ class HomePosition implements MavlinkMessage {
   /// y
   final float y;
 
-  /// Local Z position of this position in the local coordinate frame
+  /// Local Z position of this position in the local coordinate frame (NED: positive "down")
   ///
   /// MAVLink type: float
   ///
@@ -26840,7 +27575,11 @@ class HomePosition implements MavlinkMessage {
   /// z
   final float z;
 
-  /// World to surface normal and heading transformation of the takeoff position. Used to indicate the heading and slope of the ground
+  ///
+  /// Quaternion indicating world-to-surface-normal and heading transformation of the takeoff position.
+  /// Used to indicate the heading and slope of the ground.
+  /// All fields should be set to NaN if an accurate quaternion for both heading and surface slope cannot be supplied.
+  ///
   ///
   /// MAVLink type: float[4]
   ///
@@ -27000,7 +27739,7 @@ class SetHomePosition implements MavlinkMessage {
   /// altitude
   final int32_t altitude;
 
-  /// Local X position of this position in the local coordinate frame
+  /// Local X position of this position in the local coordinate frame (NED)
   ///
   /// MAVLink type: float
   ///
@@ -27009,7 +27748,7 @@ class SetHomePosition implements MavlinkMessage {
   /// x
   final float x;
 
-  /// Local Y position of this position in the local coordinate frame
+  /// Local Y position of this position in the local coordinate frame (NED)
   ///
   /// MAVLink type: float
   ///
@@ -27018,7 +27757,7 @@ class SetHomePosition implements MavlinkMessage {
   /// y
   final float y;
 
-  /// Local Z position of this position in the local coordinate frame
+  /// Local Z position of this position in the local coordinate frame (NED: positive "down")
   ///
   /// MAVLink type: float
   ///
@@ -28376,7 +29115,7 @@ class CameraInformation implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 92;
 
-  static const int mavlinkEncodedLength = 235;
+  static const int mavlinkEncodedLength = 236;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -28393,14 +29132,14 @@ class CameraInformation implements MavlinkMessage {
   /// time_boot_ms
   final uint32_t timeBootMs;
 
-  /// Version of the camera firmware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff)
+  /// Version of the camera firmware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff). Use 0 if not known.
   ///
   /// MAVLink type: uint32_t
   ///
   /// firmware_version
   final uint32_t firmwareVersion;
 
-  /// Focal length
+  /// Focal length. Use NaN if not known.
   ///
   /// MAVLink type: float
   ///
@@ -28409,7 +29148,7 @@ class CameraInformation implements MavlinkMessage {
   /// focal_length
   final float focalLength;
 
-  /// Image sensor size horizontal
+  /// Image sensor size horizontal. Use NaN if not known.
   ///
   /// MAVLink type: float
   ///
@@ -28418,7 +29157,7 @@ class CameraInformation implements MavlinkMessage {
   /// sensor_size_h
   final float sensorSizeH;
 
-  /// Image sensor size vertical
+  /// Image sensor size vertical. Use NaN if not known.
   ///
   /// MAVLink type: float
   ///
@@ -28436,7 +29175,7 @@ class CameraInformation implements MavlinkMessage {
   /// flags
   final CameraCapFlags flags;
 
-  /// Horizontal image resolution
+  /// Horizontal image resolution. Use 0 if not known.
   ///
   /// MAVLink type: uint16_t
   ///
@@ -28445,7 +29184,7 @@ class CameraInformation implements MavlinkMessage {
   /// resolution_h
   final uint16_t resolutionH;
 
-  /// Vertical image resolution
+  /// Vertical image resolution. Use 0 if not known.
   ///
   /// MAVLink type: uint16_t
   ///
@@ -28454,7 +29193,7 @@ class CameraInformation implements MavlinkMessage {
   /// resolution_v
   final uint16_t resolutionV;
 
-  /// Camera definition version (iteration)
+  /// Camera definition version (iteration).  Use 0 if not known.
   ///
   /// MAVLink type: uint16_t
   ///
@@ -28475,19 +29214,28 @@ class CameraInformation implements MavlinkMessage {
   /// model_name
   final List<int8_t> modelName;
 
-  /// Reserved for a lens ID
+  /// Reserved for a lens ID.  Use 0 if not known.
   ///
   /// MAVLink type: uint8_t
   ///
   /// lens_id
   final uint8_t lensId;
 
-  /// Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). The definition file may be xz compressed, which will be indicated by the file extension .xml.xz (a GCS that implements the protocol must support decompressing the file). The string needs to be zero terminated.
+  /// Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). The definition file may be xz compressed, which will be indicated by the file extension .xml.xz (a GCS that implements the protocol must support decompressing the file). The string needs to be zero terminated.  Use a zero-length string if not known.
   ///
   /// MAVLink type: char[140]
   ///
   /// cam_definition_uri
   final List<char> camDefinitionUri;
+
+  /// Gimbal id of a gimbal associated with this camera. This is the component id of the gimbal device, or 1-6 for non mavlink gimbals. Use 0 if no gimbal is associated with the camera.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// gimbal_device_id
+  final uint8_t gimbalDeviceId;
 
   CameraInformation({
     required this.timeBootMs,
@@ -28503,6 +29251,7 @@ class CameraInformation implements MavlinkMessage {
     required this.modelName,
     required this.lensId,
     required this.camDefinitionUri,
+    required this.gimbalDeviceId,
   });
 
   factory CameraInformation.parse(ByteData data_) {
@@ -28524,6 +29273,7 @@ class CameraInformation implements MavlinkMessage {
     var modelName = MavlinkMessage.asUint8List(data_, 62, 32);
     var lensId = data_.getUint8(94);
     var camDefinitionUri = MavlinkMessage.asInt8List(data_, 95, 140);
+    var gimbalDeviceId = data_.getUint8(235);
 
     return CameraInformation(
         timeBootMs: timeBootMs,
@@ -28538,7 +29288,8 @@ class CameraInformation implements MavlinkMessage {
         vendorName: vendorName,
         modelName: modelName,
         lensId: lensId,
-        camDefinitionUri: camDefinitionUri);
+        camDefinitionUri: camDefinitionUri,
+        gimbalDeviceId: gimbalDeviceId);
   }
 
   @override
@@ -28557,6 +29308,7 @@ class CameraInformation implements MavlinkMessage {
     MavlinkMessage.setUint8List(data_, 62, modelName);
     data_.setUint8(94, lensId);
     MavlinkMessage.setInt8List(data_, 95, camDefinitionUri);
+    data_.setUint8(235, gimbalDeviceId);
     return data_;
   }
 }
@@ -28595,7 +29347,7 @@ class CameraSettings implements MavlinkMessage {
   /// mode_id
   final CameraMode modeId;
 
-  /// Current zoom level (0.0 to 100.0, NaN if not known)
+  /// Current zoom level as a percentage of the full range (0.0 to 100.0, NaN if not known)
   ///
   /// MAVLink type: float
   ///
@@ -28604,7 +29356,7 @@ class CameraSettings implements MavlinkMessage {
   /// zoomLevel
   final float zoomlevel;
 
-  /// Current focus level (0.0 to 100.0, NaN if not known)
+  /// Current focus level as a percentage of the full range (0.0 to 100.0, NaN if not known)
   ///
   /// MAVLink type: float
   ///
@@ -29142,8 +29894,11 @@ class CameraImageCaptured implements MavlinkMessage {
   }
 }
 
-/// Information about flight since last arming.
+/// Flight information.
+/// This includes time since boot for arm, takeoff, and land, and a flight number.
+/// Takeoff and landing values reset to zero on arm.
 /// This can be requested using MAV_CMD_REQUEST_MESSAGE.
+/// Note, some fields are misnamed - timestamps are from boot (not UTC) and the flight_uuid is a sequence number.
 ///
 ///
 /// FLIGHT_INFORMATION
@@ -29152,7 +29907,7 @@ class FlightInformation implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 49;
 
-  static const int mavlinkEncodedLength = 28;
+  static const int mavlinkEncodedLength = 32;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -29160,7 +29915,7 @@ class FlightInformation implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// Timestamp at arming (time since UNIX epoch) in UTC, 0 for unknown
+  /// Timestamp at arming (since system boot). Set to 0 on boot. Set value on arming. Note, field is misnamed UTC.
   ///
   /// MAVLink type: uint64_t
   ///
@@ -29169,7 +29924,7 @@ class FlightInformation implements MavlinkMessage {
   /// arming_time_utc
   final uint64_t armingTimeUtc;
 
-  /// Timestamp at takeoff (time since UNIX epoch) in UTC, 0 for unknown
+  /// Timestamp at takeoff (since system boot). Set to 0 at boot and on arming. Note, field is misnamed UTC.
   ///
   /// MAVLink type: uint64_t
   ///
@@ -29178,7 +29933,7 @@ class FlightInformation implements MavlinkMessage {
   /// takeoff_time_utc
   final uint64_t takeoffTimeUtc;
 
-  /// Universally unique identifier (UUID) of flight, should correspond to name of log files
+  /// Flight number. Note, field is misnamed UUID.
   ///
   /// MAVLink type: uint64_t
   ///
@@ -29194,11 +29949,23 @@ class FlightInformation implements MavlinkMessage {
   /// time_boot_ms
   final uint32_t timeBootMs;
 
+  /// Timestamp at landing (in ms since system boot). Set to 0 at boot and on arming.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// landing_time
+  final uint32_t landingTime;
+
   FlightInformation({
     required this.armingTimeUtc,
     required this.takeoffTimeUtc,
     required this.flightUuid,
     required this.timeBootMs,
+    required this.landingTime,
   });
 
   factory FlightInformation.parse(ByteData data_) {
@@ -29211,12 +29978,14 @@ class FlightInformation implements MavlinkMessage {
     var takeoffTimeUtc = data_.getUint64(8, Endian.little);
     var flightUuid = data_.getUint64(16, Endian.little);
     var timeBootMs = data_.getUint32(24, Endian.little);
+    var landingTime = data_.getUint32(28, Endian.little);
 
     return FlightInformation(
         armingTimeUtc: armingTimeUtc,
         takeoffTimeUtc: takeoffTimeUtc,
         flightUuid: flightUuid,
-        timeBootMs: timeBootMs);
+        timeBootMs: timeBootMs,
+        landingTime: landingTime);
   }
 
   @override
@@ -29226,6 +29995,7 @@ class FlightInformation implements MavlinkMessage {
     data_.setUint64(8, takeoffTimeUtc, Endian.little);
     data_.setUint64(16, flightUuid, Endian.little);
     data_.setUint32(24, timeBootMs, Endian.little);
+    data_.setUint32(28, landingTime, Endian.little);
     return data_;
   }
 }
@@ -30548,7 +31318,7 @@ class GimbalManagerInformation implements MavlinkMessage {
   /// yaw_max
   final float yawMax;
 
-  /// Gimbal device ID that this gimbal manager is responsible for.
+  /// Gimbal device ID that this gimbal manager is responsible for. Component ID of gimbal device (or 1-6 for non-MAVLink gimbal).
   ///
   /// MAVLink type: uint8_t
   ///
@@ -30646,7 +31416,7 @@ class GimbalManagerStatus implements MavlinkMessage {
   /// flags
   final GimbalManagerFlags flags;
 
-  /// Gimbal device ID that this gimbal manager is responsible for.
+  /// Gimbal device ID that this gimbal manager is responsible for. Component ID of gimbal device (or 1-6 for non-MAVLink gimbal).
   ///
   /// MAVLink type: uint8_t
   ///
@@ -30870,7 +31640,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 74;
 
-  static const int mavlinkEncodedLength = 144;
+  static const int mavlinkEncodedLength = 145;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -30908,7 +31678,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
   /// hardware_version
   final uint32_t hardwareVersion;
 
-  /// Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
+  /// Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -30917,7 +31687,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
   /// roll_min
   final float rollMin;
 
-  /// Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
+  /// Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -30926,7 +31696,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
   /// roll_max
   final float rollMax;
 
-  /// Minimum hardware pitch angle (positive: up, negative: down)
+  /// Minimum hardware pitch angle (positive: up, negative: down). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -30935,7 +31705,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
   /// pitch_min
   final float pitchMin;
 
-  /// Maximum hardware pitch angle (positive: up, negative: down)
+  /// Maximum hardware pitch angle (positive: up, negative: down). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -30944,7 +31714,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
   /// pitch_max
   final float pitchMax;
 
-  /// Minimum hardware yaw angle (positive: to the right, negative: to the left)
+  /// Minimum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -30953,7 +31723,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
   /// yaw_min
   final float yawMin;
 
-  /// Maximum hardware yaw angle (positive: to the right, negative: to the left)
+  /// Maximum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -30999,6 +31769,15 @@ class GimbalDeviceInformation implements MavlinkMessage {
   /// custom_name
   final List<char> customName;
 
+  /// This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set to a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// gimbal_device_id
+  final uint8_t gimbalDeviceId;
+
   GimbalDeviceInformation({
     required this.uid,
     required this.timeBootMs,
@@ -31015,6 +31794,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
     required this.vendorName,
     required this.modelName,
     required this.customName,
+    required this.gimbalDeviceId,
   });
 
   factory GimbalDeviceInformation.parse(ByteData data_) {
@@ -31039,6 +31819,7 @@ class GimbalDeviceInformation implements MavlinkMessage {
     var vendorName = MavlinkMessage.asInt8List(data_, 48, 32);
     var modelName = MavlinkMessage.asInt8List(data_, 80, 32);
     var customName = MavlinkMessage.asInt8List(data_, 112, 32);
+    var gimbalDeviceId = data_.getUint8(144);
 
     return GimbalDeviceInformation(
         uid: uid,
@@ -31055,7 +31836,8 @@ class GimbalDeviceInformation implements MavlinkMessage {
         customCapFlags: customCapFlags,
         vendorName: vendorName,
         modelName: modelName,
-        customName: customName);
+        customName: customName,
+        gimbalDeviceId: gimbalDeviceId);
   }
 
   @override
@@ -31076,11 +31858,23 @@ class GimbalDeviceInformation implements MavlinkMessage {
     MavlinkMessage.setInt8List(data_, 48, vendorName);
     MavlinkMessage.setInt8List(data_, 80, modelName);
     MavlinkMessage.setInt8List(data_, 112, customName);
+    data_.setUint8(144, gimbalDeviceId);
     return data_;
   }
 }
 
-/// Low level message to control a gimbal device's attitude. This message is to be sent from the gimbal manager to the gimbal device component. Angles and rates can be set to NaN according to use case.
+/// Low level message to control a gimbal device's attitude.
+/// This message is to be sent from the gimbal manager to the gimbal device component.
+/// The quaternion and angular velocities can be set to NaN according to use case.
+/// For the angles encoded in the quaternion and the angular velocities holds:
+/// If the flag GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME is set, then they are relative to the vehicle heading (vehicle frame).
+/// If the flag GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME is set, then they are relative to absolute North (earth frame).
+/// If neither of these flags are set, then (for backwards compatibility) it holds:
+/// If the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set, then they are relative to absolute North (earth frame),
+/// else they are relative to the vehicle heading (vehicle frame).
+/// Setting both GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME and GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME is not allowed.
+/// These rules are to ensure backwards compatibility.
+/// New implementations should always set either GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME or GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME.
 ///
 /// GIMBAL_DEVICE_SET_ATTITUDE
 class GimbalDeviceSetAttitude implements MavlinkMessage {
@@ -31096,14 +31890,14 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set, set all fields to NaN if only angular velocity should be used)
+  /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description. Set fields to NaN to be ignored.
   ///
   /// MAVLink type: float[4]
   ///
   /// q
   final List<float> q;
 
-  /// X component of angular velocity, positive is rolling to the right, NaN to be ignored.
+  /// X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN to be ignored.
   ///
   /// MAVLink type: float
   ///
@@ -31112,7 +31906,7 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   /// angular_velocity_x
   final float angularVelocityX;
 
-  /// Y component of angular velocity, positive is pitching up, NaN to be ignored.
+  /// Y component of angular velocity (positive: pitching up). The frame is described in the message description. NaN to be ignored.
   ///
   /// MAVLink type: float
   ///
@@ -31121,7 +31915,7 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   /// angular_velocity_y
   final float angularVelocityY;
 
-  /// Z component of angular velocity, positive is yawing to the right, NaN to be ignored.
+  /// Z component of angular velocity (positive: yawing to the right). The frame is described in the message description. NaN to be ignored.
   ///
   /// MAVLink type: float
   ///
@@ -31202,7 +31996,21 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   }
 }
 
-/// Message reporting the status of a gimbal device. This message should be broadcasted by a gimbal device component. The angles encoded in the quaternion are relative to absolute North if the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set (roll: positive is rolling to the right, pitch: positive is pitching up, yaw is turn to the right) or relative to the vehicle heading if the flag is not set. This message should be broadcast at a low regular rate (e.g. 10Hz).
+/// Message reporting the status of a gimbal device.
+/// This message should be broadcast by a gimbal device component at a low regular rate (e.g. 5 Hz).
+/// For the angles encoded in the quaternion and the angular velocities holds:
+/// If the flag GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME is set, then they are relative to the vehicle heading (vehicle frame).
+/// If the flag GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME is set, then they are relative to absolute North (earth frame).
+/// If neither of these flags are set, then (for backwards compatibility) it holds:
+/// If the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set, then they are relative to absolute North (earth frame),
+/// else they are relative to the vehicle heading (vehicle frame).
+/// Other conditions of the flags are not allowed.
+/// The quaternion and angular velocities in the other frame can be calculated from delta_yaw and delta_yaw_velocity as
+/// q_earth = q_delta_yaw * q_vehicle and w_earth = w_delta_yaw_velocity + w_vehicle (if not NaN).
+/// If neither the GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME nor the GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME flag is set,
+/// then (for backwards compatibility) the data in the delta_yaw and delta_yaw_velocity fields are to be ignored.
+/// New implementations should always set either GIMBAL_DEVICE_FLAGS_YAW_IN_VEHICLE_FRAME or GIMBAL_DEVICE_FLAGS_YAW_IN_EARTH_FRAME,
+/// and always should set delta_yaw and delta_yaw_velocity either to the proper value or NaN.
 ///
 /// GIMBAL_DEVICE_ATTITUDE_STATUS
 class GimbalDeviceAttitudeStatus implements MavlinkMessage {
@@ -31210,7 +32018,7 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 137;
 
-  static const int mavlinkEncodedLength = 40;
+  static const int mavlinkEncodedLength = 49;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -31227,14 +32035,14 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   /// time_boot_ms
   final uint32_t timeBootMs;
 
-  /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set)
+  /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description.
   ///
   /// MAVLink type: float[4]
   ///
   /// q
   final List<float> q;
 
-  /// X component of angular velocity (NaN if unknown)
+  /// X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -31243,7 +32051,7 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   /// angular_velocity_x
   final float angularVelocityX;
 
-  /// Y component of angular velocity (NaN if unknown)
+  /// Y component of angular velocity (positive: pitching up). The frame is described in the message description. NaN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -31252,7 +32060,7 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   /// angular_velocity_y
   final float angularVelocityY;
 
-  /// Z component of angular velocity (NaN if unknown)
+  /// Z component of angular velocity (positive: yawing to the right). The frame is described in the message description. NaN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -31293,6 +32101,37 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
 
+  /// Yaw angle relating the quaternions in earth and body frames (see message description). NaN if unknown.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// delta_yaw
+  final float deltaYaw;
+
+  /// Yaw angular velocity relating the angular velocities in earth and body frames (see message description). NaN if unknown.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad/s
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// delta_yaw_velocity
+  final float deltaYawVelocity;
+
+  /// This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// gimbal_device_id
+  final uint8_t gimbalDeviceId;
+
   GimbalDeviceAttitudeStatus({
     required this.timeBootMs,
     required this.q,
@@ -31303,6 +32142,9 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
     required this.flags,
     required this.targetSystem,
     required this.targetComponent,
+    required this.deltaYaw,
+    required this.deltaYawVelocity,
+    required this.gimbalDeviceId,
   });
 
   factory GimbalDeviceAttitudeStatus.parse(ByteData data_) {
@@ -31321,6 +32163,9 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
     var flags = data_.getUint16(36, Endian.little);
     var targetSystem = data_.getUint8(38);
     var targetComponent = data_.getUint8(39);
+    var deltaYaw = data_.getFloat32(40, Endian.little);
+    var deltaYawVelocity = data_.getFloat32(44, Endian.little);
+    var gimbalDeviceId = data_.getUint8(48);
 
     return GimbalDeviceAttitudeStatus(
         timeBootMs: timeBootMs,
@@ -31331,7 +32176,10 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
         failureFlags: failureFlags,
         flags: flags,
         targetSystem: targetSystem,
-        targetComponent: targetComponent);
+        targetComponent: targetComponent,
+        deltaYaw: deltaYaw,
+        deltaYawVelocity: deltaYawVelocity,
+        gimbalDeviceId: gimbalDeviceId);
   }
 
   @override
@@ -31346,11 +32194,14 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
     data_.setUint16(36, flags, Endian.little);
     data_.setUint8(38, targetSystem);
     data_.setUint8(39, targetComponent);
+    data_.setFloat32(40, deltaYaw, Endian.little);
+    data_.setFloat32(44, deltaYawVelocity, Endian.little);
+    data_.setUint8(48, gimbalDeviceId);
     return data_;
   }
 }
 
-/// Low level message containing autopilot state relevant for a gimbal device. This message is to be sent from the gimbal manager to the gimbal device component. The data of this message server for the gimbal's estimator corrections in particular horizon compensation, as well as the autopilot's control intention e.g. feed forward angular control in z-axis.
+/// Low level message containing autopilot state relevant for a gimbal device. This message is to be sent from the autopilot to the gimbal device component. The data of this message are for the gimbal device's estimator corrections, in particular horizon compensation, as well as indicates autopilot control intentions, e.g. feed forward angular control in the z-axis.
 ///
 /// AUTOPILOT_STATE_FOR_GIMBAL_DEVICE
 class AutopilotStateForGimbalDevice implements MavlinkMessage {
@@ -31358,7 +32209,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 210;
 
-  static const int mavlinkEncodedLength = 53;
+  static const int mavlinkEncodedLength = 57;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -31382,7 +32233,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// q
   final List<float> q;
 
-  /// Estimated delay of the attitude data.
+  /// Estimated delay of the attitude data. 0 if unknown.
   ///
   /// MAVLink type: uint32_t
   ///
@@ -31391,7 +32242,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// q_estimated_delay_us
   final uint32_t qEstimatedDelayUs;
 
-  /// X Speed in NED (North, East, Down).
+  /// X Speed in NED (North, East, Down). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -31400,7 +32251,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// vx
   final float vx;
 
-  /// Y Speed in NED (North, East, Down).
+  /// Y Speed in NED (North, East, Down). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -31409,7 +32260,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// vy
   final float vy;
 
-  /// Z Speed in NED (North, East, Down).
+  /// Z Speed in NED (North, East, Down). NAN if unknown.
   ///
   /// MAVLink type: float
   ///
@@ -31418,7 +32269,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// vz
   final float vz;
 
-  /// Estimated delay of the speed data.
+  /// Estimated delay of the speed data. 0 if unknown.
   ///
   /// MAVLink type: uint32_t
   ///
@@ -31427,7 +32278,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// v_estimated_delay_us
   final uint32_t vEstimatedDelayUs;
 
-  /// Feed forward Z component of angular velocity, positive is yawing to the right, NaN to be ignored. This is to indicate if the autopilot is actively yawing.
+  /// Feed forward Z component of angular velocity (positive: yawing to the right). NaN to be ignored. This is to indicate if the autopilot is actively yawing.
   ///
   /// MAVLink type: float
   ///
@@ -31468,6 +32319,17 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// landed_state
   final MavLandedState landedState;
 
+  /// Z component of angular velocity in NED (North, East, Down). NaN if unknown.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad/s
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// angular_velocity_z
+  final float angularVelocityZ;
+
   AutopilotStateForGimbalDevice({
     required this.timeBootUs,
     required this.q,
@@ -31481,6 +32343,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
     required this.targetSystem,
     required this.targetComponent,
     required this.landedState,
+    required this.angularVelocityZ,
   });
 
   factory AutopilotStateForGimbalDevice.parse(ByteData data_) {
@@ -31503,6 +32366,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
     var targetSystem = data_.getUint8(50);
     var targetComponent = data_.getUint8(51);
     var landedState = data_.getUint8(52);
+    var angularVelocityZ = data_.getFloat32(53, Endian.little);
 
     return AutopilotStateForGimbalDevice(
         timeBootUs: timeBootUs,
@@ -31516,7 +32380,8 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
         estimatorStatus: estimatorStatus,
         targetSystem: targetSystem,
         targetComponent: targetComponent,
-        landedState: landedState);
+        landedState: landedState,
+        angularVelocityZ: angularVelocityZ);
   }
 
   @override
@@ -31534,11 +32399,12 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
     data_.setUint8(50, targetSystem);
     data_.setUint8(51, targetComponent);
     data_.setUint8(52, landedState);
+    data_.setFloat32(53, angularVelocityZ, Endian.little);
     return data_;
   }
 }
 
-/// High level message to control a gimbal's pitch and yaw angles. This message is to be sent to the gimbal manager (e.g. from a ground station). Angles and rates can be set to NaN according to use case.
+/// Set gimbal manager pitch and yaw angles (high rate message). This message is to be sent to the gimbal manager (e.g. from a ground station) and will be ignored by gimbal devices. Angles and rates can be set to NaN according to use case. Use MAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW for low-rate adjustments that require confirmation.
 ///
 /// GIMBAL_MANAGER_SET_PITCHYAW
 class GimbalManagerSetPitchyaw implements MavlinkMessage {
@@ -33202,7 +34068,7 @@ class Odometry implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 91;
 
-  static const int mavlinkEncodedLength = 232;
+  static const int mavlinkEncodedLength = 233;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -33359,6 +34225,17 @@ class Odometry implements MavlinkMessage {
   /// estimator_type
   final MavEstimatorType estimatorType;
 
+  /// Optional odometry quality metric as a percentage. -1 = odometry has failed, 0 = unknown/unset quality, 1 = worst quality, 100 = best quality
+  ///
+  /// MAVLink type: int8_t
+  ///
+  /// units: %
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// quality
+  final int8_t quality;
+
   Odometry({
     required this.timeUsec,
     required this.x,
@@ -33377,6 +34254,7 @@ class Odometry implements MavlinkMessage {
     required this.childFrameId,
     required this.resetCounter,
     required this.estimatorType,
+    required this.quality,
   });
 
   factory Odometry.parse(ByteData data_) {
@@ -33402,6 +34280,7 @@ class Odometry implements MavlinkMessage {
     var childFrameId = data_.getUint8(229);
     var resetCounter = data_.getUint8(230);
     var estimatorType = data_.getUint8(231);
+    var quality = data_.getInt8(232);
 
     return Odometry(
         timeUsec: timeUsec,
@@ -33420,7 +34299,8 @@ class Odometry implements MavlinkMessage {
         frameId: frameId,
         childFrameId: childFrameId,
         resetCounter: resetCounter,
-        estimatorType: estimatorType);
+        estimatorType: estimatorType,
+        quality: quality);
   }
 
   @override
@@ -33443,6 +34323,7 @@ class Odometry implements MavlinkMessage {
     data_.setUint8(229, childFrameId);
     data_.setUint8(230, resetCounter);
     data_.setUint8(231, estimatorType);
+    data_.setInt8(232, quality);
     return data_;
   }
 }
@@ -33838,7 +34719,7 @@ class CellularStatus implements MavlinkMessage {
   /// status
   final CellularStatusFlag status;
 
-  /// Failure reason when status in in CELLUAR_STATUS_FAILED
+  /// Failure reason when status in in CELLULAR_STATUS_FLAG_FAILED
   ///
   /// MAVLink type: uint8_t
   ///
@@ -34679,15 +35560,19 @@ class OrbitExecutionStatus implements MavlinkMessage {
   }
 }
 
-/// Smart Battery information (static/infrequent update). Use for updates from: smart battery to flight stack, flight stack to GCS. Use BATTERY_STATUS for smart battery frequent updates.
 ///
-/// SMART_BATTERY_INFO
-class SmartBatteryInfo implements MavlinkMessage {
+/// Battery information that is static, or requires infrequent update.
+/// This message should requested using MAV_CMD_REQUEST_MESSAGE and/or streamed at very low rate.
+/// BATTERY_STATUS_V2 is used for higher-rate battery status information.
+///
+///
+/// BATTERY_INFO
+class BatteryInfo implements MavlinkMessage {
   static const int _mavlinkMessageId = 370;
 
-  static const int _mavlinkCrcExtra = 75;
+  static const int _mavlinkCrcExtra = 26;
 
-  static const int mavlinkEncodedLength = 109;
+  static const int mavlinkEncodedLength = 140;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -34695,25 +35580,97 @@ class SmartBatteryInfo implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// Capacity when full according to manufacturer, -1: field not provided.
+  /// Minimum per-cell voltage when discharging. 0: field not provided.
   ///
-  /// MAVLink type: int32_t
+  /// MAVLink type: float
   ///
-  /// units: mAh
+  /// units: V
   ///
-  /// capacity_full_specification
-  final int32_t capacityFullSpecification;
+  /// discharge_minimum_voltage
+  final float dischargeMinimumVoltage;
 
-  /// Capacity when full (accounting for battery degradation), -1: field not provided.
+  /// Minimum per-cell voltage when charging. 0: field not provided.
   ///
-  /// MAVLink type: int32_t
+  /// MAVLink type: float
   ///
-  /// units: mAh
+  /// units: V
   ///
-  /// capacity_full
-  final int32_t capacityFull;
+  /// charging_minimum_voltage
+  final float chargingMinimumVoltage;
 
-  /// Charge/discharge cycle count. UINT16_MAX: field not provided.
+  /// Minimum per-cell voltage when resting. 0: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: V
+  ///
+  /// resting_minimum_voltage
+  final float restingMinimumVoltage;
+
+  /// Maximum per-cell voltage when charged. 0: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: V
+  ///
+  /// charging_maximum_voltage
+  final float chargingMaximumVoltage;
+
+  /// Maximum pack continuous charge current. 0: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: A
+  ///
+  /// charging_maximum_current
+  final float chargingMaximumCurrent;
+
+  /// Battery nominal voltage. Used for conversion between Wh and Ah. 0: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: V
+  ///
+  /// nominal_voltage
+  final float nominalVoltage;
+
+  /// Maximum pack discharge current. 0: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: A
+  ///
+  /// discharge_maximum_current
+  final float dischargeMaximumCurrent;
+
+  /// Maximum pack discharge burst current. 0: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: A
+  ///
+  /// discharge_maximum_burst_current
+  final float dischargeMaximumBurstCurrent;
+
+  /// Fully charged design capacity. 0: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: Ah
+  ///
+  /// design_capacity
+  final float designCapacity;
+
+  /// Predicted battery capacity when fully charged (accounting for battery degradation). NAN: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: Ah
+  ///
+  /// full_charge_capacity
+  final float fullChargeCapacity;
+
+  /// Lifetime count of the number of charge/discharge cycles (https://en.wikipedia.org/wiki/Charge_cycle). UINT16_MAX: field not provided.
   ///
   /// MAVLink type: uint16_t
   ///
@@ -34729,33 +35686,6 @@ class SmartBatteryInfo implements MavlinkMessage {
   /// weight
   final uint16_t weight;
 
-  /// Minimum per-cell voltage when discharging. If not supplied set to UINT16_MAX value.
-  ///
-  /// MAVLink type: uint16_t
-  ///
-  /// units: mV
-  ///
-  /// discharge_minimum_voltage
-  final uint16_t dischargeMinimumVoltage;
-
-  /// Minimum per-cell voltage when charging. If not supplied set to UINT16_MAX value.
-  ///
-  /// MAVLink type: uint16_t
-  ///
-  /// units: mV
-  ///
-  /// charging_minimum_voltage
-  final uint16_t chargingMinimumVoltage;
-
-  /// Minimum per-cell voltage when resting. If not supplied set to UINT16_MAX value.
-  ///
-  /// MAVLink type: uint16_t
-  ///
-  /// units: mV
-  ///
-  /// resting_minimum_voltage
-  final uint16_t restingMinimumVoltage;
-
   /// Battery ID
   ///
   /// MAVLink type: uint8_t
@@ -34763,7 +35693,7 @@ class SmartBatteryInfo implements MavlinkMessage {
   /// id
   final uint8_t id;
 
-  /// Function of the battery
+  /// Function of the battery.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -34772,7 +35702,7 @@ class SmartBatteryInfo implements MavlinkMessage {
   /// battery_function
   final MavBatteryFunction batteryFunction;
 
-  /// Type (chemistry) of the battery
+  /// Type (chemistry) of the battery.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -34781,155 +35711,139 @@ class SmartBatteryInfo implements MavlinkMessage {
   /// type
   final MavBatteryType type;
 
-  /// Serial number in ASCII characters, 0 terminated. All 0: field not provided.
+  /// State of Health (SOH) estimate. Typically 100% at the time of manufacture and will decrease over time and use. -1: field not provided.
   ///
-  /// MAVLink type: char[16]
+  /// MAVLink type: uint8_t
   ///
-  /// serial_number
-  final List<char> serialNumber;
-
-  /// Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.
+  /// units: %
   ///
-  /// MAVLink type: char[50]
-  ///
-  /// device_name
-  final List<char> deviceName;
-
-  /// Maximum per-cell voltage when charged. 0: field not provided.
-  ///
-  /// MAVLink type: uint16_t
-  ///
-  /// units: mV
-  ///
-  /// Extensions field for MAVLink 2.
-  ///
-  /// charging_maximum_voltage
-  final uint16_t chargingMaximumVoltage;
+  /// state_of_health
+  final uint8_t stateOfHealth;
 
   /// Number of battery cells in series. 0: field not provided.
   ///
   /// MAVLink type: uint8_t
   ///
-  /// Extensions field for MAVLink 2.
-  ///
   /// cells_in_series
   final uint8_t cellsInSeries;
 
-  /// Maximum pack discharge current. 0: field not provided.
+  /// Manufacture date (DDMMYYYY) in ASCII characters, 0 terminated. All 0: field not provided.
   ///
-  /// MAVLink type: uint32_t
-  ///
-  /// units: mA
-  ///
-  /// Extensions field for MAVLink 2.
-  ///
-  /// discharge_maximum_current
-  final uint32_t dischargeMaximumCurrent;
-
-  /// Maximum pack discharge burst current. 0: field not provided.
-  ///
-  /// MAVLink type: uint32_t
-  ///
-  /// units: mA
-  ///
-  /// Extensions field for MAVLink 2.
-  ///
-  /// discharge_maximum_burst_current
-  final uint32_t dischargeMaximumBurstCurrent;
-
-  /// Manufacture date (DD/MM/YYYY) in ASCII characters, 0 terminated. All 0: field not provided.
-  ///
-  /// MAVLink type: char[11]
-  ///
-  /// Extensions field for MAVLink 2.
+  /// MAVLink type: char[9]
   ///
   /// manufacture_date
   final List<char> manufactureDate;
 
-  SmartBatteryInfo({
-    required this.capacityFullSpecification,
-    required this.capacityFull,
-    required this.cycleCount,
-    required this.weight,
+  /// Serial number in ASCII characters, 0 terminated. All 0: field not provided.
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// serial_number
+  final List<char> serialNumber;
+
+  /// Battery device name. Formatted as manufacturer name then product name, separated with an underscore (in ASCII characters), 0 terminated. All 0: field not provided.
+  ///
+  /// MAVLink type: char[50]
+  ///
+  /// name
+  final List<char> name;
+
+  BatteryInfo({
     required this.dischargeMinimumVoltage,
     required this.chargingMinimumVoltage,
     required this.restingMinimumVoltage,
+    required this.chargingMaximumVoltage,
+    required this.chargingMaximumCurrent,
+    required this.nominalVoltage,
+    required this.dischargeMaximumCurrent,
+    required this.dischargeMaximumBurstCurrent,
+    required this.designCapacity,
+    required this.fullChargeCapacity,
+    required this.cycleCount,
+    required this.weight,
     required this.id,
     required this.batteryFunction,
     required this.type,
-    required this.serialNumber,
-    required this.deviceName,
-    required this.chargingMaximumVoltage,
+    required this.stateOfHealth,
     required this.cellsInSeries,
-    required this.dischargeMaximumCurrent,
-    required this.dischargeMaximumBurstCurrent,
     required this.manufactureDate,
+    required this.serialNumber,
+    required this.name,
   });
 
-  factory SmartBatteryInfo.parse(ByteData data_) {
-    if (data_.lengthInBytes < SmartBatteryInfo.mavlinkEncodedLength) {
-      var len = SmartBatteryInfo.mavlinkEncodedLength - data_.lengthInBytes;
+  factory BatteryInfo.parse(ByteData data_) {
+    if (data_.lengthInBytes < BatteryInfo.mavlinkEncodedLength) {
+      var len = BatteryInfo.mavlinkEncodedLength - data_.lengthInBytes;
       var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var capacityFullSpecification = data_.getInt32(0, Endian.little);
-    var capacityFull = data_.getInt32(4, Endian.little);
-    var cycleCount = data_.getUint16(8, Endian.little);
-    var weight = data_.getUint16(10, Endian.little);
-    var dischargeMinimumVoltage = data_.getUint16(12, Endian.little);
-    var chargingMinimumVoltage = data_.getUint16(14, Endian.little);
-    var restingMinimumVoltage = data_.getUint16(16, Endian.little);
-    var id = data_.getUint8(18);
-    var batteryFunction = data_.getUint8(19);
-    var type = data_.getUint8(20);
-    var serialNumber = MavlinkMessage.asInt8List(data_, 21, 16);
-    var deviceName = MavlinkMessage.asInt8List(data_, 37, 50);
-    var chargingMaximumVoltage = data_.getUint16(87, Endian.little);
-    var cellsInSeries = data_.getUint8(89);
-    var dischargeMaximumCurrent = data_.getUint32(90, Endian.little);
-    var dischargeMaximumBurstCurrent = data_.getUint32(94, Endian.little);
-    var manufactureDate = MavlinkMessage.asInt8List(data_, 98, 11);
+    var dischargeMinimumVoltage = data_.getFloat32(0, Endian.little);
+    var chargingMinimumVoltage = data_.getFloat32(4, Endian.little);
+    var restingMinimumVoltage = data_.getFloat32(8, Endian.little);
+    var chargingMaximumVoltage = data_.getFloat32(12, Endian.little);
+    var chargingMaximumCurrent = data_.getFloat32(16, Endian.little);
+    var nominalVoltage = data_.getFloat32(20, Endian.little);
+    var dischargeMaximumCurrent = data_.getFloat32(24, Endian.little);
+    var dischargeMaximumBurstCurrent = data_.getFloat32(28, Endian.little);
+    var designCapacity = data_.getFloat32(32, Endian.little);
+    var fullChargeCapacity = data_.getFloat32(36, Endian.little);
+    var cycleCount = data_.getUint16(40, Endian.little);
+    var weight = data_.getUint16(42, Endian.little);
+    var id = data_.getUint8(44);
+    var batteryFunction = data_.getUint8(45);
+    var type = data_.getUint8(46);
+    var stateOfHealth = data_.getUint8(47);
+    var cellsInSeries = data_.getUint8(48);
+    var manufactureDate = MavlinkMessage.asInt8List(data_, 49, 9);
+    var serialNumber = MavlinkMessage.asInt8List(data_, 58, 32);
+    var name = MavlinkMessage.asInt8List(data_, 90, 50);
 
-    return SmartBatteryInfo(
-        capacityFullSpecification: capacityFullSpecification,
-        capacityFull: capacityFull,
-        cycleCount: cycleCount,
-        weight: weight,
+    return BatteryInfo(
         dischargeMinimumVoltage: dischargeMinimumVoltage,
         chargingMinimumVoltage: chargingMinimumVoltage,
         restingMinimumVoltage: restingMinimumVoltage,
+        chargingMaximumVoltage: chargingMaximumVoltage,
+        chargingMaximumCurrent: chargingMaximumCurrent,
+        nominalVoltage: nominalVoltage,
+        dischargeMaximumCurrent: dischargeMaximumCurrent,
+        dischargeMaximumBurstCurrent: dischargeMaximumBurstCurrent,
+        designCapacity: designCapacity,
+        fullChargeCapacity: fullChargeCapacity,
+        cycleCount: cycleCount,
+        weight: weight,
         id: id,
         batteryFunction: batteryFunction,
         type: type,
-        serialNumber: serialNumber,
-        deviceName: deviceName,
-        chargingMaximumVoltage: chargingMaximumVoltage,
+        stateOfHealth: stateOfHealth,
         cellsInSeries: cellsInSeries,
-        dischargeMaximumCurrent: dischargeMaximumCurrent,
-        dischargeMaximumBurstCurrent: dischargeMaximumBurstCurrent,
-        manufactureDate: manufactureDate);
+        manufactureDate: manufactureDate,
+        serialNumber: serialNumber,
+        name: name);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    data_.setInt32(0, capacityFullSpecification, Endian.little);
-    data_.setInt32(4, capacityFull, Endian.little);
-    data_.setUint16(8, cycleCount, Endian.little);
-    data_.setUint16(10, weight, Endian.little);
-    data_.setUint16(12, dischargeMinimumVoltage, Endian.little);
-    data_.setUint16(14, chargingMinimumVoltage, Endian.little);
-    data_.setUint16(16, restingMinimumVoltage, Endian.little);
-    data_.setUint8(18, id);
-    data_.setUint8(19, batteryFunction);
-    data_.setUint8(20, type);
-    MavlinkMessage.setInt8List(data_, 21, serialNumber);
-    MavlinkMessage.setInt8List(data_, 37, deviceName);
-    data_.setUint16(87, chargingMaximumVoltage, Endian.little);
-    data_.setUint8(89, cellsInSeries);
-    data_.setUint32(90, dischargeMaximumCurrent, Endian.little);
-    data_.setUint32(94, dischargeMaximumBurstCurrent, Endian.little);
-    MavlinkMessage.setInt8List(data_, 98, manufactureDate);
+    data_.setFloat32(0, dischargeMinimumVoltage, Endian.little);
+    data_.setFloat32(4, chargingMinimumVoltage, Endian.little);
+    data_.setFloat32(8, restingMinimumVoltage, Endian.little);
+    data_.setFloat32(12, chargingMaximumVoltage, Endian.little);
+    data_.setFloat32(16, chargingMaximumCurrent, Endian.little);
+    data_.setFloat32(20, nominalVoltage, Endian.little);
+    data_.setFloat32(24, dischargeMaximumCurrent, Endian.little);
+    data_.setFloat32(28, dischargeMaximumBurstCurrent, Endian.little);
+    data_.setFloat32(32, designCapacity, Endian.little);
+    data_.setFloat32(36, fullChargeCapacity, Endian.little);
+    data_.setUint16(40, cycleCount, Endian.little);
+    data_.setUint16(42, weight, Endian.little);
+    data_.setUint8(44, id);
+    data_.setUint8(45, batteryFunction);
+    data_.setUint8(46, type);
+    data_.setUint8(47, stateOfHealth);
+    data_.setUint8(48, cellsInSeries);
+    MavlinkMessage.setInt8List(data_, 49, manufactureDate);
+    MavlinkMessage.setInt8List(data_, 58, serialNumber);
+    MavlinkMessage.setInt8List(data_, 90, name);
     return data_;
   }
 }
@@ -36537,7 +37451,7 @@ class CanfdFrame implements MavlinkMessage {
   }
 }
 
-/// Modify the filter of what CAN messages to forward over the mavlink. This can be used to make CAN forwarding work well on low bandwith links. The filtering is applied on bits 8 to 24 of the CAN id (2nd and 3rd bytes) which corresponds to the DroneCAN message ID for DroneCAN. Filters with more than 16 IDs can be constructed by sending multiple CAN_FILTER_MODIFY messages.
+/// Modify the filter of what CAN messages to forward over the mavlink. This can be used to make CAN forwarding work well on low bandwidth links. The filtering is applied on bits 8 to 24 of the CAN id (2nd and 3rd bytes) which corresponds to the DroneCAN message ID for DroneCAN. Filters with more than 16 IDs can be constructed by sending multiple CAN_FILTER_MODIFY messages.
 ///
 /// CAN_FILTER_MODIFY
 class CanFilterModify implements MavlinkMessage {
@@ -37503,7 +38417,7 @@ class OpenDroneIdSystem implements MavlinkMessage {
   /// operator_longitude
   final int32_t operatorLongitude;
 
-  /// Area Operations Ceiling relative to WGS84. If unknown: -1000 m.
+  /// Area Operations Ceiling relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.
   ///
   /// MAVLink type: float
   ///
@@ -37512,7 +38426,7 @@ class OpenDroneIdSystem implements MavlinkMessage {
   /// area_ceiling
   final float areaCeiling;
 
-  /// Area Operations Floor relative to WGS84. If unknown: -1000 m.
+  /// Area Operations Floor relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.
   ///
   /// MAVLink type: float
   ///
@@ -37539,14 +38453,14 @@ class OpenDroneIdSystem implements MavlinkMessage {
   /// timestamp
   final uint32_t timestamp;
 
-  /// Number of aircraft in the area, group or formation (default 1).
+  /// Number of aircraft in the area, group or formation (default 1). Used only for swarms/multiple UA.
   ///
   /// MAVLink type: uint16_t
   ///
   /// area_count
   final uint16_t areaCount;
 
-  /// Radius of the cylindrical area of the group or formation (default 0).
+  /// Radius of the cylindrical area of the group or formation (default 0). Used only for swarms/multiple UA.
   ///
   /// MAVLink type: uint16_t
   ///
@@ -37823,7 +38737,7 @@ class OpenDroneIdMessagePack implements MavlinkMessage {
   /// id_or_mac
   final List<int8_t> idOrMac;
 
-  /// This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specificed to have this length.
+  /// This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specified to have this length.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -37887,6 +38801,175 @@ class OpenDroneIdMessagePack implements MavlinkMessage {
     data_.setUint8(22, singleMessageSize);
     data_.setUint8(23, msgPackSize);
     MavlinkMessage.setUint8List(data_, 24, messages);
+    return data_;
+  }
+}
+
+/// Transmitter (remote ID system) is enabled and ready to start sending location and other required information. This is streamed by transmitter. A flight controller uses it as a condition to arm.
+///
+/// OPEN_DRONE_ID_ARM_STATUS
+class OpenDroneIdArmStatus implements MavlinkMessage {
+  static const int _mavlinkMessageId = 12918;
+
+  static const int _mavlinkCrcExtra = 139;
+
+  static const int mavlinkEncodedLength = 51;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Status level indicating if arming is allowed.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [MavOdidArmStatus]
+  ///
+  /// status
+  final MavOdidArmStatus status;
+
+  /// Text error message, should be empty if status is good to arm. Fill with nulls in unused portion.
+  ///
+  /// MAVLink type: char[50]
+  ///
+  /// error
+  final List<char> error;
+
+  OpenDroneIdArmStatus({
+    required this.status,
+    required this.error,
+  });
+
+  factory OpenDroneIdArmStatus.parse(ByteData data_) {
+    if (data_.lengthInBytes < OpenDroneIdArmStatus.mavlinkEncodedLength) {
+      var len = OpenDroneIdArmStatus.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var status = data_.getUint8(0);
+    var error = MavlinkMessage.asInt8List(data_, 1, 50);
+
+    return OpenDroneIdArmStatus(status: status, error: error);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, status);
+    MavlinkMessage.setInt8List(data_, 1, error);
+    return data_;
+  }
+}
+
+/// Update the data in the OPEN_DRONE_ID_SYSTEM message with new location information. This can be sent to update the location information for the operator when no other information in the SYSTEM message has changed. This message allows for efficient operation on radio links which have limited uplink bandwidth while meeting requirements for update frequency of the operator location.
+///
+/// OPEN_DRONE_ID_SYSTEM_UPDATE
+class OpenDroneIdSystemUpdate implements MavlinkMessage {
+  static const int _mavlinkMessageId = 12919;
+
+  static const int _mavlinkCrcExtra = 7;
+
+  static const int mavlinkEncodedLength = 18;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Latitude of the operator. If unknown: 0 (both Lat/Lon).
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// operator_latitude
+  final int32_t operatorLatitude;
+
+  /// Longitude of the operator. If unknown: 0 (both Lat/Lon).
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// operator_longitude
+  final int32_t operatorLongitude;
+
+  /// Geodetic altitude of the operator relative to WGS84. If unknown: -1000 m.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m
+  ///
+  /// operator_altitude_geo
+  final float operatorAltitudeGeo;
+
+  /// 32 bit Unix Timestamp in seconds since 00:00:00 01/01/2019.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: s
+  ///
+  /// timestamp
+  final uint32_t timestamp;
+
+  /// System ID (0 for broadcast).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Component ID (0 for broadcast).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  OpenDroneIdSystemUpdate({
+    required this.operatorLatitude,
+    required this.operatorLongitude,
+    required this.operatorAltitudeGeo,
+    required this.timestamp,
+    required this.targetSystem,
+    required this.targetComponent,
+  });
+
+  factory OpenDroneIdSystemUpdate.parse(ByteData data_) {
+    if (data_.lengthInBytes < OpenDroneIdSystemUpdate.mavlinkEncodedLength) {
+      var len =
+          OpenDroneIdSystemUpdate.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var operatorLatitude = data_.getInt32(0, Endian.little);
+    var operatorLongitude = data_.getInt32(4, Endian.little);
+    var operatorAltitudeGeo = data_.getFloat32(8, Endian.little);
+    var timestamp = data_.getUint32(12, Endian.little);
+    var targetSystem = data_.getUint8(16);
+    var targetComponent = data_.getUint8(17);
+
+    return OpenDroneIdSystemUpdate(
+        operatorLatitude: operatorLatitude,
+        operatorLongitude: operatorLongitude,
+        operatorAltitudeGeo: operatorAltitudeGeo,
+        timestamp: timestamp,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setInt32(0, operatorLatitude, Endian.little);
+    data_.setInt32(4, operatorLongitude, Endian.little);
+    data_.setFloat32(8, operatorAltitudeGeo, Endian.little);
+    data_.setUint32(12, timestamp, Endian.little);
+    data_.setUint8(16, targetSystem);
+    data_.setUint8(17, targetComponent);
     return data_;
   }
 }
@@ -38068,177 +39151,15 @@ class ParamAckTransaction implements MavlinkMessage {
   }
 }
 
-/// A broadcast message to notify any ground station or SDK if a mission, geofence or safe points have changed on the vehicle.
-///
-/// MISSION_CHANGED
-class MissionChanged implements MavlinkMessage {
-  static const int _mavlinkMessageId = 52;
-
-  static const int _mavlinkCrcExtra = 132;
-
-  static const int mavlinkEncodedLength = 7;
-
-  @override
-  int get mavlinkMessageId => _mavlinkMessageId;
-
-  @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
-
-  /// Start index for partial mission change (-1 for all items).
-  ///
-  /// MAVLink type: int16_t
-  ///
-  /// start_index
-  final int16_t startIndex;
-
-  /// End index of a partial mission change. -1 is a synonym for the last mission item (i.e. selects all items from start_index). Ignore field if start_index=-1.
-  ///
-  /// MAVLink type: int16_t
-  ///
-  /// end_index
-  final int16_t endIndex;
-
-  /// System ID of the author of the new mission.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// origin_sysid
-  final uint8_t originSysid;
-
-  /// Compnent ID of the author of the new mission.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [MavComponent]
-  ///
-  /// origin_compid
-  final MavComponent originCompid;
-
-  /// Mission type.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [MavMissionType]
-  ///
-  /// mission_type
-  final MavMissionType missionType;
-
-  MissionChanged({
-    required this.startIndex,
-    required this.endIndex,
-    required this.originSysid,
-    required this.originCompid,
-    required this.missionType,
-  });
-
-  factory MissionChanged.parse(ByteData data_) {
-    if (data_.lengthInBytes < MissionChanged.mavlinkEncodedLength) {
-      var len = MissionChanged.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
-      data_ = Uint8List.fromList(d).buffer.asByteData();
-    }
-    var startIndex = data_.getInt16(0, Endian.little);
-    var endIndex = data_.getInt16(2, Endian.little);
-    var originSysid = data_.getUint8(4);
-    var originCompid = data_.getUint8(5);
-    var missionType = data_.getUint8(6);
-
-    return MissionChanged(
-        startIndex: startIndex,
-        endIndex: endIndex,
-        originSysid: originSysid,
-        originCompid: originCompid,
-        missionType: missionType);
-  }
-
-  @override
-  ByteData serialize() {
-    var data_ = ByteData(mavlinkEncodedLength);
-    data_.setInt16(0, startIndex, Endian.little);
-    data_.setInt16(2, endIndex, Endian.little);
-    data_.setUint8(4, originSysid);
-    data_.setUint8(5, originCompid);
-    data_.setUint8(6, missionType);
-    return data_;
-  }
-}
-
-/// Checksum for the current mission, rally point or geofence plan, or for the "combined" plan (a GCS can use these checksums to determine if it has matching plans).
-/// This message must be broadcast with the appropriate checksum following any change to a mission, geofence or rally point definition
-/// (immediately after the MISSION_ACK that completes the upload sequence).
-/// It may also be requested using MAV_CMD_REQUEST_MESSAGE, where param 2 indicates the plan type for which the checksum is required.
-/// The checksum must be calculated on the autopilot, but may also be calculated by the GCS.
-/// The checksum uses the same CRC32 algorithm as MAVLink FTP (https://mavlink.io/en/services/ftp.html#crc32-implementation).
-/// The checksum for a mission, geofence or rally point definition is run over each item in the plan in seq order (excluding the home location if present in the plan), and covers the following fields (in order):
-/// frame, command, autocontinue, param1, param2, param3, param4, param5, param6, param7.
-/// The checksum for the whole plan (MAV_MISSION_TYPE_ALL) is calculated using the same approach, running over each sub-plan in the following order: mission, geofence then rally point.
-///
-///
-/// MISSION_CHECKSUM
-class MissionChecksum implements MavlinkMessage {
-  static const int _mavlinkMessageId = 53;
-
-  static const int _mavlinkCrcExtra = 3;
-
-  static const int mavlinkEncodedLength = 5;
-
-  @override
-  int get mavlinkMessageId => _mavlinkMessageId;
-
-  @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
-
-  /// CRC32 checksum of current plan for specified type.
-  ///
-  /// MAVLink type: uint32_t
-  ///
-  /// checksum
-  final uint32_t checksum;
-
-  /// Mission type.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [MavMissionType]
-  ///
-  /// mission_type
-  final MavMissionType missionType;
-
-  MissionChecksum({
-    required this.checksum,
-    required this.missionType,
-  });
-
-  factory MissionChecksum.parse(ByteData data_) {
-    if (data_.lengthInBytes < MissionChecksum.mavlinkEncodedLength) {
-      var len = MissionChecksum.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
-      data_ = Uint8List.fromList(d).buffer.asByteData();
-    }
-    var checksum = data_.getUint32(0, Endian.little);
-    var missionType = data_.getUint8(4);
-
-    return MissionChecksum(checksum: checksum, missionType: missionType);
-  }
-
-  @override
-  ByteData serialize() {
-    var data_ = ByteData(mavlinkEncodedLength);
-    data_.setUint32(0, checksum, Endian.little);
-    data_.setUint8(4, missionType);
-    return data_;
-  }
-}
-
 /// Airspeed information from a sensor.
 ///
 /// AIRSPEED
 class Airspeed implements MavlinkMessage {
   static const int _mavlinkMessageId = 295;
 
-  static const int _mavlinkCrcExtra = 41;
+  static const int _mavlinkCrcExtra = 234;
 
-  static const int mavlinkEncodedLength = 20;
+  static const int mavlinkEncodedLength = 12;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -38246,7 +39167,7 @@ class Airspeed implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// Calibrated airspeed (CAS) if available, otherwise indicated airspeed (IAS).
+  /// Calibrated airspeed (CAS).
   ///
   /// MAVLink type: float
   ///
@@ -38255,32 +39176,14 @@ class Airspeed implements MavlinkMessage {
   /// airspeed
   final float airspeed;
 
-  /// Differential pressure. NaN for value unknown/not supplied.
+  /// Raw differential pressure. NaN for value unknown/not supplied.
   ///
   /// MAVLink type: float
   ///
   /// units: hPa
   ///
-  /// press_diff
-  final float pressDiff;
-
-  /// Static pressure. NaN for value unknown/not supplied.
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: hPa
-  ///
-  /// press_static
-  final float pressStatic;
-
-  /// Error/accuracy. NaN for value unknown/not supplied.
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: m/s
-  ///
-  /// error
-  final float error;
+  /// raw_press
+  final float rawPress;
 
   /// Temperature. INT16_MAX for value unknown/not supplied.
   ///
@@ -38298,23 +39201,21 @@ class Airspeed implements MavlinkMessage {
   /// id
   final uint8_t id;
 
-  /// Airspeed sensor type. NaN for value unknown/not supplied. Used to estimate accuracy (i.e. as an alternative to using the error field).
+  /// Airspeed sensor flags.
   ///
   /// MAVLink type: uint8_t
   ///
-  /// enum: [AirspeedSensorType]
+  /// enum: [AirspeedSensorFlags]
   ///
-  /// type
-  final AirspeedSensorType type;
+  /// flags
+  final AirspeedSensorFlags flags;
 
   Airspeed({
     required this.airspeed,
-    required this.pressDiff,
-    required this.pressStatic,
-    required this.error,
+    required this.rawPress,
     required this.temperature,
     required this.id,
-    required this.type,
+    required this.flags,
   });
 
   factory Airspeed.parse(ByteData data_) {
@@ -38324,33 +39225,27 @@ class Airspeed implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var airspeed = data_.getFloat32(0, Endian.little);
-    var pressDiff = data_.getFloat32(4, Endian.little);
-    var pressStatic = data_.getFloat32(8, Endian.little);
-    var error = data_.getFloat32(12, Endian.little);
-    var temperature = data_.getInt16(16, Endian.little);
-    var id = data_.getUint8(18);
-    var type = data_.getUint8(19);
+    var rawPress = data_.getFloat32(4, Endian.little);
+    var temperature = data_.getInt16(8, Endian.little);
+    var id = data_.getUint8(10);
+    var flags = data_.getUint8(11);
 
     return Airspeed(
         airspeed: airspeed,
-        pressDiff: pressDiff,
-        pressStatic: pressStatic,
-        error: error,
+        rawPress: rawPress,
         temperature: temperature,
         id: id,
-        type: type);
+        flags: flags);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setFloat32(0, airspeed, Endian.little);
-    data_.setFloat32(4, pressDiff, Endian.little);
-    data_.setFloat32(8, pressStatic, Endian.little);
-    data_.setFloat32(12, error, Endian.little);
-    data_.setInt16(16, temperature, Endian.little);
-    data_.setUint8(18, id);
-    data_.setUint8(19, type);
+    data_.setFloat32(4, rawPress, Endian.little);
+    data_.setInt16(8, temperature, Endian.little);
+    data_.setUint8(10, id);
+    data_.setUint8(11, flags);
     return data_;
   }
 }
@@ -38448,6 +39343,181 @@ class WifiNetworkInfo implements MavlinkMessage {
     data_.setUint8(34, channelId);
     data_.setUint8(35, signalQuality);
     data_.setUint8(36, security);
+    return data_;
+  }
+}
+
+/// Set temporary maximum limits for horizontal speed, vertical speed and yaw rate.
+/// The consumer must stream the current limits in VELOCITY_LIMITS at 1 Hz or more (when limits are being set).
+/// The consumer should latch the limits until a new limit is received or the mode is changed.
+///
+///
+/// SET_VELOCITY_LIMITS
+class SetVelocityLimits implements MavlinkMessage {
+  static const int _mavlinkMessageId = 354;
+
+  static const int _mavlinkCrcExtra = 210;
+
+  static const int mavlinkEncodedLength = 14;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Limit for horizontal movement in MAV_FRAME_LOCAL_NED. NaN: Field not used (ignore)
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m/s
+  ///
+  /// horizontal_speed_limit
+  final float horizontalSpeedLimit;
+
+  /// Limit for vertical movement in MAV_FRAME_LOCAL_NED. NaN: Field not used (ignore)
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m/s
+  ///
+  /// vertical_speed_limit
+  final float verticalSpeedLimit;
+
+  /// Limit for vehicle turn rate around its yaw axis. NaN: Field not used (ignore)
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad/s
+  ///
+  /// yaw_rate_limit
+  final float yawRateLimit;
+
+  /// System ID (0 for broadcast).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Component ID (0 for broadcast).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  SetVelocityLimits({
+    required this.horizontalSpeedLimit,
+    required this.verticalSpeedLimit,
+    required this.yawRateLimit,
+    required this.targetSystem,
+    required this.targetComponent,
+  });
+
+  factory SetVelocityLimits.parse(ByteData data_) {
+    if (data_.lengthInBytes < SetVelocityLimits.mavlinkEncodedLength) {
+      var len = SetVelocityLimits.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var horizontalSpeedLimit = data_.getFloat32(0, Endian.little);
+    var verticalSpeedLimit = data_.getFloat32(4, Endian.little);
+    var yawRateLimit = data_.getFloat32(8, Endian.little);
+    var targetSystem = data_.getUint8(12);
+    var targetComponent = data_.getUint8(13);
+
+    return SetVelocityLimits(
+        horizontalSpeedLimit: horizontalSpeedLimit,
+        verticalSpeedLimit: verticalSpeedLimit,
+        yawRateLimit: yawRateLimit,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, horizontalSpeedLimit, Endian.little);
+    data_.setFloat32(4, verticalSpeedLimit, Endian.little);
+    data_.setFloat32(8, yawRateLimit, Endian.little);
+    data_.setUint8(12, targetSystem);
+    data_.setUint8(13, targetComponent);
+    return data_;
+  }
+}
+
+/// Current limits for horizontal speed, vertical speed and yaw rate, as set by SET_VELOCITY_LIMITS.
+///
+/// VELOCITY_LIMITS
+class VelocityLimits implements MavlinkMessage {
+  static const int _mavlinkMessageId = 355;
+
+  static const int _mavlinkCrcExtra = 6;
+
+  static const int mavlinkEncodedLength = 12;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Limit for horizontal movement in MAV_FRAME_LOCAL_NED. NaN: No limit applied
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m/s
+  ///
+  /// horizontal_speed_limit
+  final float horizontalSpeedLimit;
+
+  /// Limit for vertical movement in MAV_FRAME_LOCAL_NED. NaN: No limit applied
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m/s
+  ///
+  /// vertical_speed_limit
+  final float verticalSpeedLimit;
+
+  /// Limit for vehicle turn rate around its yaw axis. NaN: No limit applied
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad/s
+  ///
+  /// yaw_rate_limit
+  final float yawRateLimit;
+
+  VelocityLimits({
+    required this.horizontalSpeedLimit,
+    required this.verticalSpeedLimit,
+    required this.yawRateLimit,
+  });
+
+  factory VelocityLimits.parse(ByteData data_) {
+    if (data_.lengthInBytes < VelocityLimits.mavlinkEncodedLength) {
+      var len = VelocityLimits.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var horizontalSpeedLimit = data_.getFloat32(0, Endian.little);
+    var verticalSpeedLimit = data_.getFloat32(4, Endian.little);
+    var yawRateLimit = data_.getFloat32(8, Endian.little);
+
+    return VelocityLimits(
+        horizontalSpeedLimit: horizontalSpeedLimit,
+        verticalSpeedLimit: verticalSpeedLimit,
+        yawRateLimit: yawRateLimit);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, horizontalSpeedLimit, Endian.little);
+    data_.setFloat32(4, verticalSpeedLimit, Endian.little);
+    data_.setFloat32(8, yawRateLimit, Endian.little);
     return data_;
   }
 }
@@ -38592,15 +39662,158 @@ class FigureEightExecutionStatus implements MavlinkMessage {
   }
 }
 
-/// Basic component information data.
+/// Battery dynamic information.
+/// This should be streamed (nominally at 1Hz).
+/// Static/invariant battery information is sent in SMART_BATTERY_INFO.
+/// Note that smart batteries should set the MAV_BATTERY_STATUS_FLAGS_CAPACITY_RELATIVE_TO_FULL bit to indicate that supplied capacity values are relative to a battery that is known to be full.
+/// Power monitors would not set this bit, indicating that capacity_consumed is relative to drone power-on, and that other values are estimated based on the assumption that the battery was full on power-on.
+///
+///
+/// BATTERY_STATUS_V2
+class BatteryStatusV2 implements MavlinkMessage {
+  static const int _mavlinkMessageId = 369;
+
+  static const int _mavlinkCrcExtra = 151;
+
+  static const int mavlinkEncodedLength = 24;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Battery voltage (total). NaN: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: V
+  ///
+  /// voltage
+  final float voltage;
+
+  /// Battery current (through all cells/loads). Positive value when discharging and negative if charging. NaN: field not provided.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: A
+  ///
+  /// current
+  final float current;
+
+  /// Consumed charge. NaN: field not provided. This is either the consumption since power-on or since the battery was full, depending on the value of MAV_BATTERY_STATUS_FLAGS_CAPACITY_RELATIVE_TO_FULL.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: Ah
+  ///
+  /// capacity_consumed
+  final float capacityConsumed;
+
+  /// Remaining charge (until empty). UINT32_MAX: field not provided. Note: If MAV_BATTERY_STATUS_FLAGS_CAPACITY_RELATIVE_TO_FULL is unset, this value is based on the assumption the battery was full when the system was powered.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: Ah
+  ///
+  /// capacity_remaining
+  final float capacityRemaining;
+
+  /// Fault, health, readiness, and other status indications.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// enum: [MavBatteryStatusFlags]
+  ///
+  /// status_flags
+  final MavBatteryStatusFlags statusFlags;
+
+  /// Temperature of the whole battery pack (not internal electronics). INT16_MAX field not provided.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// units: cdegC
+  ///
+  /// temperature
+  final int16_t temperature;
+
+  /// Battery ID
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// id
+  final uint8_t id;
+
+  /// Remaining battery energy. Values: [0-100], UINT8_MAX: field not provided.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// units: %
+  ///
+  /// percent_remaining
+  final uint8_t percentRemaining;
+
+  BatteryStatusV2({
+    required this.voltage,
+    required this.current,
+    required this.capacityConsumed,
+    required this.capacityRemaining,
+    required this.statusFlags,
+    required this.temperature,
+    required this.id,
+    required this.percentRemaining,
+  });
+
+  factory BatteryStatusV2.parse(ByteData data_) {
+    if (data_.lengthInBytes < BatteryStatusV2.mavlinkEncodedLength) {
+      var len = BatteryStatusV2.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var voltage = data_.getFloat32(0, Endian.little);
+    var current = data_.getFloat32(4, Endian.little);
+    var capacityConsumed = data_.getFloat32(8, Endian.little);
+    var capacityRemaining = data_.getFloat32(12, Endian.little);
+    var statusFlags = data_.getUint32(16, Endian.little);
+    var temperature = data_.getInt16(20, Endian.little);
+    var id = data_.getUint8(22);
+    var percentRemaining = data_.getUint8(23);
+
+    return BatteryStatusV2(
+        voltage: voltage,
+        current: current,
+        capacityConsumed: capacityConsumed,
+        capacityRemaining: capacityRemaining,
+        statusFlags: statusFlags,
+        temperature: temperature,
+        id: id,
+        percentRemaining: percentRemaining);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, voltage, Endian.little);
+    data_.setFloat32(4, current, Endian.little);
+    data_.setFloat32(8, capacityConsumed, Endian.little);
+    data_.setFloat32(12, capacityRemaining, Endian.little);
+    data_.setUint32(16, statusFlags, Endian.little);
+    data_.setInt16(20, temperature, Endian.little);
+    data_.setUint8(22, id);
+    data_.setUint8(23, percentRemaining);
+    return data_;
+  }
+}
+
+/// Basic component information data. Should be requested using MAV_CMD_REQUEST_MESSAGE on startup, or when required.
 ///
 /// COMPONENT_INFORMATION_BASIC
 class ComponentInformationBasic implements MavlinkMessage {
   static const int _mavlinkMessageId = 396;
 
-  static const int _mavlinkCrcExtra = 122;
+  static const int _mavlinkCrcExtra = 50;
 
-  static const int mavlinkEncodedLength = 124;
+  static const int mavlinkEncodedLength = 160;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -38626,41 +39839,59 @@ class ComponentInformationBasic implements MavlinkMessage {
   /// time_boot_ms
   final uint32_t timeBootMs;
 
-  /// Name of the component vendor
+  /// Date of manufacture as a UNIX Epoch time (since 1.1.1970) in seconds.
   ///
-  /// MAVLink type: uint8_t[32]
+  /// MAVLink type: uint32_t
+  ///
+  /// units: s
+  ///
+  /// time_manufacture_s
+  final uint32_t timeManufactureS;
+
+  /// Name of the component vendor. Needs to be zero terminated. The field is optional and can be empty/all zeros.
+  ///
+  /// MAVLink type: char[32]
   ///
   /// vendor_name
-  final List<int8_t> vendorName;
+  final List<char> vendorName;
 
-  /// Name of the component model
+  /// Name of the component model. Needs to be zero terminated. The field is optional and can be empty/all zeros.
   ///
-  /// MAVLink type: uint8_t[32]
+  /// MAVLink type: char[32]
   ///
   /// model_name
-  final List<int8_t> modelName;
+  final List<char> modelName;
 
-  /// Sofware version. The version format can be custom, recommended is SEMVER 'major.minor.patch'.
+  /// Software version. The recommended format is SEMVER: 'major.minor.patch'  (any format may be used). The field must be zero terminated if it has a value. The field is optional and can be empty/all zeros.
   ///
   /// MAVLink type: char[24]
   ///
   /// software_version
   final List<char> softwareVersion;
 
-  /// Hardware version. The version format can be custom, recommended is SEMVER 'major.minor.patch'.
+  /// Hardware version. The recommended format is SEMVER: 'major.minor.patch'  (any format may be used). The field must be zero terminated if it has a value. The field is optional and can be empty/all zeros.
   ///
   /// MAVLink type: char[24]
   ///
   /// hardware_version
   final List<char> hardwareVersion;
 
+  /// Hardware serial number. The field must be zero terminated if it has a value. The field is optional and can be empty/all zeros.
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// serial_number
+  final List<char> serialNumber;
+
   ComponentInformationBasic({
     required this.capabilities,
     required this.timeBootMs,
+    required this.timeManufactureS,
     required this.vendorName,
     required this.modelName,
     required this.softwareVersion,
     required this.hardwareVersion,
+    required this.serialNumber,
   });
 
   factory ComponentInformationBasic.parse(ByteData data_) {
@@ -38672,18 +39903,22 @@ class ComponentInformationBasic implements MavlinkMessage {
     }
     var capabilities = data_.getUint64(0, Endian.little);
     var timeBootMs = data_.getUint32(8, Endian.little);
-    var vendorName = MavlinkMessage.asUint8List(data_, 12, 32);
-    var modelName = MavlinkMessage.asUint8List(data_, 44, 32);
-    var softwareVersion = MavlinkMessage.asInt8List(data_, 76, 24);
-    var hardwareVersion = MavlinkMessage.asInt8List(data_, 100, 24);
+    var timeManufactureS = data_.getUint32(12, Endian.little);
+    var vendorName = MavlinkMessage.asInt8List(data_, 16, 32);
+    var modelName = MavlinkMessage.asInt8List(data_, 48, 32);
+    var softwareVersion = MavlinkMessage.asInt8List(data_, 80, 24);
+    var hardwareVersion = MavlinkMessage.asInt8List(data_, 104, 24);
+    var serialNumber = MavlinkMessage.asInt8List(data_, 128, 32);
 
     return ComponentInformationBasic(
         capabilities: capabilities,
         timeBootMs: timeBootMs,
+        timeManufactureS: timeManufactureS,
         vendorName: vendorName,
         modelName: modelName,
         softwareVersion: softwareVersion,
-        hardwareVersion: hardwareVersion);
+        hardwareVersion: hardwareVersion,
+        serialNumber: serialNumber);
   }
 
   @override
@@ -38691,10 +39926,12 @@ class ComponentInformationBasic implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint64(0, capabilities, Endian.little);
     data_.setUint32(8, timeBootMs, Endian.little);
-    MavlinkMessage.setUint8List(data_, 12, vendorName);
-    MavlinkMessage.setUint8List(data_, 44, modelName);
-    MavlinkMessage.setInt8List(data_, 76, softwareVersion);
-    MavlinkMessage.setInt8List(data_, 100, hardwareVersion);
+    data_.setUint32(12, timeManufactureS, Endian.little);
+    MavlinkMessage.setInt8List(data_, 16, vendorName);
+    MavlinkMessage.setInt8List(data_, 48, modelName);
+    MavlinkMessage.setInt8List(data_, 80, softwareVersion);
+    MavlinkMessage.setInt8List(data_, 104, hardwareVersion);
+    MavlinkMessage.setInt8List(data_, 128, serialNumber);
     return data_;
   }
 }
@@ -38850,9 +40087,9 @@ class GroupEnd implements MavlinkMessage {
 class AvailableModes implements MavlinkMessage {
   static const int _mavlinkMessageId = 435;
 
-  static const int _mavlinkCrcExtra = 94;
+  static const int _mavlinkCrcExtra = 134;
 
-  static const int mavlinkEncodedLength = 58;
+  static const int mavlinkEncodedLength = 46;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -38866,6 +40103,15 @@ class AvailableModes implements MavlinkMessage {
   ///
   /// custom_mode
   final uint32_t customMode;
+
+  /// Mode properties.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// enum: [MavModeProperty]
+  ///
+  /// properties
+  final MavModeProperty properties;
 
   /// The total number of available modes for the current vehicle type.
   ///
@@ -38890,28 +40136,19 @@ class AvailableModes implements MavlinkMessage {
   /// standard_mode
   final MavStandardMode standardMode;
 
-  /// System mode bitmap.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [MavModeFlag]
-  ///
-  /// base_mode
-  final MavModeFlag baseMode;
-
   /// Name of custom mode, with null termination character. Should be omitted for standard modes.
   ///
-  /// MAVLink type: char[50]
+  /// MAVLink type: char[35]
   ///
   /// mode_name
   final List<char> modeName;
 
   AvailableModes({
     required this.customMode,
+    required this.properties,
     required this.numberModes,
     required this.modeIndex,
     required this.standardMode,
-    required this.baseMode,
     required this.modeName,
   });
 
@@ -38922,18 +40159,18 @@ class AvailableModes implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var customMode = data_.getUint32(0, Endian.little);
-    var numberModes = data_.getUint8(4);
-    var modeIndex = data_.getUint8(5);
-    var standardMode = data_.getUint8(6);
-    var baseMode = data_.getUint8(7);
-    var modeName = MavlinkMessage.asInt8List(data_, 8, 50);
+    var properties = data_.getUint32(4, Endian.little);
+    var numberModes = data_.getUint8(8);
+    var modeIndex = data_.getUint8(9);
+    var standardMode = data_.getUint8(10);
+    var modeName = MavlinkMessage.asInt8List(data_, 11, 35);
 
     return AvailableModes(
         customMode: customMode,
+        properties: properties,
         numberModes: numberModes,
         modeIndex: modeIndex,
         standardMode: standardMode,
-        baseMode: baseMode,
         modeName: modeName);
   }
 
@@ -38941,11 +40178,11 @@ class AvailableModes implements MavlinkMessage {
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint32(0, customMode, Endian.little);
-    data_.setUint8(4, numberModes);
-    data_.setUint8(5, modeIndex);
-    data_.setUint8(6, standardMode);
-    data_.setUint8(7, baseMode);
-    MavlinkMessage.setInt8List(data_, 8, modeName);
+    data_.setUint32(4, properties, Endian.little);
+    data_.setUint8(8, numberModes);
+    data_.setUint8(9, modeIndex);
+    data_.setUint8(10, standardMode);
+    MavlinkMessage.setInt8List(data_, 11, modeName);
     return data_;
   }
 }
@@ -38959,9 +40196,9 @@ class AvailableModes implements MavlinkMessage {
 class CurrentMode implements MavlinkMessage {
   static const int _mavlinkMessageId = 436;
 
-  static const int _mavlinkCrcExtra = 151;
+  static const int _mavlinkCrcExtra = 193;
 
-  static const int mavlinkEncodedLength = 6;
+  static const int mavlinkEncodedLength = 9;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -38976,6 +40213,13 @@ class CurrentMode implements MavlinkMessage {
   /// custom_mode
   final uint32_t customMode;
 
+  /// The custom_mode of the mode that was last commanded by the user (for example, with MAV_CMD_DO_SET_STANDARD_MODE, MAV_CMD_DO_SET_MODE or via RC). This should usually be the same as custom_mode. It will be different if the vehicle is unable to enter the intended mode, or has left that mode due to a failsafe condition. 0 indicates the intended custom mode is unknown/not supplied
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// intended_custom_mode
+  final uint32_t intendedCustomMode;
+
   /// Standard mode.
   ///
   /// MAVLink type: uint8_t
@@ -38985,19 +40229,10 @@ class CurrentMode implements MavlinkMessage {
   /// standard_mode
   final MavStandardMode standardMode;
 
-  /// System mode bitmap.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [MavModeFlag]
-  ///
-  /// base_mode
-  final MavModeFlag baseMode;
-
   CurrentMode({
     required this.customMode,
+    required this.intendedCustomMode,
     required this.standardMode,
-    required this.baseMode,
   });
 
   factory CurrentMode.parse(ByteData data_) {
@@ -39007,19 +40242,445 @@ class CurrentMode implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var customMode = data_.getUint32(0, Endian.little);
-    var standardMode = data_.getUint8(4);
-    var baseMode = data_.getUint8(5);
+    var intendedCustomMode = data_.getUint32(4, Endian.little);
+    var standardMode = data_.getUint8(8);
 
     return CurrentMode(
-        customMode: customMode, standardMode: standardMode, baseMode: baseMode);
+        customMode: customMode,
+        intendedCustomMode: intendedCustomMode,
+        standardMode: standardMode);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint32(0, customMode, Endian.little);
-    data_.setUint8(4, standardMode);
-    data_.setUint8(5, baseMode);
+    data_.setUint32(4, intendedCustomMode, Endian.little);
+    data_.setUint8(8, standardMode);
+    return data_;
+  }
+}
+
+/// A change to the sequence number indicates that the set of AVAILABLE_MODES has changed.
+/// A receiver must re-request all available modes whenever the sequence number changes.
+/// This is only emitted after the first change and should then be broadcast at low rate (nominally 0.3 Hz) and on change.
+///
+///
+/// AVAILABLE_MODES_MONITOR
+class AvailableModesMonitor implements MavlinkMessage {
+  static const int _mavlinkMessageId = 437;
+
+  static const int _mavlinkCrcExtra = 30;
+
+  static const int mavlinkEncodedLength = 1;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Sequence number. The value iterates sequentially whenever AVAILABLE_MODES changes (e.g. support for a new mode is added/removed dynamically).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// seq
+  final uint8_t seq;
+
+  AvailableModesMonitor({
+    required this.seq,
+  });
+
+  factory AvailableModesMonitor.parse(ByteData data_) {
+    if (data_.lengthInBytes < AvailableModesMonitor.mavlinkEncodedLength) {
+      var len =
+          AvailableModesMonitor.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var seq = data_.getUint8(0);
+
+    return AvailableModesMonitor(seq: seq);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, seq);
+    return data_;
+  }
+}
+
+/// Current motion information from sensors on a target
+///
+/// TARGET_ABSOLUTE
+class TargetAbsolute implements MavlinkMessage {
+  static const int _mavlinkMessageId = 510;
+
+  static const int _mavlinkCrcExtra = 245;
+
+  static const int mavlinkEncodedLength = 106;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Timestamp (UNIX epoch time).
+  ///
+  /// MAVLink type: uint64_t
+  ///
+  /// units: us
+  ///
+  /// timestamp
+  final uint64_t timestamp;
+
+  /// Target's latitude (WGS84)
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// lat
+  final int32_t lat;
+
+  /// Target's longitude (WGS84)
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// lon
+  final int32_t lon;
+
+  /// Target's altitude (AMSL)
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m
+  ///
+  /// alt
+  final float alt;
+
+  /// Target's velocity in its body frame
+  ///
+  /// MAVLink type: float[3]
+  ///
+  /// units: m/s
+  ///
+  /// vel
+  final List<float> vel;
+
+  /// Linear target's acceleration in its body frame
+  ///
+  /// MAVLink type: float[3]
+  ///
+  /// units: m/s/s
+  ///
+  /// acc
+  final List<float> acc;
+
+  /// Quaternion of the target's orientation from its body frame to the vehicle's NED frame.
+  ///
+  /// MAVLink type: float[4]
+  ///
+  /// q_target
+  final List<float> qTarget;
+
+  /// Target's roll, pitch and yaw rates
+  ///
+  /// MAVLink type: float[3]
+  ///
+  /// units: rad/s
+  ///
+  /// rates
+  final List<float> rates;
+
+  /// Standard deviation of horizontal (eph) and vertical (epv) position errors
+  ///
+  /// MAVLink type: float[2]
+  ///
+  /// units: m
+  ///
+  /// position_std
+  final List<float> positionStd;
+
+  /// Standard deviation of the target's velocity in its body frame
+  ///
+  /// MAVLink type: float[3]
+  ///
+  /// units: m/s
+  ///
+  /// vel_std
+  final List<float> velStd;
+
+  /// Standard deviation of the target's acceleration in its body frame
+  ///
+  /// MAVLink type: float[3]
+  ///
+  /// units: m/s/s
+  ///
+  /// acc_std
+  final List<float> accStd;
+
+  /// The ID of the target if multiple targets are present
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// id
+  final uint8_t id;
+
+  /// Bitmap to indicate the sensor's reporting capabilities
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [TargetAbsoluteSensorCapabilityFlags]
+  ///
+  /// sensor_capabilities
+  final TargetAbsoluteSensorCapabilityFlags sensorCapabilities;
+
+  TargetAbsolute({
+    required this.timestamp,
+    required this.lat,
+    required this.lon,
+    required this.alt,
+    required this.vel,
+    required this.acc,
+    required this.qTarget,
+    required this.rates,
+    required this.positionStd,
+    required this.velStd,
+    required this.accStd,
+    required this.id,
+    required this.sensorCapabilities,
+  });
+
+  factory TargetAbsolute.parse(ByteData data_) {
+    if (data_.lengthInBytes < TargetAbsolute.mavlinkEncodedLength) {
+      var len = TargetAbsolute.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var timestamp = data_.getUint64(0, Endian.little);
+    var lat = data_.getInt32(8, Endian.little);
+    var lon = data_.getInt32(12, Endian.little);
+    var alt = data_.getFloat32(16, Endian.little);
+    var vel = MavlinkMessage.asFloat32List(data_, 20, 3);
+    var acc = MavlinkMessage.asFloat32List(data_, 32, 3);
+    var qTarget = MavlinkMessage.asFloat32List(data_, 44, 4);
+    var rates = MavlinkMessage.asFloat32List(data_, 60, 3);
+    var positionStd = MavlinkMessage.asFloat32List(data_, 72, 2);
+    var velStd = MavlinkMessage.asFloat32List(data_, 80, 3);
+    var accStd = MavlinkMessage.asFloat32List(data_, 92, 3);
+    var id = data_.getUint8(104);
+    var sensorCapabilities = data_.getUint8(105);
+
+    return TargetAbsolute(
+        timestamp: timestamp,
+        lat: lat,
+        lon: lon,
+        alt: alt,
+        vel: vel,
+        acc: acc,
+        qTarget: qTarget,
+        rates: rates,
+        positionStd: positionStd,
+        velStd: velStd,
+        accStd: accStd,
+        id: id,
+        sensorCapabilities: sensorCapabilities);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint64(0, timestamp, Endian.little);
+    data_.setInt32(8, lat, Endian.little);
+    data_.setInt32(12, lon, Endian.little);
+    data_.setFloat32(16, alt, Endian.little);
+    MavlinkMessage.setFloat32List(data_, 20, vel);
+    MavlinkMessage.setFloat32List(data_, 32, acc);
+    MavlinkMessage.setFloat32List(data_, 44, qTarget);
+    MavlinkMessage.setFloat32List(data_, 60, rates);
+    MavlinkMessage.setFloat32List(data_, 72, positionStd);
+    MavlinkMessage.setFloat32List(data_, 80, velStd);
+    MavlinkMessage.setFloat32List(data_, 92, accStd);
+    data_.setUint8(104, id);
+    data_.setUint8(105, sensorCapabilities);
+    return data_;
+  }
+}
+
+/// The location of a target measured by MAV's onboard sensors.
+///
+/// TARGET_RELATIVE
+class TargetRelative implements MavlinkMessage {
+  static const int _mavlinkMessageId = 511;
+
+  static const int _mavlinkCrcExtra = 28;
+
+  static const int mavlinkEncodedLength = 71;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Timestamp (UNIX epoch time)
+  ///
+  /// MAVLink type: uint64_t
+  ///
+  /// units: us
+  ///
+  /// timestamp
+  final uint64_t timestamp;
+
+  /// X Position of the target in TARGET_OBS_FRAME
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m
+  ///
+  /// x
+  final float x;
+
+  /// Y Position of the target in TARGET_OBS_FRAME
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m
+  ///
+  /// y
+  final float y;
+
+  /// Z Position of the target in TARGET_OBS_FRAME
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m
+  ///
+  /// z
+  final float z;
+
+  /// Standard deviation of the target's position in TARGET_OBS_FRAME
+  ///
+  /// MAVLink type: float[3]
+  ///
+  /// units: m
+  ///
+  /// pos_std
+  final List<float> posStd;
+
+  /// Standard deviation of the target's orientation in TARGET_OBS_FRAME
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// yaw_std
+  final float yawStd;
+
+  /// Quaternion of the target's orientation from the target's frame to the TARGET_OBS_FRAME (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
+  ///
+  /// MAVLink type: float[4]
+  ///
+  /// q_target
+  final List<float> qTarget;
+
+  /// Quaternion of the sensor's orientation from TARGET_OBS_FRAME to vehicle-carried NED. (Ignored if set to (0,0,0,0)) (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
+  ///
+  /// MAVLink type: float[4]
+  ///
+  /// q_sensor
+  final List<float> qSensor;
+
+  /// The ID of the target if multiple targets are present
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// id
+  final uint8_t id;
+
+  /// Coordinate frame used for following fields.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [TargetObsFrame]
+  ///
+  /// frame
+  final TargetObsFrame frame;
+
+  /// Type of target
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [LandingTargetType]
+  ///
+  /// type
+  final LandingTargetType type;
+
+  TargetRelative({
+    required this.timestamp,
+    required this.x,
+    required this.y,
+    required this.z,
+    required this.posStd,
+    required this.yawStd,
+    required this.qTarget,
+    required this.qSensor,
+    required this.id,
+    required this.frame,
+    required this.type,
+  });
+
+  factory TargetRelative.parse(ByteData data_) {
+    if (data_.lengthInBytes < TargetRelative.mavlinkEncodedLength) {
+      var len = TargetRelative.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var timestamp = data_.getUint64(0, Endian.little);
+    var x = data_.getFloat32(8, Endian.little);
+    var y = data_.getFloat32(12, Endian.little);
+    var z = data_.getFloat32(16, Endian.little);
+    var posStd = MavlinkMessage.asFloat32List(data_, 20, 3);
+    var yawStd = data_.getFloat32(32, Endian.little);
+    var qTarget = MavlinkMessage.asFloat32List(data_, 36, 4);
+    var qSensor = MavlinkMessage.asFloat32List(data_, 52, 4);
+    var id = data_.getUint8(68);
+    var frame = data_.getUint8(69);
+    var type = data_.getUint8(70);
+
+    return TargetRelative(
+        timestamp: timestamp,
+        x: x,
+        y: y,
+        z: z,
+        posStd: posStd,
+        yawStd: yawStd,
+        qTarget: qTarget,
+        qSensor: qSensor,
+        id: id,
+        frame: frame,
+        type: type);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint64(0, timestamp, Endian.little);
+    data_.setFloat32(8, x, Endian.little);
+    data_.setFloat32(12, y, Endian.little);
+    data_.setFloat32(16, z, Endian.little);
+    MavlinkMessage.setFloat32List(data_, 20, posStd);
+    data_.setFloat32(32, yawStd, Endian.little);
+    MavlinkMessage.setFloat32List(data_, 36, qTarget);
+    MavlinkMessage.setFloat32List(data_, 52, qSensor);
+    data_.setUint8(68, id);
+    data_.setUint8(69, frame);
+    data_.setUint8(70, type);
     return data_;
   }
 }
@@ -39418,7 +41079,7 @@ class MavlinkDialectDevelopment implements MavlinkDialect {
       case 360:
         return OrbitExecutionStatus.parse(data);
       case 370:
-        return SmartBatteryInfo.parse(data);
+        return BatteryInfo.parse(data);
       case 373:
         return GeneratorStatus.parse(data);
       case 375:
@@ -39469,20 +41130,26 @@ class MavlinkDialectDevelopment implements MavlinkDialect {
         return OpenDroneIdOperatorId.parse(data);
       case 12915:
         return OpenDroneIdMessagePack.parse(data);
+      case 12918:
+        return OpenDroneIdArmStatus.parse(data);
+      case 12919:
+        return OpenDroneIdSystemUpdate.parse(data);
       case 12920:
         return HygrometerSensor.parse(data);
       case 19:
         return ParamAckTransaction.parse(data);
-      case 52:
-        return MissionChanged.parse(data);
-      case 53:
-        return MissionChecksum.parse(data);
       case 295:
         return Airspeed.parse(data);
       case 298:
         return WifiNetworkInfo.parse(data);
+      case 354:
+        return SetVelocityLimits.parse(data);
+      case 355:
+        return VelocityLimits.parse(data);
       case 361:
         return FigureEightExecutionStatus.parse(data);
+      case 369:
+        return BatteryStatusV2.parse(data);
       case 396:
         return ComponentInformationBasic.parse(data);
       case 414:
@@ -39493,6 +41160,12 @@ class MavlinkDialectDevelopment implements MavlinkDialect {
         return AvailableModes.parse(data);
       case 436:
         return CurrentMode.parse(data);
+      case 437:
+        return AvailableModesMonitor.parse(data);
+      case 510:
+        return TargetAbsolute.parse(data);
+      case 511:
+        return TargetRelative.parse(data);
       default:
         return null;
     }
@@ -39886,7 +41559,7 @@ class MavlinkDialectDevelopment implements MavlinkDialect {
       case 360:
         return OrbitExecutionStatus._mavlinkCrcExtra;
       case 370:
-        return SmartBatteryInfo._mavlinkCrcExtra;
+        return BatteryInfo._mavlinkCrcExtra;
       case 373:
         return GeneratorStatus._mavlinkCrcExtra;
       case 375:
@@ -39937,20 +41610,26 @@ class MavlinkDialectDevelopment implements MavlinkDialect {
         return OpenDroneIdOperatorId._mavlinkCrcExtra;
       case 12915:
         return OpenDroneIdMessagePack._mavlinkCrcExtra;
+      case 12918:
+        return OpenDroneIdArmStatus._mavlinkCrcExtra;
+      case 12919:
+        return OpenDroneIdSystemUpdate._mavlinkCrcExtra;
       case 12920:
         return HygrometerSensor._mavlinkCrcExtra;
       case 19:
         return ParamAckTransaction._mavlinkCrcExtra;
-      case 52:
-        return MissionChanged._mavlinkCrcExtra;
-      case 53:
-        return MissionChecksum._mavlinkCrcExtra;
       case 295:
         return Airspeed._mavlinkCrcExtra;
       case 298:
         return WifiNetworkInfo._mavlinkCrcExtra;
+      case 354:
+        return SetVelocityLimits._mavlinkCrcExtra;
+      case 355:
+        return VelocityLimits._mavlinkCrcExtra;
       case 361:
         return FigureEightExecutionStatus._mavlinkCrcExtra;
+      case 369:
+        return BatteryStatusV2._mavlinkCrcExtra;
       case 396:
         return ComponentInformationBasic._mavlinkCrcExtra;
       case 414:
@@ -39961,6 +41640,12 @@ class MavlinkDialectDevelopment implements MavlinkDialect {
         return AvailableModes._mavlinkCrcExtra;
       case 436:
         return CurrentMode._mavlinkCrcExtra;
+      case 437:
+        return AvailableModesMonitor._mavlinkCrcExtra;
+      case 510:
+        return TargetAbsolute._mavlinkCrcExtra;
+      case 511:
+        return TargetRelative._mavlinkCrcExtra;
       default:
         return -1;
     }

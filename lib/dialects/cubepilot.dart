@@ -8162,75 +8162,6 @@ const SafetySwitchState safetySwitchStateSafe = 0;
 /// SAFETY_SWITCH_STATE_DANGEROUS
 const SafetySwitchState safetySwitchStateDangerous = 1;
 
-/// Available autopilot modes for ualberta uav
-///
-/// UALBERTA_AUTOPILOT_MODE
-typedef UalbertaAutopilotMode = int;
-
-/// Raw input pulse widts sent to output
-///
-/// MODE_MANUAL_DIRECT
-const UalbertaAutopilotMode modeManualDirect = 1;
-
-/// Inputs are normalized using calibration, the converted back to raw pulse widths for output
-///
-/// MODE_MANUAL_SCALED
-const UalbertaAutopilotMode modeManualScaled = 2;
-
-///
-/// MODE_AUTO_PID_ATT
-const UalbertaAutopilotMode modeAutoPidAtt = 3;
-
-///
-/// MODE_AUTO_PID_VEL
-const UalbertaAutopilotMode modeAutoPidVel = 4;
-
-///
-/// MODE_AUTO_PID_POS
-const UalbertaAutopilotMode modeAutoPidPos = 5;
-
-/// Navigation filter mode
-///
-/// UALBERTA_NAV_MODE
-typedef UalbertaNavMode = int;
-
-///
-/// NAV_AHRS_INIT
-const UalbertaNavMode navAhrsInit = 1;
-
-/// AHRS mode
-///
-/// NAV_AHRS
-const UalbertaNavMode navAhrs = 2;
-
-/// INS/GPS initialization mode
-///
-/// NAV_INS_GPS_INIT
-const UalbertaNavMode navInsGpsInit = 3;
-
-/// INS/GPS mode
-///
-/// NAV_INS_GPS
-const UalbertaNavMode navInsGps = 4;
-
-/// Mode currently commanded by pilot
-///
-/// UALBERTA_PILOT_MODE
-typedef UalbertaPilotMode = int;
-
-///
-/// PILOT_MANUAL
-const UalbertaPilotMode pilotManual = 1;
-
-///
-/// PILOT_AUTO
-const UalbertaPilotMode pilotAuto = 2;
-
-/// Rotomotion mode
-///
-/// PILOT_ROTO
-const UalbertaPilotMode pilotRoto = 3;
-
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 ///
 /// HEARTBEAT
@@ -38694,13 +38625,13 @@ class HygrometerSensor implements MavlinkMessage {
   }
 }
 
-/// Accelerometer and Gyro biases from the navigation filter
+/// Raw RC Data
 ///
-/// NAV_FILTER_BIAS
-class NavFilterBias implements MavlinkMessage {
-  static const int _mavlinkMessageId = 220;
+/// CUBEPILOT_RAW_RC
+class CubepilotRawRc implements MavlinkMessage {
+  static const int _mavlinkMessageId = 50001;
 
-  static const int _mavlinkCrcExtra = 34;
+  static const int _mavlinkCrcExtra = 246;
 
   static const int mavlinkEncodedLength = 32;
 
@@ -38710,112 +38641,45 @@ class NavFilterBias implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// Timestamp (microseconds)
   ///
-  /// MAVLink type: uint64_t
   ///
-  /// usec
-  final uint64_t usec;
+  /// MAVLink type: uint8_t[32]
+  ///
+  /// rc_raw
+  final List<int8_t> rcRaw;
 
-  /// b_f[0]
-  ///
-  /// MAVLink type: float
-  ///
-  /// accel_0
-  final float accel0;
-
-  /// b_f[1]
-  ///
-  /// MAVLink type: float
-  ///
-  /// accel_1
-  final float accel1;
-
-  /// b_f[2]
-  ///
-  /// MAVLink type: float
-  ///
-  /// accel_2
-  final float accel2;
-
-  /// b_f[0]
-  ///
-  /// MAVLink type: float
-  ///
-  /// gyro_0
-  final float gyro0;
-
-  /// b_f[1]
-  ///
-  /// MAVLink type: float
-  ///
-  /// gyro_1
-  final float gyro1;
-
-  /// b_f[2]
-  ///
-  /// MAVLink type: float
-  ///
-  /// gyro_2
-  final float gyro2;
-
-  NavFilterBias({
-    required this.usec,
-    required this.accel0,
-    required this.accel1,
-    required this.accel2,
-    required this.gyro0,
-    required this.gyro1,
-    required this.gyro2,
+  CubepilotRawRc({
+    required this.rcRaw,
   });
 
-  factory NavFilterBias.parse(ByteData data_) {
-    if (data_.lengthInBytes < NavFilterBias.mavlinkEncodedLength) {
-      var len = NavFilterBias.mavlinkEncodedLength - data_.lengthInBytes;
+  factory CubepilotRawRc.parse(ByteData data_) {
+    if (data_.lengthInBytes < CubepilotRawRc.mavlinkEncodedLength) {
+      var len = CubepilotRawRc.mavlinkEncodedLength - data_.lengthInBytes;
       var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var usec = data_.getUint64(0, Endian.little);
-    var accel0 = data_.getFloat32(8, Endian.little);
-    var accel1 = data_.getFloat32(12, Endian.little);
-    var accel2 = data_.getFloat32(16, Endian.little);
-    var gyro0 = data_.getFloat32(20, Endian.little);
-    var gyro1 = data_.getFloat32(24, Endian.little);
-    var gyro2 = data_.getFloat32(28, Endian.little);
+    var rcRaw = MavlinkMessage.asUint8List(data_, 0, 32);
 
-    return NavFilterBias(
-        usec: usec,
-        accel0: accel0,
-        accel1: accel1,
-        accel2: accel2,
-        gyro0: gyro0,
-        gyro1: gyro1,
-        gyro2: gyro2);
+    return CubepilotRawRc(rcRaw: rcRaw);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    data_.setUint64(0, usec, Endian.little);
-    data_.setFloat32(8, accel0, Endian.little);
-    data_.setFloat32(12, accel1, Endian.little);
-    data_.setFloat32(16, accel2, Endian.little);
-    data_.setFloat32(20, gyro0, Endian.little);
-    data_.setFloat32(24, gyro1, Endian.little);
-    data_.setFloat32(28, gyro2, Endian.little);
+    MavlinkMessage.setUint8List(data_, 0, rcRaw);
     return data_;
   }
 }
 
-/// Complete set of calibration parameters for the radio
+/// Information about video stream
 ///
-/// RADIO_CALIBRATION
-class RadioCalibration implements MavlinkMessage {
-  static const int _mavlinkMessageId = 221;
+/// HERELINK_VIDEO_STREAM_INFORMATION
+class HerelinkVideoStreamInformation implements MavlinkMessage {
+  static const int _mavlinkMessageId = 50002;
 
-  static const int _mavlinkCrcExtra = 71;
+  static const int _mavlinkCrcExtra = 181;
 
-  static const int mavlinkEncodedLength = 42;
+  static const int mavlinkEncodedLength = 246;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -38823,101 +38687,135 @@ class RadioCalibration implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// Aileron setpoints: left, center, right
+  /// Frame rate.
   ///
-  /// MAVLink type: uint16_t[3]
+  /// MAVLink type: float
   ///
-  /// aileron
-  final List<int16_t> aileron;
+  /// units: Hz
+  ///
+  /// framerate
+  final float framerate;
 
-  /// Elevator setpoints: nose down, center, nose up
+  /// Bit rate.
   ///
-  /// MAVLink type: uint16_t[3]
+  /// MAVLink type: uint32_t
   ///
-  /// elevator
-  final List<int16_t> elevator;
+  /// units: bits/s
+  ///
+  /// bitrate
+  final uint32_t bitrate;
 
-  /// Rudder setpoints: nose left, center, nose right
+  /// Horizontal resolution.
   ///
-  /// MAVLink type: uint16_t[3]
+  /// MAVLink type: uint16_t
   ///
-  /// rudder
-  final List<int16_t> rudder;
+  /// units: pix
+  ///
+  /// resolution_h
+  final uint16_t resolutionH;
 
-  /// Tail gyro mode/gain setpoints: heading hold, rate mode
+  /// Vertical resolution.
   ///
-  /// MAVLink type: uint16_t[2]
+  /// MAVLink type: uint16_t
   ///
-  /// gyro
-  final List<int16_t> gyro;
+  /// units: pix
+  ///
+  /// resolution_v
+  final uint16_t resolutionV;
 
-  /// Pitch curve setpoints (every 25%)
+  /// Video image rotation clockwise.
   ///
-  /// MAVLink type: uint16_t[5]
+  /// MAVLink type: uint16_t
   ///
-  /// pitch
-  final List<int16_t> pitch;
+  /// units: deg
+  ///
+  /// rotation
+  final uint16_t rotation;
 
-  /// Throttle curve setpoints (every 25%)
+  /// Video Stream ID (1 for first, 2 for second, etc.)
   ///
-  /// MAVLink type: uint16_t[5]
+  /// MAVLink type: uint8_t
   ///
-  /// throttle
-  final List<int16_t> throttle;
+  /// camera_id
+  final uint8_t cameraId;
 
-  RadioCalibration({
-    required this.aileron,
-    required this.elevator,
-    required this.rudder,
-    required this.gyro,
-    required this.pitch,
-    required this.throttle,
+  /// Number of streams available.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// status
+  final uint8_t status;
+
+  /// Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).
+  ///
+  /// MAVLink type: char[230]
+  ///
+  /// uri
+  final List<char> uri;
+
+  HerelinkVideoStreamInformation({
+    required this.framerate,
+    required this.bitrate,
+    required this.resolutionH,
+    required this.resolutionV,
+    required this.rotation,
+    required this.cameraId,
+    required this.status,
+    required this.uri,
   });
 
-  factory RadioCalibration.parse(ByteData data_) {
-    if (data_.lengthInBytes < RadioCalibration.mavlinkEncodedLength) {
-      var len = RadioCalibration.mavlinkEncodedLength - data_.lengthInBytes;
+  factory HerelinkVideoStreamInformation.parse(ByteData data_) {
+    if (data_.lengthInBytes <
+        HerelinkVideoStreamInformation.mavlinkEncodedLength) {
+      var len = HerelinkVideoStreamInformation.mavlinkEncodedLength -
+          data_.lengthInBytes;
       var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var aileron = MavlinkMessage.asUint16List(data_, 0, 3);
-    var elevator = MavlinkMessage.asUint16List(data_, 6, 3);
-    var rudder = MavlinkMessage.asUint16List(data_, 12, 3);
-    var gyro = MavlinkMessage.asUint16List(data_, 18, 2);
-    var pitch = MavlinkMessage.asUint16List(data_, 22, 5);
-    var throttle = MavlinkMessage.asUint16List(data_, 32, 5);
+    var framerate = data_.getFloat32(0, Endian.little);
+    var bitrate = data_.getUint32(4, Endian.little);
+    var resolutionH = data_.getUint16(8, Endian.little);
+    var resolutionV = data_.getUint16(10, Endian.little);
+    var rotation = data_.getUint16(12, Endian.little);
+    var cameraId = data_.getUint8(14);
+    var status = data_.getUint8(15);
+    var uri = MavlinkMessage.asInt8List(data_, 16, 230);
 
-    return RadioCalibration(
-        aileron: aileron,
-        elevator: elevator,
-        rudder: rudder,
-        gyro: gyro,
-        pitch: pitch,
-        throttle: throttle);
+    return HerelinkVideoStreamInformation(
+        framerate: framerate,
+        bitrate: bitrate,
+        resolutionH: resolutionH,
+        resolutionV: resolutionV,
+        rotation: rotation,
+        cameraId: cameraId,
+        status: status,
+        uri: uri);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    MavlinkMessage.setUint16List(data_, 0, aileron);
-    MavlinkMessage.setUint16List(data_, 6, elevator);
-    MavlinkMessage.setUint16List(data_, 12, rudder);
-    MavlinkMessage.setUint16List(data_, 18, gyro);
-    MavlinkMessage.setUint16List(data_, 22, pitch);
-    MavlinkMessage.setUint16List(data_, 32, throttle);
+    data_.setFloat32(0, framerate, Endian.little);
+    data_.setUint32(4, bitrate, Endian.little);
+    data_.setUint16(8, resolutionH, Endian.little);
+    data_.setUint16(10, resolutionV, Endian.little);
+    data_.setUint16(12, rotation, Endian.little);
+    data_.setUint8(14, cameraId);
+    data_.setUint8(15, status);
+    MavlinkMessage.setInt8List(data_, 16, uri);
     return data_;
   }
 }
 
-/// System status specific to ualberta uav
+/// Herelink Telemetry
 ///
-/// UALBERTA_SYS_STATUS
-class UalbertaSysStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 222;
+/// HERELINK_TELEM
+class HerelinkTelem implements MavlinkMessage {
+  static const int _mavlinkMessageId = 50003;
 
-  static const int _mavlinkCrcExtra = 15;
+  static const int _mavlinkCrcExtra = 62;
 
-  static const int mavlinkEncodedLength = 3;
+  static const int mavlinkEncodedLength = 19;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -38925,57 +38823,261 @@ class UalbertaSysStatus implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => _mavlinkCrcExtra;
 
-  /// System mode, see UALBERTA_AUTOPILOT_MODE ENUM
+  ///
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// rf_freq
+  final uint32_t rfFreq;
+
+  ///
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// link_bw
+  final uint32_t linkBw;
+
+  ///
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// link_rate
+  final uint32_t linkRate;
+
+  ///
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// snr
+  final int16_t snr;
+
+  ///
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// cpu_temp
+  final int16_t cpuTemp;
+
+  ///
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// board_temp
+  final int16_t boardTemp;
+
+  ///
   ///
   /// MAVLink type: uint8_t
   ///
-  /// mode
-  final uint8_t mode;
+  /// rssi
+  final uint8_t rssi;
 
-  /// Navigation mode, see UALBERTA_NAV_MODE ENUM
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// nav_mode
-  final uint8_t navMode;
-
-  /// Pilot mode, see UALBERTA_PILOT_MODE
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// pilot
-  final uint8_t pilot;
-
-  UalbertaSysStatus({
-    required this.mode,
-    required this.navMode,
-    required this.pilot,
+  HerelinkTelem({
+    required this.rfFreq,
+    required this.linkBw,
+    required this.linkRate,
+    required this.snr,
+    required this.cpuTemp,
+    required this.boardTemp,
+    required this.rssi,
   });
 
-  factory UalbertaSysStatus.parse(ByteData data_) {
-    if (data_.lengthInBytes < UalbertaSysStatus.mavlinkEncodedLength) {
-      var len = UalbertaSysStatus.mavlinkEncodedLength - data_.lengthInBytes;
+  factory HerelinkTelem.parse(ByteData data_) {
+    if (data_.lengthInBytes < HerelinkTelem.mavlinkEncodedLength) {
+      var len = HerelinkTelem.mavlinkEncodedLength - data_.lengthInBytes;
       var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var mode = data_.getUint8(0);
-    var navMode = data_.getUint8(1);
-    var pilot = data_.getUint8(2);
+    var rfFreq = data_.getUint32(0, Endian.little);
+    var linkBw = data_.getUint32(4, Endian.little);
+    var linkRate = data_.getUint32(8, Endian.little);
+    var snr = data_.getInt16(12, Endian.little);
+    var cpuTemp = data_.getInt16(14, Endian.little);
+    var boardTemp = data_.getInt16(16, Endian.little);
+    var rssi = data_.getUint8(18);
 
-    return UalbertaSysStatus(mode: mode, navMode: navMode, pilot: pilot);
+    return HerelinkTelem(
+        rfFreq: rfFreq,
+        linkBw: linkBw,
+        linkRate: linkRate,
+        snr: snr,
+        cpuTemp: cpuTemp,
+        boardTemp: boardTemp,
+        rssi: rssi);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    data_.setUint8(0, mode);
-    data_.setUint8(1, navMode);
-    data_.setUint8(2, pilot);
+    data_.setUint32(0, rfFreq, Endian.little);
+    data_.setUint32(4, linkBw, Endian.little);
+    data_.setUint32(8, linkRate, Endian.little);
+    data_.setInt16(12, snr, Endian.little);
+    data_.setInt16(14, cpuTemp, Endian.little);
+    data_.setInt16(16, boardTemp, Endian.little);
+    data_.setUint8(18, rssi);
     return data_;
   }
 }
 
-class MavlinkDialectUalberta implements MavlinkDialect {
+/// Start firmware update with encapsulated data.
+///
+/// CUBEPILOT_FIRMWARE_UPDATE_START
+class CubepilotFirmwareUpdateStart implements MavlinkMessage {
+  static const int _mavlinkMessageId = 50004;
+
+  static const int _mavlinkCrcExtra = 240;
+
+  static const int mavlinkEncodedLength = 10;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// FW Size.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: bytes
+  ///
+  /// size
+  final uint32_t size;
+
+  /// FW CRC.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// crc
+  final uint32_t crc;
+
+  /// System ID.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Component ID.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  CubepilotFirmwareUpdateStart({
+    required this.size,
+    required this.crc,
+    required this.targetSystem,
+    required this.targetComponent,
+  });
+
+  factory CubepilotFirmwareUpdateStart.parse(ByteData data_) {
+    if (data_.lengthInBytes <
+        CubepilotFirmwareUpdateStart.mavlinkEncodedLength) {
+      var len = CubepilotFirmwareUpdateStart.mavlinkEncodedLength -
+          data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var size = data_.getUint32(0, Endian.little);
+    var crc = data_.getUint32(4, Endian.little);
+    var targetSystem = data_.getUint8(8);
+    var targetComponent = data_.getUint8(9);
+
+    return CubepilotFirmwareUpdateStart(
+        size: size,
+        crc: crc,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, size, Endian.little);
+    data_.setUint32(4, crc, Endian.little);
+    data_.setUint8(8, targetSystem);
+    data_.setUint8(9, targetComponent);
+    return data_;
+  }
+}
+
+/// offset response to encapsulated data.
+///
+/// CUBEPILOT_FIRMWARE_UPDATE_RESP
+class CubepilotFirmwareUpdateResp implements MavlinkMessage {
+  static const int _mavlinkMessageId = 50005;
+
+  static const int _mavlinkCrcExtra = 152;
+
+  static const int mavlinkEncodedLength = 6;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// FW Offset.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: bytes
+  ///
+  /// offset
+  final uint32_t offset;
+
+  /// System ID.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Component ID.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  CubepilotFirmwareUpdateResp({
+    required this.offset,
+    required this.targetSystem,
+    required this.targetComponent,
+  });
+
+  factory CubepilotFirmwareUpdateResp.parse(ByteData data_) {
+    if (data_.lengthInBytes <
+        CubepilotFirmwareUpdateResp.mavlinkEncodedLength) {
+      var len = CubepilotFirmwareUpdateResp.mavlinkEncodedLength -
+          data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var offset = data_.getUint32(0, Endian.little);
+    var targetSystem = data_.getUint8(4);
+    var targetComponent = data_.getUint8(5);
+
+    return CubepilotFirmwareUpdateResp(
+        offset: offset,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, offset, Endian.little);
+    data_.setUint8(4, targetSystem);
+    data_.setUint8(5, targetComponent);
+    return data_;
+  }
+}
+
+class MavlinkDialectCubepilot implements MavlinkDialect {
   static const int mavlinkVersion = 3;
 
   @override
@@ -39426,12 +39528,16 @@ class MavlinkDialectUalberta implements MavlinkDialect {
         return OpenDroneIdSystemUpdate.parse(data);
       case 12920:
         return HygrometerSensor.parse(data);
-      case 220:
-        return NavFilterBias.parse(data);
-      case 221:
-        return RadioCalibration.parse(data);
-      case 222:
-        return UalbertaSysStatus.parse(data);
+      case 50001:
+        return CubepilotRawRc.parse(data);
+      case 50002:
+        return HerelinkVideoStreamInformation.parse(data);
+      case 50003:
+        return HerelinkTelem.parse(data);
+      case 50004:
+        return CubepilotFirmwareUpdateStart.parse(data);
+      case 50005:
+        return CubepilotFirmwareUpdateResp.parse(data);
       default:
         return null;
     }
@@ -39882,12 +39988,16 @@ class MavlinkDialectUalberta implements MavlinkDialect {
         return OpenDroneIdSystemUpdate._mavlinkCrcExtra;
       case 12920:
         return HygrometerSensor._mavlinkCrcExtra;
-      case 220:
-        return NavFilterBias._mavlinkCrcExtra;
-      case 221:
-        return RadioCalibration._mavlinkCrcExtra;
-      case 222:
-        return UalbertaSysStatus._mavlinkCrcExtra;
+      case 50001:
+        return CubepilotRawRc._mavlinkCrcExtra;
+      case 50002:
+        return HerelinkVideoStreamInformation._mavlinkCrcExtra;
+      case 50003:
+        return HerelinkTelem._mavlinkCrcExtra;
+      case 50004:
+        return CubepilotFirmwareUpdateStart._mavlinkCrcExtra;
+      case 50005:
+        return CubepilotFirmwareUpdateResp._mavlinkCrcExtra;
       default:
         return -1;
     }
