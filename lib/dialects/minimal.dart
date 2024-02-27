@@ -233,15 +233,15 @@ const MavType mavTypeVtolTiltrotor = 21;
 /// MAV_TYPE_VTOL_FIXEDROTOR
 const MavType mavTypeVtolFixedrotor = 22;
 
-/// Tailsitter VTOL. Fuselage and wings orientation changes depending on flight phase: vertical for hover, horizontal for cruise. Use more specific VTOL MAV_TYPE_VTOL_DUOROTOR or MAV_TYPE_VTOL_QUADROTOR if appropriate.
+/// Tailsitter VTOL. Fuselage and wings orientation changes depending on flight phase: vertical for hover, horizontal for cruise. Use more specific VTOL MAV_TYPE_VTOL_TAILSITTER_DUOROTOR or MAV_TYPE_VTOL_TAILSITTER_QUADROTOR if appropriate.
 ///
 /// MAV_TYPE_VTOL_TAILSITTER
 const MavType mavTypeVtolTailsitter = 23;
 
-/// VTOL reserved 4
+/// Tiltwing VTOL. Fuselage stays horizontal in all flight phases. The whole wing, along with any attached engine, can tilt between vertical and horizontal mode.
 ///
-/// MAV_TYPE_VTOL_RESERVED4
-const MavType mavTypeVtolReserved4 = 24;
+/// MAV_TYPE_VTOL_TILTWING
+const MavType mavTypeVtolTiltwing = 24;
 
 /// VTOL reserved 5
 ///
@@ -332,6 +332,11 @@ const MavType mavTypeGps = 41;
 ///
 /// MAV_TYPE_WINCH
 const MavType mavTypeWinch = 42;
+
+/// Generic multirotor that does not fit into a specific type or whose type is unknown
+///
+/// MAV_TYPE_GENERIC_MULTIROTOR
+const MavType mavTypeGenericMultirotor = 43;
 
 /// These flags encode the MAV mode.
 ///
@@ -452,12 +457,12 @@ const MavState mavStateStandby = 3;
 /// MAV_STATE_ACTIVE
 const MavState mavStateActive = 4;
 
-/// System is in a non-normal flight mode. It can however still navigate.
+/// System is in a non-normal flight mode (failsafe). It can however still navigate.
 ///
 /// MAV_STATE_CRITICAL
 const MavState mavStateCritical = 5;
 
-/// System is in a non-normal flight mode. It lost control over parts or over the whole airframe. It is in mayday and going down.
+/// System is in a non-normal flight mode (failsafe). It lost control over parts or over the whole airframe. It is in mayday and going down.
 ///
 /// MAV_STATE_EMERGENCY
 const MavState mavStateEmergency = 6;
@@ -467,7 +472,7 @@ const MavState mavStateEmergency = 6;
 /// MAV_STATE_POWEROFF
 const MavState mavStatePoweroff = 7;
 
-/// System is terminating itself.
+/// System is terminating itself (failsafe or commanded).
 ///
 /// MAV_STATE_FLIGHT_TERMINATION
 const MavState mavStateFlightTermination = 8;
@@ -1006,6 +1011,11 @@ const MavComponent mavCompIdFlarm = 160;
 /// MAV_COMP_ID_PARACHUTE
 const MavComponent mavCompIdParachute = 161;
 
+/// Winch component.
+///
+/// MAV_COMP_ID_WINCH
+const MavComponent mavCompIdWinch = 169;
+
 /// Gimbal #2.
 ///
 /// MAV_COMP_ID_GIMBAL2
@@ -1146,11 +1156,11 @@ const MavComponent mavCompIdUartBridge = 241;
 /// MAV_COMP_ID_TUNNEL_NODE
 const MavComponent mavCompIdTunnelNode = 242;
 
-/// Component for handling system messages (e.g. to ARM, takeoff, etc.).
+/// Deprecated, don't use. Component for handling system messages (e.g. to ARM, takeoff, etc.).
 ///
 /// MAV_COMP_ID_SYSTEM_CONTROL
 @Deprecated(
-    "Replaced by [MAV_COMP_ID_ALL] since 2018-11. System control does not require a separate component ID.")
+    "Replaced by [MAV_COMP_ID_ALL] since 2018-11. System control does not require a separate component ID. Instead, system commands should be sent with target_component=MAV_COMP_ID_ALL allowing the target component to use any appropriate component id.")
 const MavComponent mavCompIdSystemControl = 250;
 
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
