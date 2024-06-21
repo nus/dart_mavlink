@@ -9,6 +9,8 @@ abstract class MavlinkMessage {
 
   int get mavlinkMessageId;
   int get mavlinkCrcExtra;
+  int? get targetSystem => null;
+  int? get targetComponent => null;
 
   ByteData serialize();
 
