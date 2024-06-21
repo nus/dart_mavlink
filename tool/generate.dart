@@ -650,10 +650,15 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     content +='\n';
     content +='@override int get mavlinkCrcExtra => _mavlinkCrcExtra;\n';
 
+    // Avoid overriding targetSystem and targetComponent twice if message somehow has target_system or target_component twice
+    var hasTargetSystem = false;
+    var hasTargetComponent = false;
     for (var field in msg.orderedFields) {
+      
       content += generateAsDartDocumentation(field.description);
       content += '///\n';
       content += '/// MAVLink type: ${field.type}\n';
+      
       if (field.units != null) {
         content += '///\n';
         content += '/// units: ${field.units!}\n';
@@ -669,6 +674,16 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
       content += '///\n';
       content += '/// ${field.name}\n';
       content += 'final ${asDartType(field.type, field.enum_)} ${field.nameForDart};\n';
+
+      if (field.name == "target_system" && !hasTargetSystem) {
+        content += "@override int? get targetSystem => ${field.nameForDart};\n";
+        hasTargetSystem = true;   
+      }
+      else if (field.name == "target_component" && !hasTargetComponent) {
+        content += "@override int? get targetComponent => ${field.nameForDart};\n";
+        hasTargetComponent = true;  
+      }
+      
     }
     content += '\n';
 
