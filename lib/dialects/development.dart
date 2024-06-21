@@ -9127,6 +9127,8 @@ class Ping implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// 0: request ping from all receiving components. If greater than 0: message is a ping response and number is the component id of the requesting component.
   ///
@@ -9134,6 +9136,8 @@ class Ping implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   Ping({
     required this.timeUsec,
@@ -9193,6 +9197,8 @@ class ChangeOperatorControl implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// 0: request control of this MAV, 1: Release control of this MAV
   ///
@@ -9570,6 +9576,8 @@ class SetMode implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// The new base mode.
   ///
@@ -9639,6 +9647,8 @@ class ParamRequestRead implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -9646,6 +9656,8 @@ class ParamRequestRead implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -9712,6 +9724,8 @@ class ParamRequestList implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -9719,6 +9733,8 @@ class ParamRequestList implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   ParamRequestList({
     required this.targetSystem,
@@ -9871,6 +9887,8 @@ class ParamSet implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -9878,6 +9896,8 @@ class ParamSet implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -12048,6 +12068,8 @@ class MissionRequestPartialList implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12055,6 +12077,8 @@ class MissionRequestPartialList implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12144,6 +12168,8 @@ class MissionWritePartialList implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12151,6 +12177,8 @@ class MissionWritePartialList implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12292,6 +12320,8 @@ class MissionItem implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12299,6 +12329,8 @@ class MissionItem implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// The coordinate system of the waypoint.
   ///
@@ -12443,6 +12475,8 @@ class MissionRequest implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12450,6 +12484,8 @@ class MissionRequest implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12535,6 +12571,8 @@ class MissionSetCurrent implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12542,6 +12580,8 @@ class MissionSetCurrent implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   MissionSetCurrent({
     required this.seq,
@@ -12726,6 +12766,8 @@ class MissionRequestList implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12733,6 +12775,8 @@ class MissionRequestList implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12806,6 +12850,8 @@ class MissionCount implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12813,6 +12859,8 @@ class MissionCount implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12902,6 +12950,8 @@ class MissionClearAll implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12909,6 +12959,8 @@ class MissionClearAll implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -13021,6 +13073,8 @@ class MissionAck implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -13028,6 +13082,8 @@ class MissionAck implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission result.
   ///
@@ -13153,6 +13209,8 @@ class SetGpsGlobalOrigin implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
   ///
@@ -13352,6 +13410,8 @@ class ParamMapRc implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -13359,6 +13419,8 @@ class ParamMapRc implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -13459,6 +13521,8 @@ class MissionRequestInt implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -13466,6 +13530,8 @@ class MissionRequestInt implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -13590,6 +13656,8 @@ class SafetySetAllowedArea implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -13597,6 +13665,8 @@ class SafetySetAllowedArea implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Coordinate frame. Can be either global, GPS, right-handed with Z axis up or local, right handed, Z axis down.
   ///
@@ -14731,6 +14801,8 @@ class RequestDataStream implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// The target requested to send the message stream.
   ///
@@ -14738,6 +14810,8 @@ class RequestDataStream implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// The ID of the requested data stream
   ///
@@ -15188,6 +15262,8 @@ class RcChannelsOverride implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -15195,6 +15271,8 @@ class RcChannelsOverride implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// RC channel 9 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
   ///
@@ -15494,6 +15572,8 @@ class MissionItemInt implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -15501,6 +15581,8 @@ class MissionItemInt implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// The coordinate system of the waypoint.
   ///
@@ -15810,6 +15892,8 @@ class CommandInt implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -15817,6 +15901,8 @@ class CommandInt implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// The coordinate system of the COMMAND.
   ///
@@ -15993,6 +16079,8 @@ class CommandLong implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component which should execute the command, 0 for all components
   ///
@@ -16000,6 +16088,8 @@ class CommandLong implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
   ///
@@ -16134,6 +16224,8 @@ class CommandAck implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID of the target recipient. This is the ID of the system that sent the command for which this COMMAND_ACK is an acknowledgement.
   ///
@@ -16143,6 +16235,8 @@ class CommandAck implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   CommandAck({
     required this.command,
@@ -16219,6 +16313,8 @@ class CommandCancel implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component executing long running command.
   ///
@@ -16226,6 +16322,8 @@ class CommandCancel implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   CommandCancel({
     required this.command,
@@ -16452,6 +16550,8 @@ class SetAttitudeTarget implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -16459,6 +16559,8 @@ class SetAttitudeTarget implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Bitmap to indicate which dimensions should be ignored by the vehicle.
   ///
@@ -16800,6 +16902,8 @@ class SetPositionTargetLocalNed implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -16807,6 +16911,8 @@ class SetPositionTargetLocalNed implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Valid options are: MAV_FRAME_LOCAL_NED = 1, MAV_FRAME_LOCAL_OFFSET_NED = 7, MAV_FRAME_BODY_NED = 8, MAV_FRAME_BODY_OFFSET_NED = 9
   ///
@@ -17260,6 +17366,8 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -17267,6 +17375,8 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11
   ///
@@ -20279,6 +20389,8 @@ class FileTransferProtocol implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast)
   ///
@@ -20286,6 +20398,8 @@ class FileTransferProtocol implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html.
   ///
@@ -20381,6 +20495,8 @@ class Timesync implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Target component id. Request: 0 (broadcast) or id of specific component. Response must contain component id of the requesting component.
   ///
@@ -20390,6 +20506,8 @@ class Timesync implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   Timesync({
     required this.tc1,
@@ -21358,6 +21476,8 @@ class LogRequestList implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21365,6 +21485,8 @@ class LogRequestList implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   LogRequestList({
     required this.start,
@@ -21542,6 +21664,8 @@ class LogRequestData implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21549,6 +21673,8 @@ class LogRequestData implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   LogRequestData({
     required this.ofs,
@@ -21690,6 +21816,8 @@ class LogErase implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21697,6 +21825,8 @@ class LogErase implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   LogErase({
     required this.targetSystem,
@@ -21747,6 +21877,8 @@ class LogRequestEnd implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21754,6 +21886,8 @@ class LogRequestEnd implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   LogRequestEnd({
     required this.targetSystem,
@@ -21804,6 +21938,8 @@ class GpsInjectData implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21811,6 +21947,8 @@ class GpsInjectData implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Data length
   ///
@@ -22286,6 +22424,8 @@ class SerialControl implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -22295,6 +22435,8 @@ class SerialControl implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   SerialControl({
     required this.baudrate,
@@ -23907,6 +24049,8 @@ class SetActuatorControlTarget implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -23914,6 +24058,8 @@ class SetActuatorControlTarget implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   SetActuatorControlTarget({
     required this.timeUsec,
@@ -27806,6 +27952,8 @@ class SetHomePosition implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
   ///
@@ -28368,6 +28516,8 @@ class V2Extension implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast)
   ///
@@ -28375,6 +28525,8 @@ class V2Extension implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Variable length payload. The length must be encoded in the payload as part of the message_type protocol, e.g. by including the length as payload data, or by terminating the payload data with a non-zero marker. This is required in order to reconstruct zero-terminated payloads that are (or otherwise would be) trimmed by MAVLink 2 empty-byte truncation. The entire content of the payload block is opaque unless you understand the encoding message_type. The particular encoding used can be extension specific and might not always be documented as part of the MAVLink specification.
   ///
@@ -28903,6 +29055,8 @@ class SetupSigning implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -28910,6 +29064,8 @@ class SetupSigning implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// signing key
   ///
@@ -29047,6 +29203,8 @@ class PlayTune implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -29054,6 +29212,8 @@ class PlayTune implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// tune in board specific format
   ///
@@ -30132,6 +30292,8 @@ class LoggingData implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -30139,6 +30301,8 @@ class LoggingData implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// data length
   ///
@@ -30238,6 +30402,8 @@ class LoggingDataAcked implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -30245,6 +30411,8 @@ class LoggingDataAcked implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// data length
   ///
@@ -30344,6 +30512,8 @@ class LoggingAck implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -30351,6 +30521,8 @@ class LoggingAck implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   LoggingAck({
     required this.sequence,
@@ -31564,6 +31736,8 @@ class GimbalManagerSetAttitude implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -31571,6 +31745,8 @@ class GimbalManagerSetAttitude implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
   ///
@@ -31939,6 +32115,8 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -31946,6 +32124,8 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   GimbalDeviceSetAttitude({
     required this.q,
@@ -32093,6 +32273,8 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -32100,6 +32282,8 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Yaw angle relating the quaternions in earth and body frames (see message description). NaN if unknown.
   ///
@@ -32302,6 +32486,8 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -32309,6 +32495,8 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
   ///
@@ -32471,6 +32659,8 @@ class GimbalManagerSetPitchyaw implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -32478,6 +32668,8 @@ class GimbalManagerSetPitchyaw implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
   ///
@@ -32598,6 +32790,8 @@ class GimbalManagerSetManualControl implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -32605,6 +32799,8 @@ class GimbalManagerSetManualControl implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
   ///
@@ -33523,6 +33719,8 @@ class ParamExtRequestRead implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -33530,6 +33728,8 @@ class ParamExtRequestRead implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -33596,6 +33796,8 @@ class ParamExtRequestList implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -33603,6 +33805,8 @@ class ParamExtRequestList implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   ParamExtRequestList({
     required this.targetSystem,
@@ -33746,6 +33950,8 @@ class ParamExtSet implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -33753,6 +33959,8 @@ class ParamExtSet implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -36228,6 +36436,8 @@ class Tunnel implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (can be 0 for broadcast, but this is discouraged)
   ///
@@ -36235,6 +36445,8 @@ class Tunnel implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Length of the data transported in payload
   ///
@@ -36319,6 +36531,8 @@ class CanFrame implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID.
   ///
@@ -36326,6 +36540,8 @@ class CanFrame implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Bus number
   ///
@@ -36881,6 +37097,8 @@ class PlayTuneV2 implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -36888,6 +37106,8 @@ class PlayTuneV2 implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Tune definition as a NULL-terminated string.
   ///
@@ -36963,6 +37183,8 @@ class SupportedTunes implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -36970,6 +37192,8 @@ class SupportedTunes implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   SupportedTunes({
     required this.format,
@@ -37212,6 +37436,8 @@ class RequestEvent implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -37219,6 +37445,8 @@ class RequestEvent implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   RequestEvent({
     required this.firstSequence,
@@ -37292,6 +37520,8 @@ class ResponseEventError implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -37299,6 +37529,8 @@ class ResponseEventError implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Error reason.
   ///
@@ -37378,6 +37610,8 @@ class CanfdFrame implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID.
   ///
@@ -37385,6 +37619,8 @@ class CanfdFrame implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// bus number
   ///
@@ -37480,6 +37716,8 @@ class CanFilterModify implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID.
   ///
@@ -37487,6 +37725,8 @@ class CanFilterModify implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// bus number
   ///
@@ -37787,6 +38027,8 @@ class OpenDroneIdBasicId implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -37794,6 +38036,8 @@ class OpenDroneIdBasicId implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -37974,6 +38218,8 @@ class OpenDroneIdLocation implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -37981,6 +38227,8 @@ class OpenDroneIdLocation implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38179,6 +38427,8 @@ class OpenDroneIdAuthentication implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38186,6 +38436,8 @@ class OpenDroneIdAuthentication implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38312,6 +38564,8 @@ class OpenDroneIdSelfId implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38319,6 +38573,8 @@ class OpenDroneIdSelfId implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38475,6 +38731,8 @@ class OpenDroneIdSystem implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38482,6 +38740,8 @@ class OpenDroneIdSystem implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38628,6 +38888,8 @@ class OpenDroneIdOperatorId implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38635,6 +38897,8 @@ class OpenDroneIdOperatorId implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38722,6 +38986,8 @@ class OpenDroneIdMessagePack implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38729,6 +38995,8 @@ class OpenDroneIdMessagePack implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38921,6 +39189,8 @@ class OpenDroneIdSystemUpdate implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38928,6 +39198,8 @@ class OpenDroneIdSystemUpdate implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   OpenDroneIdSystemUpdate({
     required this.operatorLatitude,
@@ -39074,6 +39346,8 @@ class ParamAckTransaction implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Id of system that sent PARAM_SET message.
   ///
@@ -39081,6 +39355,8 @@ class ParamAckTransaction implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -39399,6 +39675,8 @@ class SetVelocityLimits implements MavlinkMessage {
   ///
   /// target_system
   final uint8_t targetSystem;
+  @override
+  int? get targetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -39406,6 +39684,8 @@ class SetVelocityLimits implements MavlinkMessage {
   ///
   /// target_component
   final uint8_t targetComponent;
+  @override
+  int? get targetComponent => targetComponent;
 
   SetVelocityLimits({
     required this.horizontalSpeedLimit,
