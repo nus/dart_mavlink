@@ -1228,6 +1228,10 @@ class Heartbeat implements MavlinkMessage {
   ///
   /// mavlink_version
   final uint8_t mavlinkVersion;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Heartbeat({
     required this.customMode,
@@ -1323,6 +1327,10 @@ class ProtocolVersion implements MavlinkMessage {
   ///
   /// library_version_hash
   final List<int8_t> libraryVersionHash;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ProtocolVersion({
     required this.version,

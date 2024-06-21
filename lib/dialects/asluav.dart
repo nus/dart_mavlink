@@ -8270,6 +8270,10 @@ class Heartbeat implements MavlinkMessage {
   ///
   /// mavlink_version
   final uint8_t mavlinkVersion;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Heartbeat({
     required this.customMode,
@@ -8365,6 +8369,10 @@ class ProtocolVersion implements MavlinkMessage {
   ///
   /// library_version_hash
   final List<int8_t> libraryVersionHash;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ProtocolVersion({
     required this.version,
@@ -8561,6 +8569,10 @@ class SysStatus implements MavlinkMessage {
   ///
   /// onboard_control_sensors_health_extended
   final MavSysStatusSensorExtended onboardControlSensorsHealthExtended;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SysStatus({
     required this.onboardControlSensorsPresent,
@@ -8685,6 +8697,10 @@ class SystemTime implements MavlinkMessage {
   ///
   /// time_boot_ms
   final uint32_t timeBootMs;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SystemTime({
     required this.timeUnixUsec,
@@ -8751,7 +8767,7 @@ class Ping implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// 0: request ping from all receiving components. If greater than 0: message is a ping response and number is the component id of the requesting component.
   ///
@@ -8760,7 +8776,7 @@ class Ping implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   Ping({
     required this.timeUsec,
@@ -8821,7 +8837,7 @@ class ChangeOperatorControl implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// 0: request control of this MAV, 1: Release control of this MAV
   ///
@@ -8845,6 +8861,8 @@ class ChangeOperatorControl implements MavlinkMessage {
   ///
   /// passkey
   final List<char> passkey;
+  @override
+  int? get hasTargetComponent => null;
 
   ChangeOperatorControl({
     required this.targetSystem,
@@ -8919,6 +8937,10 @@ class ChangeOperatorControlAck implements MavlinkMessage {
   ///
   /// ack
   final uint8_t ack;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ChangeOperatorControlAck({
     required this.gcsSystemId,
@@ -8973,6 +8995,10 @@ class AuthKey implements MavlinkMessage {
   ///
   /// key
   final List<char> key;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AuthKey({
     required this.key,
@@ -9105,6 +9131,10 @@ class LinkNodeStatus implements MavlinkMessage {
   ///
   /// rx_buf
   final uint8_t rxBuf;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   LinkNodeStatus({
     required this.timestamp,
@@ -9200,7 +9230,7 @@ class SetMode implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// The new base mode.
   ///
@@ -9210,6 +9240,8 @@ class SetMode implements MavlinkMessage {
   ///
   /// base_mode
   final MavMode baseMode;
+  @override
+  int? get hasTargetComponent => null;
 
   SetMode({
     required this.customMode,
@@ -9271,7 +9303,7 @@ class ParamRequestRead implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -9280,7 +9312,7 @@ class ParamRequestRead implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -9348,7 +9380,7 @@ class ParamRequestList implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -9357,7 +9389,7 @@ class ParamRequestList implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   ParamRequestList({
     required this.targetSystem,
@@ -9438,6 +9470,10 @@ class ParamValue implements MavlinkMessage {
   ///
   /// param_type
   final MavParamType paramType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ParamValue({
     required this.paramValue,
@@ -9511,7 +9547,7 @@ class ParamSet implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -9520,7 +9556,7 @@ class ParamSet implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -9744,6 +9780,10 @@ class GpsRawInt implements MavlinkMessage {
   ///
   /// yaw
   final uint16_t yaw;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GpsRawInt({
     required this.timeUsec,
@@ -9892,6 +9932,10 @@ class GpsStatus implements MavlinkMessage {
   ///
   /// satellite_snr
   final List<int8_t> satelliteSnr;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GpsStatus({
     required this.satellitesVisible,
@@ -10053,6 +10097,10 @@ class ScaledImu implements MavlinkMessage {
   ///
   /// temperature
   final int16_t temperature;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ScaledImu({
     required this.timeBootMs,
@@ -10225,6 +10273,10 @@ class RawImu implements MavlinkMessage {
   ///
   /// temperature
   final int16_t temperature;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   RawImu({
     required this.timeUsec,
@@ -10346,6 +10398,10 @@ class RawPressure implements MavlinkMessage {
   ///
   /// temperature
   final int16_t temperature;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   RawPressure({
     required this.timeUsec,
@@ -10449,6 +10505,10 @@ class ScaledPressure implements MavlinkMessage {
   ///
   /// temperature_press_diff
   final int16_t temperaturePressDiff;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ScaledPressure({
     required this.timeBootMs,
@@ -10568,6 +10628,10 @@ class Attitude implements MavlinkMessage {
   ///
   /// yawspeed
   final float yawspeed;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Attitude({
     required this.timeBootMs,
@@ -10705,6 +10769,10 @@ class AttitudeQuaternion implements MavlinkMessage {
   ///
   /// repr_offset_q
   final List<float> reprOffsetQ;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AttitudeQuaternion({
     required this.timeBootMs,
@@ -10840,6 +10908,10 @@ class LocalPositionNed implements MavlinkMessage {
   ///
   /// vz
   final float vz;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   LocalPositionNed({
     required this.timeBootMs,
@@ -10980,6 +11052,10 @@ class GlobalPositionInt implements MavlinkMessage {
   ///
   /// hdg
   final uint16_t hdg;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GlobalPositionInt({
     required this.timeBootMs,
@@ -11131,6 +11207,10 @@ class RcChannelsScaled implements MavlinkMessage {
   ///
   /// rssi
   final uint8_t rssi;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   RcChannelsScaled({
     required this.timeBootMs,
@@ -11306,6 +11386,10 @@ class RcChannelsRaw implements MavlinkMessage {
   ///
   /// rssi
   final uint8_t rssi;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   RcChannelsRaw({
     required this.timeBootMs,
@@ -11562,6 +11646,10 @@ class ServoOutputRaw implements MavlinkMessage {
   ///
   /// servo16_raw
   final uint16_t servo16Raw;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ServoOutputRaw({
     required this.timeUsec,
@@ -11692,7 +11780,7 @@ class MissionRequestPartialList implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -11701,7 +11789,7 @@ class MissionRequestPartialList implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -11792,7 +11880,7 @@ class MissionWritePartialList implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -11801,7 +11889,7 @@ class MissionWritePartialList implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -11944,7 +12032,7 @@ class MissionItem implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -11953,7 +12041,7 @@ class MissionItem implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// The coordinate system of the waypoint.
   ///
@@ -12099,7 +12187,7 @@ class MissionRequest implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12108,7 +12196,7 @@ class MissionRequest implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12195,7 +12283,7 @@ class MissionSetCurrent implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12204,7 +12292,7 @@ class MissionSetCurrent implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   MissionSetCurrent({
     required this.seq,
@@ -12318,6 +12406,10 @@ class MissionCurrent implements MavlinkMessage {
   ///
   /// rally_points_id
   final uint32_t rallyPointsId;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   MissionCurrent({
     required this.seq,
@@ -12390,7 +12482,7 @@ class MissionRequestList implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12399,7 +12491,7 @@ class MissionRequestList implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12474,7 +12566,7 @@ class MissionCount implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12483,7 +12575,7 @@ class MissionCount implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12574,7 +12666,7 @@ class MissionClearAll implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12583,7 +12675,7 @@ class MissionClearAll implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -12650,6 +12742,10 @@ class MissionItemReached implements MavlinkMessage {
   ///
   /// seq
   final uint16_t seq;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   MissionItemReached({
     required this.seq,
@@ -12697,7 +12793,7 @@ class MissionAck implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -12706,7 +12802,7 @@ class MissionAck implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission result.
   ///
@@ -12833,7 +12929,7 @@ class SetGpsGlobalOrigin implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
   ///
@@ -12845,6 +12941,8 @@ class SetGpsGlobalOrigin implements MavlinkMessage {
   ///
   /// time_usec
   final uint64_t timeUsec;
+  @override
+  int? get hasTargetComponent => null;
 
   SetGpsGlobalOrigin({
     required this.latitude,
@@ -12939,6 +13037,10 @@ class GpsGlobalOrigin implements MavlinkMessage {
   ///
   /// time_usec
   final uint64_t timeUsec;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GpsGlobalOrigin({
     required this.latitude,
@@ -13034,7 +13136,7 @@ class ParamMapRc implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -13043,7 +13145,7 @@ class ParamMapRc implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -13145,7 +13247,7 @@ class MissionRequestInt implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -13154,7 +13256,7 @@ class MissionRequestInt implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Mission type.
   ///
@@ -13280,7 +13382,7 @@ class SafetySetAllowedArea implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -13289,7 +13391,7 @@ class SafetySetAllowedArea implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Coordinate frame. Can be either global, GPS, right-handed with Z axis up or local, right handed, Z axis down.
   ///
@@ -13434,6 +13536,10 @@ class SafetyAllowedArea implements MavlinkMessage {
   ///
   /// frame
   final MavFrame frame;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SafetyAllowedArea({
     required this.p1x,
@@ -13548,6 +13654,10 @@ class AttitudeQuaternionCov implements MavlinkMessage {
   ///
   /// covariance
   final List<float> covariance;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AttitudeQuaternionCov({
     required this.timeUsec,
@@ -13681,6 +13791,10 @@ class NavControllerOutput implements MavlinkMessage {
   ///
   /// wp_dist
   final uint16_t wpDist;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   NavControllerOutput({
     required this.navRoll,
@@ -13837,6 +13951,10 @@ class GlobalPositionIntCov implements MavlinkMessage {
   ///
   /// estimator_type
   final MavEstimatorType estimatorType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GlobalPositionIntCov({
     required this.timeUsec,
@@ -14019,6 +14137,10 @@ class LocalPositionNedCov implements MavlinkMessage {
   ///
   /// estimator_type
   final MavEstimatorType estimatorType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   LocalPositionNedCov({
     required this.timeUsec,
@@ -14288,6 +14410,10 @@ class RcChannels implements MavlinkMessage {
   ///
   /// rssi
   final uint8_t rssi;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   RcChannels({
     required this.timeBootMs,
@@ -14425,7 +14551,7 @@ class RequestDataStream implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// The target requested to send the message stream.
   ///
@@ -14434,7 +14560,7 @@ class RequestDataStream implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// The ID of the requested data stream
   ///
@@ -14528,6 +14654,10 @@ class DataStream implements MavlinkMessage {
   ///
   /// on_off
   final uint8_t onOff;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   DataStream({
     required this.messageRate,
@@ -14706,6 +14836,10 @@ class ManualControl implements MavlinkMessage {
   ///
   /// aux6
   final int16_t aux6;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ManualControl({
     required this.x,
@@ -14886,7 +15020,7 @@ class RcChannelsOverride implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -14895,7 +15029,7 @@ class RcChannelsOverride implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// RC channel 9 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
   ///
@@ -15196,7 +15330,7 @@ class MissionItemInt implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -15205,7 +15339,7 @@ class MissionItemInt implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// The coordinate system of the waypoint.
   ///
@@ -15390,6 +15524,10 @@ class VfrHud implements MavlinkMessage {
   ///
   /// throttle
   final uint16_t throttle;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   VfrHud({
     required this.airspeed,
@@ -15516,7 +15654,7 @@ class CommandInt implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -15525,7 +15663,7 @@ class CommandInt implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// The coordinate system of the COMMAND.
   ///
@@ -15703,7 +15841,7 @@ class CommandLong implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component which should execute the command, 0 for all components
   ///
@@ -15712,7 +15850,7 @@ class CommandLong implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
   ///
@@ -15848,7 +15986,7 @@ class CommandAck implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID of the target recipient. This is the ID of the system that sent the command for which this COMMAND_ACK is an acknowledgement.
   ///
@@ -15859,7 +15997,7 @@ class CommandAck implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   CommandAck({
     required this.command,
@@ -15937,7 +16075,7 @@ class CommandCancel implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component executing long running command.
   ///
@@ -15946,7 +16084,7 @@ class CommandCancel implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   CommandCancel({
     required this.command,
@@ -16052,6 +16190,10 @@ class ManualSetpoint implements MavlinkMessage {
   ///
   /// manual_override_switch
   final uint8_t manualOverrideSwitch;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ManualSetpoint({
     required this.timeBootMs,
@@ -16174,7 +16316,7 @@ class SetAttitudeTarget implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -16183,7 +16325,7 @@ class SetAttitudeTarget implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Bitmap to indicate which dimensions should be ignored by the vehicle.
   ///
@@ -16337,6 +16479,10 @@ class AttitudeTarget implements MavlinkMessage {
   ///
   /// type_mask
   final AttitudeTargetTypemask typeMask;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AttitudeTarget({
     required this.timeBootMs,
@@ -16526,7 +16672,7 @@ class SetPositionTargetLocalNed implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -16535,7 +16681,7 @@ class SetPositionTargetLocalNed implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Valid options are: MAV_FRAME_LOCAL_NED = 1, MAV_FRAME_LOCAL_OFFSET_NED = 7, MAV_FRAME_BODY_NED = 8, MAV_FRAME_BODY_OFFSET_NED = 9
   ///
@@ -16772,6 +16918,10 @@ class PositionTargetLocalNed implements MavlinkMessage {
   ///
   /// coordinate_frame
   final MavFrame coordinateFrame;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   PositionTargetLocalNed({
     required this.timeBootMs,
@@ -16990,7 +17140,7 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -16999,7 +17149,7 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11
   ///
@@ -17236,6 +17386,10 @@ class PositionTargetGlobalInt implements MavlinkMessage {
   ///
   /// coordinate_frame
   final MavFrame coordinateFrame;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   PositionTargetGlobalInt({
     required this.timeBootMs,
@@ -17392,6 +17546,10 @@ class LocalPositionNedSystemGlobalOffset implements MavlinkMessage {
   ///
   /// yaw
   final float yaw;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   LocalPositionNedSystemGlobalOffset({
     required this.timeBootMs,
@@ -17602,6 +17760,10 @@ class HilState implements MavlinkMessage {
   ///
   /// zacc
   final int16_t zacc;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilState({
     required this.timeUsec,
@@ -17783,6 +17945,10 @@ class HilControls implements MavlinkMessage {
   ///
   /// nav_mode
   final uint8_t navMode;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilControls({
     required this.timeUsec,
@@ -17987,6 +18153,10 @@ class HilRcInputsRaw implements MavlinkMessage {
   ///
   /// rssi
   final uint8_t rssi;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilRcInputsRaw({
     required this.timeUsec,
@@ -18111,6 +18281,10 @@ class HilActuatorControls implements MavlinkMessage {
   ///
   /// mode
   final MavModeFlag mode;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilActuatorControls({
     required this.timeUsec,
@@ -18250,6 +18424,10 @@ class OpticalFlow implements MavlinkMessage {
   ///
   /// flow_rate_y
   final float flowRateY;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   OpticalFlow({
     required this.timeUsec,
@@ -18407,6 +18585,10 @@ class GlobalVisionPositionEstimate implements MavlinkMessage {
   ///
   /// reset_counter
   final uint8_t resetCounter;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GlobalVisionPositionEstimate({
     required this.usec,
@@ -18562,6 +18744,10 @@ class VisionPositionEstimate implements MavlinkMessage {
   ///
   /// reset_counter
   final uint8_t resetCounter;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   VisionPositionEstimate({
     required this.usec,
@@ -18689,6 +18875,10 @@ class VisionSpeedEstimate implements MavlinkMessage {
   ///
   /// reset_counter
   final uint8_t resetCounter;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   VisionSpeedEstimate({
     required this.usec,
@@ -18821,6 +19011,10 @@ class ViconPositionEstimate implements MavlinkMessage {
   ///
   /// covariance
   final List<float> covariance;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ViconPositionEstimate({
     required this.usec,
@@ -19032,6 +19226,10 @@ class HighresImu implements MavlinkMessage {
   ///
   /// id
   final uint8_t id;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HighresImu({
     required this.timeUsec,
@@ -19236,6 +19434,10 @@ class OpticalFlowRad implements MavlinkMessage {
   ///
   /// quality
   final uint8_t quality;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   OpticalFlowRad({
     required this.timeUsec,
@@ -19462,6 +19664,10 @@ class HilSensor implements MavlinkMessage {
   ///
   /// id
   final uint8_t id;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilSensor({
     required this.timeUsec,
@@ -19755,6 +19961,10 @@ class SimState implements MavlinkMessage {
   ///
   /// lon_int
   final int32_t lonInt;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SimState({
     required this.q1,
@@ -19934,6 +20144,10 @@ class RadioStatus implements MavlinkMessage {
   ///
   /// remnoise
   final uint8_t remnoise;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   RadioStatus({
     required this.rxerrors,
@@ -20013,7 +20227,7 @@ class FileTransferProtocol implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast)
   ///
@@ -20022,7 +20236,7 @@ class FileTransferProtocol implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html.
   ///
@@ -20119,7 +20333,7 @@ class Timesync implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Target component id. Request: 0 (broadcast) or id of specific component. Response must contain component id of the requesting component.
   ///
@@ -20130,7 +20344,7 @@ class Timesync implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   Timesync({
     required this.tc1,
@@ -20199,6 +20413,10 @@ class CameraTrigger implements MavlinkMessage {
   ///
   /// seq
   final uint32_t seq;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraTrigger({
     required this.timeUsec,
@@ -20371,6 +20589,10 @@ class HilGps implements MavlinkMessage {
   ///
   /// yaw
   final uint16_t yaw;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilGps({
     required this.timeUsec,
@@ -20571,6 +20793,10 @@ class HilOpticalFlow implements MavlinkMessage {
   ///
   /// quality
   final uint8_t quality;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilOpticalFlow({
     required this.timeUsec,
@@ -20797,6 +21023,10 @@ class HilStateQuaternion implements MavlinkMessage {
   ///
   /// zacc
   final int16_t zacc;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HilStateQuaternion({
     required this.timeUsec,
@@ -20998,6 +21228,10 @@ class ScaledImu2 implements MavlinkMessage {
   ///
   /// temperature
   final int16_t temperature;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ScaledImu2({
     required this.timeBootMs,
@@ -21100,7 +21334,7 @@ class LogRequestList implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21109,7 +21343,7 @@ class LogRequestList implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   LogRequestList({
     required this.start,
@@ -21201,6 +21435,10 @@ class LogEntry implements MavlinkMessage {
   ///
   /// last_log_num
   final uint16_t lastLogNum;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   LogEntry({
     required this.timeUtc,
@@ -21288,7 +21526,7 @@ class LogRequestData implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21297,7 +21535,7 @@ class LogRequestData implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   LogRequestData({
     required this.ofs,
@@ -21384,6 +21622,10 @@ class LogData implements MavlinkMessage {
   ///
   /// data
   final List<int8_t> data;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   LogData({
     required this.ofs,
@@ -21440,7 +21682,7 @@ class LogErase implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21449,7 +21691,7 @@ class LogErase implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   LogErase({
     required this.targetSystem,
@@ -21501,7 +21743,7 @@ class LogRequestEnd implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21510,7 +21752,7 @@ class LogRequestEnd implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   LogRequestEnd({
     required this.targetSystem,
@@ -21562,7 +21804,7 @@ class GpsInjectData implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -21571,7 +21813,7 @@ class GpsInjectData implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Data length
   ///
@@ -21806,6 +22048,10 @@ class Gps2Raw implements MavlinkMessage {
   ///
   /// hdg_acc
   final uint32_t hdgAcc;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Gps2Raw({
     required this.timeUsec,
@@ -21941,6 +22187,10 @@ class PowerStatus implements MavlinkMessage {
   ///
   /// flags
   final MavPowerStatus flags;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   PowerStatus({
     required this.vcc,
@@ -22048,7 +22298,7 @@ class SerialControl implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -22059,7 +22309,7 @@ class SerialControl implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   SerialControl({
     required this.baudrate,
@@ -22233,6 +22483,10 @@ class GpsRtk implements MavlinkMessage {
   ///
   /// baseline_coords_type
   final RtkBaselineCoordinateSystem baselineCoordsType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GpsRtk({
     required this.timeLastBaselineMs,
@@ -22426,6 +22680,10 @@ class Gps2Rtk implements MavlinkMessage {
   ///
   /// baseline_coords_type
   final RtkBaselineCoordinateSystem baselineCoordsType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Gps2Rtk({
     required this.timeLastBaselineMs,
@@ -22615,6 +22873,10 @@ class ScaledImu3 implements MavlinkMessage {
   ///
   /// temperature
   final int16_t temperature;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ScaledImu3({
     required this.timeBootMs,
@@ -22752,6 +23014,10 @@ class DataTransmissionHandshake implements MavlinkMessage {
   ///
   /// jpg_quality
   final uint8_t jpgQuality;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   DataTransmissionHandshake({
     required this.size,
@@ -22831,6 +23097,10 @@ class EncapsulatedData implements MavlinkMessage {
   ///
   /// data
   final List<int8_t> data;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   EncapsulatedData({
     required this.seqnr,
@@ -22985,6 +23255,10 @@ class DistanceSensor implements MavlinkMessage {
   ///
   /// signal_quality
   final uint8_t signalQuality;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   DistanceSensor({
     required this.timeBootMs,
@@ -23103,6 +23377,10 @@ class TerrainRequest implements MavlinkMessage {
   ///
   /// grid_spacing
   final uint16_t gridSpacing;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   TerrainRequest({
     required this.mask,
@@ -23195,6 +23473,10 @@ class TerrainData implements MavlinkMessage {
   ///
   /// gridbit
   final uint8_t gridbit;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   TerrainData({
     required this.lat,
@@ -23269,6 +23551,10 @@ class TerrainCheck implements MavlinkMessage {
   ///
   /// lon
   final int32_t lon;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   TerrainCheck({
     required this.lat,
@@ -23368,6 +23654,10 @@ class TerrainReport implements MavlinkMessage {
   ///
   /// loaded
   final uint16_t loaded;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   TerrainReport({
     required this.lat,
@@ -23479,6 +23769,10 @@ class ScaledPressure2 implements MavlinkMessage {
   ///
   /// temperature_press_diff
   final int16_t temperaturePressDiff;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ScaledPressure2({
     required this.timeBootMs,
@@ -23587,6 +23881,10 @@ class AttPosMocap implements MavlinkMessage {
   ///
   /// covariance
   final List<float> covariance;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AttPosMocap({
     required this.timeUsec,
@@ -23673,7 +23971,7 @@ class SetActuatorControlTarget implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -23682,7 +23980,7 @@ class SetActuatorControlTarget implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   SetActuatorControlTarget({
     required this.timeUsec,
@@ -23763,6 +24061,10 @@ class ActuatorControlTarget implements MavlinkMessage {
   ///
   /// group_mlx
   final uint8_t groupMlx;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ActuatorControlTarget({
     required this.timeUsec,
@@ -23873,6 +24175,10 @@ class Altitude implements MavlinkMessage {
   ///
   /// bottom_clearance
   final float bottomClearance;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Altitude({
     required this.timeUsec,
@@ -23972,6 +24278,10 @@ class ResourceRequest implements MavlinkMessage {
   ///
   /// storage
   final List<int8_t> storage;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ResourceRequest({
     required this.requestId,
@@ -24075,6 +24385,10 @@ class ScaledPressure3 implements MavlinkMessage {
   ///
   /// temperature_press_diff
   final int16_t temperaturePressDiff;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ScaledPressure3({
     required this.timeBootMs,
@@ -24220,6 +24534,10 @@ class FollowTarget implements MavlinkMessage {
   ///
   /// est_capabilities
   final uint8_t estCapabilities;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   FollowTarget({
     required this.timestamp,
@@ -24447,6 +24765,10 @@ class ControlSystemState implements MavlinkMessage {
   ///
   /// yaw_rate
   final float yawRate;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ControlSystemState({
     required this.timeUsec,
@@ -24685,6 +25007,10 @@ class BatteryStatus implements MavlinkMessage {
   ///
   /// fault_bitmask
   final MavBatteryFault faultBitmask;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   BatteryStatus({
     required this.currentConsumed,
@@ -24865,6 +25191,10 @@ class AutopilotVersion implements MavlinkMessage {
   ///
   /// uid2
   final List<int8_t> uid2;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AutopilotVersion({
     required this.capabilities,
@@ -25081,6 +25411,10 @@ class LandingTarget implements MavlinkMessage {
   ///
   /// position_valid
   final uint8_t positionValid;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   LandingTarget({
     required this.timeUsec,
@@ -25216,6 +25550,10 @@ class FenceStatus implements MavlinkMessage {
   ///
   /// breach_mitigation
   final FenceMitigate breachMitigation;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   FenceStatus({
     required this.breachTime,
@@ -25414,6 +25752,10 @@ class MagCalReport implements MavlinkMessage {
   ///
   /// scale_factor
   final float scaleFactor;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   MagCalReport({
     required this.fitness,
@@ -25689,6 +26031,10 @@ class EfiStatus implements MavlinkMessage {
   ///
   /// fuel_pressure
   final float fuelPressure;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   EfiStatus({
     required this.ecuIndex,
@@ -25879,6 +26225,10 @@ class EstimatorStatus implements MavlinkMessage {
   ///
   /// flags
   final EstimatorStatusFlags flags;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   EstimatorStatus({
     required this.timeUsec,
@@ -26036,6 +26386,10 @@ class WindCov implements MavlinkMessage {
   ///
   /// vert_accuracy
   final float vertAccuracy;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   WindCov({
     required this.timeUsec,
@@ -26269,6 +26623,10 @@ class GpsInput implements MavlinkMessage {
   ///
   /// yaw
   final uint16_t yaw;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GpsInput({
     required this.timeUsec,
@@ -26404,6 +26762,10 @@ class GpsRtcmData implements MavlinkMessage {
   ///
   /// data
   final List<int8_t> data;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GpsRtcmData({
     required this.flags,
@@ -26657,6 +27019,10 @@ class HighLatency implements MavlinkMessage {
   ///
   /// wp_num
   final uint8_t wpNum;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HighLatency({
     required this.customMode,
@@ -27022,6 +27388,10 @@ class HighLatency2 implements MavlinkMessage {
   ///
   /// custom2
   final int8_t custom2;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HighLatency2({
     required this.timestamp,
@@ -27217,6 +27587,10 @@ class Vibration implements MavlinkMessage {
   ///
   /// clipping_2
   final uint32_t clipping2;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Vibration({
     required this.timeUsec,
@@ -27392,6 +27766,10 @@ class HomePosition implements MavlinkMessage {
   ///
   /// time_usec
   final uint64_t timeUsec;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HomePosition({
     required this.latitude,
@@ -27576,7 +27954,7 @@ class SetHomePosition implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
   ///
@@ -27588,6 +27966,8 @@ class SetHomePosition implements MavlinkMessage {
   ///
   /// time_usec
   final uint64_t timeUsec;
+  @override
+  int? get hasTargetComponent => null;
 
   SetHomePosition({
     required this.latitude,
@@ -27692,6 +28072,10 @@ class MessageInterval implements MavlinkMessage {
   ///
   /// message_id
   final uint16_t messageId;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   MessageInterval({
     required this.intervalUs,
@@ -27752,6 +28136,10 @@ class ExtendedSysState implements MavlinkMessage {
   ///
   /// landed_state
   final MavLandedState landedState;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ExtendedSysState({
     required this.vtolState,
@@ -27905,6 +28293,10 @@ class AdsbVehicle implements MavlinkMessage {
   ///
   /// tslc
   final uint8_t tslc;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AdsbVehicle({
     required this.icaoAddress,
@@ -28054,6 +28446,10 @@ class Collision implements MavlinkMessage {
   ///
   /// threat_level
   final MavCollisionThreatLevel threatLevel;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Collision({
     required this.id,
@@ -28140,7 +28536,7 @@ class V2Extension implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast)
   ///
@@ -28149,7 +28545,7 @@ class V2Extension implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Variable length payload. The length must be encoded in the payload as part of the message_type protocol, e.g. by including the length as payload data, or by terminating the payload data with a non-zero marker. This is required in order to reconstruct zero-terminated payloads that are (or otherwise would be) trimmed by MAVLink 2 empty-byte truncation. The entire content of the payload block is opaque unless you understand the encoding message_type. The particular encoding used can be extension specific and might not always be documented as part of the MAVLink specification.
   ///
@@ -28241,6 +28637,10 @@ class MemoryVect implements MavlinkMessage {
   ///
   /// value
   final List<int8_t> value;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   MemoryVect({
     required this.address,
@@ -28326,6 +28726,10 @@ class DebugVect implements MavlinkMessage {
   ///
   /// name
   final List<char> name;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   DebugVect({
     required this.timeUsec,
@@ -28400,6 +28804,10 @@ class NamedValueFloat implements MavlinkMessage {
   ///
   /// name
   final List<char> name;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   NamedValueFloat({
     required this.timeBootMs,
@@ -28468,6 +28876,10 @@ class NamedValueInt implements MavlinkMessage {
   ///
   /// name
   final List<char> name;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   NamedValueInt({
     required this.timeBootMs,
@@ -28547,6 +28959,10 @@ class Statustext implements MavlinkMessage {
   ///
   /// chunk_seq
   final uint8_t chunkSeq;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Statustext({
     required this.severity,
@@ -28619,6 +29035,10 @@ class Debug implements MavlinkMessage {
   ///
   /// ind
   final uint8_t ind;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Debug({
     required this.timeBootMs,
@@ -28679,7 +29099,7 @@ class SetupSigning implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -28688,7 +29108,7 @@ class SetupSigning implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// signing key
   ///
@@ -28773,6 +29193,10 @@ class ButtonChange implements MavlinkMessage {
   ///
   /// state
   final uint8_t state;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ButtonChange({
     required this.timeBootMs,
@@ -28827,7 +29251,7 @@ class PlayTune implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -28836,7 +29260,7 @@ class PlayTune implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// tune in board specific format
   ///
@@ -29019,6 +29443,10 @@ class CameraInformation implements MavlinkMessage {
   ///
   /// gimbal_device_id
   final uint8_t gimbalDeviceId;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraInformation({
     required this.timeBootMs,
@@ -29147,6 +29575,10 @@ class CameraSettings implements MavlinkMessage {
   ///
   /// focusLevel
   final float focuslevel;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraSettings({
     required this.timeBootMs,
@@ -29310,6 +29742,10 @@ class StorageInformation implements MavlinkMessage {
   ///
   /// storage_usage
   final StorageUsageFlag storageUsage;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   StorageInformation({
     required this.timeBootMs,
@@ -29453,6 +29889,10 @@ class CameraCaptureStatus implements MavlinkMessage {
   ///
   /// image_count
   final int32_t imageCount;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraCaptureStatus({
     required this.timeBootMs,
@@ -29612,6 +30052,10 @@ class CameraImageCaptured implements MavlinkMessage {
   ///
   /// file_url
   final List<char> fileUrl;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraImageCaptured({
     required this.timeUtc,
@@ -29742,6 +30186,10 @@ class FlightInformation implements MavlinkMessage {
   ///
   /// landing_time
   final uint32_t landingTime;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   FlightInformation({
     required this.armingTimeUtc,
@@ -29845,6 +30293,10 @@ class MountOrientation implements MavlinkMessage {
   ///
   /// yaw_absolute
   final float yawAbsolute;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   MountOrientation({
     required this.timeBootMs,
@@ -29916,7 +30368,7 @@ class LoggingData implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -29925,7 +30377,7 @@ class LoggingData implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// data length
   ///
@@ -30026,7 +30478,7 @@ class LoggingDataAcked implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -30035,7 +30487,7 @@ class LoggingDataAcked implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// data length
   ///
@@ -30136,7 +30588,7 @@ class LoggingAck implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// component ID of the target
   ///
@@ -30145,7 +30597,7 @@ class LoggingAck implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   LoggingAck({
     required this.sequence,
@@ -30294,6 +30746,10 @@ class VideoStreamInformation implements MavlinkMessage {
   ///
   /// uri
   final List<char> uri;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   VideoStreamInformation({
     required this.framerate,
@@ -30449,6 +30905,10 @@ class VideoStreamStatus implements MavlinkMessage {
   ///
   /// stream_id
   final uint8_t streamId;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   VideoStreamStatus({
     required this.framerate,
@@ -30605,6 +31065,10 @@ class CameraFovStatus implements MavlinkMessage {
   ///
   /// vfov
   final float vfov;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraFovStatus({
     required this.timeBootMs,
@@ -30757,6 +31221,10 @@ class CameraTrackingImageStatus implements MavlinkMessage {
   ///
   /// target_data
   final CameraTrackingTargetData targetData;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraTrackingImageStatus({
     required this.pointX,
@@ -30951,6 +31419,10 @@ class CameraTrackingGeoStatus implements MavlinkMessage {
   ///
   /// tracking_status
   final CameraTrackingStatusFlags trackingStatus;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CameraTrackingGeoStatus({
     required this.lat,
@@ -31119,6 +31591,10 @@ class GimbalManagerInformation implements MavlinkMessage {
   ///
   /// gimbal_device_id
   final uint8_t gimbalDeviceId;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GimbalManagerInformation({
     required this.timeBootMs,
@@ -31245,6 +31721,10 @@ class GimbalManagerStatus implements MavlinkMessage {
   ///
   /// secondary_control_compid
   final uint8_t secondaryControlCompid;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GimbalManagerStatus({
     required this.timeBootMs,
@@ -31360,7 +31840,7 @@ class GimbalManagerSetAttitude implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -31369,7 +31849,7 @@ class GimbalManagerSetAttitude implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
   ///
@@ -31576,6 +32056,10 @@ class GimbalDeviceInformation implements MavlinkMessage {
   ///
   /// gimbal_device_id
   final uint8_t gimbalDeviceId;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GimbalDeviceInformation({
     required this.uid,
@@ -31739,7 +32223,7 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -31748,7 +32232,7 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   GimbalDeviceSetAttitude({
     required this.q,
@@ -31897,7 +32381,7 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -31906,7 +32390,7 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Yaw angle relating the quaternions in earth and body frames (see message description). NaN if unknown.
   ///
@@ -32110,7 +32594,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -32119,7 +32603,7 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
   ///
@@ -32283,7 +32767,7 @@ class GimbalManagerSetPitchyaw implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -32292,7 +32776,7 @@ class GimbalManagerSetPitchyaw implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
   ///
@@ -32414,7 +32898,7 @@ class GimbalManagerSetManualControl implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -32423,7 +32907,7 @@ class GimbalManagerSetManualControl implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
   ///
@@ -32572,6 +33056,10 @@ class EscInfo implements MavlinkMessage {
   ///
   /// info
   final uint8_t info;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   EscInfo({
     required this.timeUsec,
@@ -32687,6 +33175,10 @@ class EscStatus implements MavlinkMessage {
   ///
   /// index
   final uint8_t index;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   EscStatus({
     required this.timeUsec,
@@ -32779,6 +33271,10 @@ class WifiConfigAp implements MavlinkMessage {
   ///
   /// response
   final WifiConfigApResponse response;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   WifiConfigAp({
     required this.ssid,
@@ -32975,6 +33471,10 @@ class AisVessel implements MavlinkMessage {
   ///
   /// name
   final List<char> name;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AisVessel({
     required this.mmsi,
@@ -33129,6 +33629,10 @@ class UavcanNodeStatus implements MavlinkMessage {
   ///
   /// sub_mode
   final uint8_t subMode;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   UavcanNodeStatus({
     required this.timeUsec,
@@ -33256,6 +33760,10 @@ class UavcanNodeInfo implements MavlinkMessage {
   ///
   /// sw_version_minor
   final uint8_t swVersionMinor;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   UavcanNodeInfo({
     required this.timeUsec,
@@ -33343,7 +33851,7 @@ class ParamExtRequestRead implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -33352,7 +33860,7 @@ class ParamExtRequestRead implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -33420,7 +33928,7 @@ class ParamExtRequestList implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -33429,7 +33937,7 @@ class ParamExtRequestList implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   ParamExtRequestList({
     required this.targetSystem,
@@ -33510,6 +34018,10 @@ class ParamExtValue implements MavlinkMessage {
   ///
   /// param_type
   final MavParamExtType paramType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ParamExtValue({
     required this.paramCount,
@@ -33574,7 +34086,7 @@ class ParamExtSet implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -33583,7 +34095,7 @@ class ParamExtSet implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
   ///
@@ -33695,6 +34207,10 @@ class ParamExtAck implements MavlinkMessage {
   ///
   /// param_result
   final ParamAck paramResult;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ParamExtAck({
     required this.paramId,
@@ -33834,6 +34350,10 @@ class ObstacleDistance implements MavlinkMessage {
   ///
   /// frame
   final MavFrame frame;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ObstacleDistance({
     required this.timeUsec,
@@ -34066,6 +34586,10 @@ class Odometry implements MavlinkMessage {
   ///
   /// quality
   final int8_t quality;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Odometry({
     required this.timeUsec,
@@ -34298,6 +34822,10 @@ class TrajectoryRepresentationWaypoints implements MavlinkMessage {
   ///
   /// valid_points
   final uint8_t validPoints;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   TrajectoryRepresentationWaypoints({
     required this.timeUsec,
@@ -34453,6 +34981,10 @@ class TrajectoryRepresentationBezier implements MavlinkMessage {
   ///
   /// valid_points
   final uint8_t validPoints;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   TrajectoryRepresentationBezier({
     required this.timeUsec,
@@ -34574,6 +35106,10 @@ class CellularStatus implements MavlinkMessage {
   ///
   /// quality
   final uint8_t quality;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CellularStatus({
     required this.mcc,
@@ -34698,6 +35234,10 @@ class IsbdLinkStatus implements MavlinkMessage {
   ///
   /// rx_session_pending
   final uint8_t rxSessionPending;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   IsbdLinkStatus({
     required this.timestamp,
@@ -34826,6 +35366,10 @@ class CellularConfig implements MavlinkMessage {
   ///
   /// response
   final CellularConfigResponse response;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CellularConfig({
     required this.enableLte,
@@ -34910,6 +35454,10 @@ class RawRpm implements MavlinkMessage {
   ///
   /// index
   final uint8_t index;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   RawRpm({
     required this.frequency,
@@ -35112,6 +35660,10 @@ class UtmGlobalPosition implements MavlinkMessage {
   ///
   /// flags
   final UtmDataAvailFlags flags;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   UtmGlobalPosition({
     required this.time,
@@ -35252,6 +35804,10 @@ class DebugFloatArray implements MavlinkMessage {
   ///
   /// data
   final List<float> data;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   DebugFloatArray({
     required this.timeUsec,
@@ -35351,6 +35907,10 @@ class OrbitExecutionStatus implements MavlinkMessage {
   ///
   /// frame
   final MavFrame frame;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   OrbitExecutionStatus({
     required this.timeUsec,
@@ -35578,6 +36138,10 @@ class BatteryInfo implements MavlinkMessage {
   ///
   /// name
   final List<char> name;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   BatteryInfo({
     required this.dischargeMinimumVoltage,
@@ -35793,6 +36357,10 @@ class GeneratorStatus implements MavlinkMessage {
   ///
   /// generator_temperature
   final int16_t generatorTemperature;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GeneratorStatus({
     required this.status,
@@ -35896,6 +36464,10 @@ class ActuatorOutputStatus implements MavlinkMessage {
   ///
   /// actuator
   final List<float> actuator;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ActuatorOutputStatus({
     required this.timeUsec,
@@ -35987,6 +36559,10 @@ class TimeEstimateToTarget implements MavlinkMessage {
   ///
   /// commanded_action
   final int32_t commandedAction;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   TimeEstimateToTarget({
     required this.safeReturn,
@@ -36060,7 +36636,7 @@ class Tunnel implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (can be 0 for broadcast, but this is discouraged)
   ///
@@ -36069,7 +36645,7 @@ class Tunnel implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Length of the data transported in payload
   ///
@@ -36155,7 +36731,7 @@ class CanFrame implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID.
   ///
@@ -36164,7 +36740,7 @@ class CanFrame implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Bus number
   ///
@@ -36412,6 +36988,10 @@ class OnboardComputerStatus implements MavlinkMessage {
   ///
   /// temperature_core
   final List<int8_t> temperatureCore;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   OnboardComputerStatus({
     required this.timeUsec,
@@ -36568,6 +37148,10 @@ class ComponentInformation implements MavlinkMessage {
   ///
   /// peripherals_metadata_uri
   final List<char> peripheralsMetadataUri;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ComponentInformation({
     required this.timeBootMs,
@@ -36658,6 +37242,10 @@ class ComponentMetadata implements MavlinkMessage {
   ///
   /// uri
   final List<char> uri;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   ComponentMetadata({
     required this.timeBootMs,
@@ -36721,7 +37309,7 @@ class PlayTuneV2 implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -36730,7 +37318,7 @@ class PlayTuneV2 implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Tune definition as a NULL-terminated string.
   ///
@@ -36807,7 +37395,7 @@ class SupportedTunes implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -36816,7 +37404,7 @@ class SupportedTunes implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   SupportedTunes({
     required this.format,
@@ -36916,6 +37504,10 @@ class Event implements MavlinkMessage {
   ///
   /// arguments
   final List<int8_t> arguments;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   Event({
     required this.id,
@@ -36996,6 +37588,10 @@ class CurrentEventSequence implements MavlinkMessage {
   ///
   /// flags
   final MavEventCurrentSequenceFlags flags;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   CurrentEventSequence({
     required this.sequence,
@@ -37060,7 +37656,7 @@ class RequestEvent implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -37069,7 +37665,7 @@ class RequestEvent implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   RequestEvent({
     required this.firstSequence,
@@ -37144,7 +37740,7 @@ class ResponseEventError implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -37153,7 +37749,7 @@ class ResponseEventError implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Error reason.
   ///
@@ -37234,7 +37830,7 @@ class CanfdFrame implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID.
   ///
@@ -37243,7 +37839,7 @@ class CanfdFrame implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// bus number
   ///
@@ -37340,7 +37936,7 @@ class CanFilterModify implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID.
   ///
@@ -37349,7 +37945,7 @@ class CanFilterModify implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// bus number
   ///
@@ -37458,6 +38054,10 @@ class WheelDistance implements MavlinkMessage {
   ///
   /// count
   final uint8_t count;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   WheelDistance({
     required this.timeUsec,
@@ -37575,6 +38175,10 @@ class WinchStatus implements MavlinkMessage {
   ///
   /// temperature
   final int16_t temperature;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   WinchStatus({
     required this.timeUsec,
@@ -37651,7 +38255,7 @@ class OpenDroneIdBasicId implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -37660,7 +38264,7 @@ class OpenDroneIdBasicId implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -37842,7 +38446,7 @@ class OpenDroneIdLocation implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -37851,7 +38455,7 @@ class OpenDroneIdLocation implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38051,7 +38655,7 @@ class OpenDroneIdAuthentication implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38060,7 +38664,7 @@ class OpenDroneIdAuthentication implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38188,7 +38792,7 @@ class OpenDroneIdSelfId implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38197,7 +38801,7 @@ class OpenDroneIdSelfId implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38355,7 +38959,7 @@ class OpenDroneIdSystem implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38364,7 +38968,7 @@ class OpenDroneIdSystem implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38512,7 +39116,7 @@ class OpenDroneIdOperatorId implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38521,7 +39125,7 @@ class OpenDroneIdOperatorId implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38610,7 +39214,7 @@ class OpenDroneIdMessagePack implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38619,7 +39223,7 @@ class OpenDroneIdMessagePack implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html.
   ///
@@ -38727,6 +39331,10 @@ class OpenDroneIdArmStatus implements MavlinkMessage {
   ///
   /// error
   final List<char> error;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   OpenDroneIdArmStatus({
     required this.status,
@@ -38813,7 +39421,7 @@ class OpenDroneIdSystemUpdate implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID (0 for broadcast).
   ///
@@ -38822,7 +39430,7 @@ class OpenDroneIdSystemUpdate implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   OpenDroneIdSystemUpdate({
     required this.operatorLatitude,
@@ -38909,6 +39517,10 @@ class HygrometerSensor implements MavlinkMessage {
   ///
   /// id
   final uint8_t id;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   HygrometerSensor({
     required this.temperature,
@@ -39035,7 +39647,7 @@ class CommandIntStamped implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component ID
   ///
@@ -39044,7 +39656,7 @@ class CommandIntStamped implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// The coordinate system of the COMMAND, as defined by MAV_FRAME enum
   ///
@@ -39244,7 +39856,7 @@ class CommandLongStamped implements MavlinkMessage {
   /// target_system
   final uint8_t targetSystem;
   @override
-  int? get targetSystem => targetSystem;
+  int? get hasTargetSystem => targetSystem;
 
   /// Component which should execute the command, 0 for all components
   ///
@@ -39253,7 +39865,7 @@ class CommandLongStamped implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
   @override
-  int? get targetComponent => targetComponent;
+  int? get hasTargetComponent => targetComponent;
 
   /// 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
   ///
@@ -39385,6 +39997,10 @@ class SensPower implements MavlinkMessage {
   ///
   /// adc121_cs2_amp
   final float adc121Cs2Amp;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SensPower({
     required this.adc121VspbVolt,
@@ -39548,6 +40164,10 @@ class SensMppt implements MavlinkMessage {
   ///
   /// mppt3_status
   final uint8_t mppt3Status;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SensMppt({
     required this.mpptTimestamp,
@@ -39827,6 +40447,10 @@ class AslctrlData implements MavlinkMessage {
   ///
   /// SpoilersEngaged
   final uint8_t spoilersengaged;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AslctrlData({
     required this.timestamp,
@@ -40040,6 +40664,10 @@ class AslctrlDebug implements MavlinkMessage {
   ///
   /// i8_2
   final uint8_t i82;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AslctrlDebug({
     required this.i321,
@@ -40148,6 +40776,10 @@ class AsluavStatus implements MavlinkMessage {
   ///
   /// Servo_status
   final List<int8_t> servoStatus;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AsluavStatus({
     required this.motorRpm,
@@ -40263,6 +40895,10 @@ class EkfExt implements MavlinkMessage {
   ///
   /// alpha
   final float alpha;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   EkfExt({
     required this.timestamp,
@@ -40385,6 +41021,10 @@ class AslObctrl implements MavlinkMessage {
   ///
   /// obctrl_status
   final uint8_t obctrlStatus;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AslObctrl({
     required this.timestamp,
@@ -40480,6 +41120,10 @@ class SensAtmos implements MavlinkMessage {
   ///
   /// Humidity
   final float humidity;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SensAtmos({
     required this.timestamp,
@@ -40651,6 +41295,10 @@ class SensBatmon implements MavlinkMessage {
   ///
   /// SoC
   final uint8_t soc;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SensBatmon({
     required this.batmonTimestamp,
@@ -40950,6 +41598,10 @@ class FwSoaringData implements MavlinkMessage {
   ///
   /// valid
   final uint8_t valid;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   FwSoaringData({
     required this.timestamp,
@@ -41146,6 +41798,10 @@ class SensorpodStatus implements MavlinkMessage {
   ///
   /// cpu_temp
   final uint8_t cpuTemp;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SensorpodStatus({
     required this.timestamp,
@@ -41318,6 +41974,10 @@ class SensPowerBoard implements MavlinkMessage {
   ///
   /// pwr_brd_led_status
   final uint8_t pwrBrdLedStatus;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SensPowerBoard({
     required this.timestamp,
@@ -41457,6 +42117,10 @@ class GsmLinkStatus implements MavlinkMessage {
   ///
   /// rsrq
   final uint8_t rsrq;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   GsmLinkStatus({
     required this.timestamp,
@@ -41581,6 +42245,10 @@ class SatcomLinkStatus implements MavlinkMessage {
   ///
   /// rx_session_pending
   final uint8_t rxSessionPending;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SatcomLinkStatus({
     required this.timestamp,
@@ -41690,6 +42358,10 @@ class SensorAirflowAngles implements MavlinkMessage {
   ///
   /// sideslip_valid
   final uint8_t sideslipValid;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   SensorAirflowAngles({
     required this.timestamp,

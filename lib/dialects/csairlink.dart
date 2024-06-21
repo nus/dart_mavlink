@@ -98,6 +98,10 @@ class AirlinkAuth implements MavlinkMessage {
   ///
   /// password
   final List<char> password;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AirlinkAuth({
     required this.login,
@@ -149,6 +153,10 @@ class AirlinkAuthResponse implements MavlinkMessage {
   ///
   /// resp_type
   final AirlinkAuthResponseType respType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AirlinkAuthResponse({
     required this.respType,
@@ -197,6 +205,10 @@ class AirlinkEyeGsHolePushRequest implements MavlinkMessage {
   ///
   /// resp_type
   final AirlinkEyeGsHolePushRespType respType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AirlinkEyeGsHolePushRequest({
     required this.respType,
@@ -277,6 +289,10 @@ class AirlinkEyeGsHolePushResponse implements MavlinkMessage {
   ///
   /// ip_address_6
   final List<int8_t> ipAddress6;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AirlinkEyeGsHolePushResponse({
     required this.ipPort,
@@ -344,6 +360,10 @@ class AirlinkEyeHp implements MavlinkMessage {
   ///
   /// resp_type
   final AirlinkEyeHolePushType respType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AirlinkEyeHp({
     required this.respType,
@@ -392,6 +412,10 @@ class AirlinkEyeTurnInit implements MavlinkMessage {
   ///
   /// resp_type
   final AirlinkEyeTurnInitType respType;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   AirlinkEyeTurnInit({
     required this.respType,

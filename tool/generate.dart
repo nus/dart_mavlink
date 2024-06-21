@@ -676,14 +676,20 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
       content += 'final ${asDartType(field.type, field.enum_)} ${field.nameForDart};\n';
 
       if (field.name == "target_system" && !hasTargetSystem) {
-        content += "@override int? get targetSystem => ${field.nameForDart};\n";
+        content += "@override int? get hasTargetSystem => ${field.nameForDart};\n";
         hasTargetSystem = true;   
       }
       else if (field.name == "target_component" && !hasTargetComponent) {
-        content += "@override int? get targetComponent => ${field.nameForDart};\n";
+        content += "@override int? get hasTargetComponent => ${field.nameForDart};\n";
         hasTargetComponent = true;  
       }
       
+    }
+    if (!hasTargetSystem) {
+      content += "@override int? get hasTargetSystem => null;\n";
+    }
+    if (!hasTargetComponent) {
+      content += "@override int? get hasTargetComponent => null;\n";
     }
     content += '\n';
 

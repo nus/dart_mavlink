@@ -71,6 +71,10 @@ class IcarousHeartbeat implements MavlinkMessage {
   ///
   /// status
   final IcarousFmsState status;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   IcarousHeartbeat({
     required this.status,
@@ -252,6 +256,10 @@ class IcarousKinematicBands implements MavlinkMessage {
   ///
   /// type5
   final IcarousTrackBandTypes type5;
+  @override
+  int? get hasTargetSystem => null;
+  @override
+  int? get hasTargetComponent => null;
 
   IcarousKinematicBands({
     required this.min1,
