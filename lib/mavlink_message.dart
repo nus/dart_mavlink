@@ -66,6 +66,24 @@ abstract class MavlinkMessage {
     return ret;
   }
 
+  static Int64List asInt64List(ByteData data, int offsetInBytes, int length, [Endian endian=Endian.little]) {
+    Int64List ret = Int64List(length);
+    for (var i = 0; i < length; i++) {
+      ret[i] = data.getInt64(offsetInBytes + (i * 8), endian);
+    }
+
+    return ret;
+  }
+  
+  static Uint64List asUint64List(ByteData data, int offsetInBytes, int length, [Endian endian=Endian.little]) {
+    Uint64List ret = Uint64List(length);
+    for (var i = 0; i < length; i++) {
+      ret[i] = data.getUint64(offsetInBytes + (i * 8), endian);
+    }
+
+    return ret;
+  }
+
   static Float32List asFloat32List(ByteData data, int offsetInBytes, int length, [Endian endian=Endian.little]) {
     Float32List ret = Float32List(length);
     for (var i = 0; i < length; i++) {
