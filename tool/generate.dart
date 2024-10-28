@@ -690,7 +690,7 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     content += '''factory ${msg.nameForDart}.parse(ByteData data_) {
     if (data_.lengthInBytes < ${msg.nameForDart}.mavlinkEncodedLength) {
       var len = ${msg.nameForDart}.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) + List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     ''';
