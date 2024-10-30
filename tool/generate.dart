@@ -15,23 +15,52 @@ class DialectEnums extends IterableMixin<DialectEnum> {
   @override
   int get length => _enums.length;
 
+  /// Adds all enums from a passed iterable of DialectEnums. Attempts to merge them
+  /// if they enum name exists in more than one Dialect.
   void addAll(DialectEnums iterable) {
     for (var e in iterable) {
-      if (_hasName(e.name)) {
+      var alreadyExists = _hasName(e.name);
+      if (alreadyExists.$1) {
+        mergeEnums(e, alreadyExists.$2!);
         continue;
       }
-
       _enums.add(e);
     }
   }
 
-  bool _hasName(String name) {
+  /// Merge two enums from different dialects. Allows inclusion of common.xml in vendor
+  /// dialects so that they may extend shared enums like MAV_CMD. Names and values must be
+  /// unique or it will throw error
+  void mergeEnums(DialectEnum e, DialectEnum eToExtend) {
+    print("Merging enum entry ${eToExtend.name}");
+    if (e.entries == null || eToExtend.entries == null) {
+      print("No entries exist in this enum, nothing to do.");
+      return;
+    }
+    
+    for (DialectEntry newEntry in e.entries!) {
+      for (DialectEntry entry in eToExtend.entries!) {
+        if (entry.name == newEntry.name) {
+          throw FormatException("Enum entry ${entry.name} already exists, cannot merge two entries of the same name");
+        }
+        if (entry.value == newEntry.value) {
+          throw FormatException("Enum entry value ${entry.value} already exists, cannot merge two entries with the same value");
+        }
+      }
+      print("Merging ${newEntry.name} to ${eToExtend.name}");
+      eToExtend.entries!.add(newEntry);
+    }
+  }
+
+  /// Looks up if a dialect of the same name already exists in the enum list,
+  /// and returns it if true. otherwise returns false
+  (bool, DialectEnum?) _hasName(String name) {
     for (var e in _enums) {
       if (e.name == name) {
-        return true;
+        return (true, e);
       }
     }
-    return false;
+    return (false, null);
   }
 
   static DialectEnums parseElement(XmlElement? elmEnums) {
