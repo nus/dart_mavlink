@@ -1238,6 +1238,24 @@ class Heartbeat implements MavlinkMessage {
     required this.mavlinkVersion,
   });
 
+  Heartbeat copyWith({
+    int? customMode,
+    int? type,
+    int? autopilot,
+    int? baseMode,
+    int? systemStatus,
+    int? mavlinkVersion,
+  }) {
+    return Heartbeat(
+      customMode: customMode ?? this.customMode,
+      type: type ?? this.type,
+      autopilot: autopilot ?? this.autopilot,
+      baseMode: baseMode ?? this.baseMode,
+      systemStatus: systemStatus ?? this.systemStatus,
+      mavlinkVersion: mavlinkVersion ?? this.mavlinkVersion,
+    );
+  }
+
   factory Heartbeat.parse(ByteData data_) {
     if (data_.lengthInBytes < Heartbeat.mavlinkEncodedLength) {
       var len = Heartbeat.mavlinkEncodedLength - data_.lengthInBytes;
@@ -1331,6 +1349,22 @@ class ProtocolVersion implements MavlinkMessage {
     required this.specVersionHash,
     required this.libraryVersionHash,
   });
+
+  ProtocolVersion copyWith({
+    int? version,
+    int? minVersion,
+    int? maxVersion,
+    List<int>? specVersionHash,
+    List<int>? libraryVersionHash,
+  }) {
+    return ProtocolVersion(
+      version: version ?? this.version,
+      minVersion: minVersion ?? this.minVersion,
+      maxVersion: maxVersion ?? this.maxVersion,
+      specVersionHash: specVersionHash ?? this.specVersionHash,
+      libraryVersionHash: libraryVersionHash ?? this.libraryVersionHash,
+    );
+  }
 
   factory ProtocolVersion.parse(ByteData data_) {
     if (data_.lengthInBytes < ProtocolVersion.mavlinkEncodedLength) {
