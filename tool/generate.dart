@@ -124,7 +124,8 @@ class DialectEntry {
       throw FormatException('The name of deprecated element should not be empty.');
     }
 
-    int value = int.parse(elmEntry.getAttribute('value') ?? '');
+    var valueStr = (elmEntry.getAttribute('value') ?? '');
+    int value = int.parse(valueStr);
     String? description = elmEntry.getElement('description')?.text;
 
     var deprecated = DialectDeprecated.parseElement(elmEntry.getElement('deprecated'));
