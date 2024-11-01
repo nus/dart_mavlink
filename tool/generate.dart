@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:collection';
+import 'dart:math';
 import 'package:xml/xml.dart';
 import 'package:path/path.dart' as path;
 import 'package:dart_mavlink/crc.dart';
@@ -124,8 +125,20 @@ class DialectEntry {
       throw FormatException('The name of deprecated element should not be empty.');
     }
 
+    int value;
     var valueStr = (elmEntry.getAttribute('value') ?? '');
-    int value = int.parse(valueStr);
+
+    // Values in the xml schema can be one of 4 types: bare int (eg; 8), 2 raised to some power (eg; 2**4), hex (eg; 0xFE), or binary, (eg; 0b001000)
+    // Dart handles the raw int and the hex natively with the int.parse() function, so we have to test for the other cases.
+    if (valueStr.startsWith("2**")) {
+      var exponent = int.parse(valueStr.split("2**")[1]);
+      value = pow(2, exponent).toInt();
+    } else if (valueStr.startsWith("0b")) {
+      var bitString = valueStr.split("0b")[1];
+      value = int.parse(bitString, radix: 2);
+    } else {
+      value = int.parse(valueStr);
+    }
     String? description = elmEntry.getElement('description')?.text;
 
     var deprecated = DialectDeprecated.parseElement(elmEntry.getElement('deprecated'));
