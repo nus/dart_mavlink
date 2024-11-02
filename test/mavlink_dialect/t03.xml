@@ -25,6 +25,20 @@
         <description>Description of ENUM_02_ENTRY_01</description>
       </entry>
     </enum>
+    <enum name="ENUM_03">
+      <description>Description of ENUM_03. Contains different representations of integer values</description>
+      <entry value="1" name="BIT0"/>
+      <entry value="2" name="BIT1"/>
+      <entry value="2**2" name="BIT2"/>
+      <entry value="2**3" name="BIT3"/>
+      <entry value="0b00010000" name="BIT4"/>
+      <entry value="0b00100000" name="BIT5"/>
+      <entry value="0x40" name="BIT6"/>
+      <entry value="0x80" name="BIT7"/>
+      <entry value="0b1000000000000000000000000000000000000000000000000000000000000" name="BIT60" />
+      <entry value="2305843009213693952" name="BIT61" />
+      <entry value="2**62" name="BIT62" />
+    </enum>
   </enums>
 
   <messages>

@@ -29,7 +29,7 @@ void main() {
     expect(dialectDoc.version, 3);
     expect(dialectDoc.dialect, 3);
 
-    expect(dialectDoc.enums.length, 3);
+    expect(dialectDoc.enums.length, 4);
 
     var e = dialectDoc.enums.elementAt(0);
     expect(e.name, "ENUM_00");
@@ -57,6 +57,21 @@ void main() {
     expect(e.name, "ENUM_02");
     expect(e.description, "Description of ENUM_02");
     expect(e.entries, isNotNull);
+
+    e = dialectDoc.enums.elementAt(3);
+    expect(e.name, "ENUM_03");
+    entries = e.entries;
+    expect(entries?.elementAt(0).value, 1);
+    expect(entries?.elementAt(1).value, 2);
+    expect(entries?.elementAt(2).value, 4);
+    expect(entries?.elementAt(3).value, 8);
+    expect(entries?.elementAt(4).value, 16);
+    expect(entries?.elementAt(5).value, 32);
+    expect(entries?.elementAt(6).value, 64);
+    expect(entries?.elementAt(7).value, 128);
+    expect(entries?.elementAt(8).value, 1152921504606846976);
+    expect(entries?.elementAt(9).value, 2305843009213693952);
+    expect(entries?.elementAt(10).value, 4611686018427387904);
   });
 
   test('Parse t04, name of enums is empty', () async {
