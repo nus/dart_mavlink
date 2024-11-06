@@ -76,10 +76,19 @@ class IcarousHeartbeat implements MavlinkMessage {
     required this.status,
   });
 
+  IcarousHeartbeat copyWith({
+    IcarousFmsState? status,
+  }) {
+    return IcarousHeartbeat(
+      status: status ?? this.status,
+    );
+  }
+
   factory IcarousHeartbeat.parse(ByteData data_) {
     if (data_.lengthInBytes < IcarousHeartbeat.mavlinkEncodedLength) {
       var len = IcarousHeartbeat.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var status = data_.getUint8(0);
@@ -272,11 +281,50 @@ class IcarousKinematicBands implements MavlinkMessage {
     required this.type5,
   });
 
+  IcarousKinematicBands copyWith({
+    float? min1,
+    float? max1,
+    float? min2,
+    float? max2,
+    float? min3,
+    float? max3,
+    float? min4,
+    float? max4,
+    float? min5,
+    float? max5,
+    int8_t? numbands,
+    IcarousTrackBandTypes? type1,
+    IcarousTrackBandTypes? type2,
+    IcarousTrackBandTypes? type3,
+    IcarousTrackBandTypes? type4,
+    IcarousTrackBandTypes? type5,
+  }) {
+    return IcarousKinematicBands(
+      min1: min1 ?? this.min1,
+      max1: max1 ?? this.max1,
+      min2: min2 ?? this.min2,
+      max2: max2 ?? this.max2,
+      min3: min3 ?? this.min3,
+      max3: max3 ?? this.max3,
+      min4: min4 ?? this.min4,
+      max4: max4 ?? this.max4,
+      min5: min5 ?? this.min5,
+      max5: max5 ?? this.max5,
+      numbands: numbands ?? this.numbands,
+      type1: type1 ?? this.type1,
+      type2: type2 ?? this.type2,
+      type3: type3 ?? this.type3,
+      type4: type4 ?? this.type4,
+      type5: type5 ?? this.type5,
+    );
+  }
+
   factory IcarousKinematicBands.parse(ByteData data_) {
     if (data_.lengthInBytes < IcarousKinematicBands.mavlinkEncodedLength) {
       var len =
           IcarousKinematicBands.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var min1 = data_.getFloat32(0, Endian.little);
