@@ -52,6 +52,10 @@ void main() {
     for (int i = 0; i < d.length; i++) {
       expect(d[i], ser[i]);
     }
+
+    var hbModified = hb.copyWith(type: mavTypeFixedWing);
+    expect(hbModified.type, mavTypeFixedWing);
+    expect(hbModified.autopilot, 0x0C);
   });
 
   test('Parse BATTERY_STATUS', () async {

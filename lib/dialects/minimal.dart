@@ -1239,12 +1239,12 @@ class Heartbeat implements MavlinkMessage {
   });
 
   Heartbeat copyWith({
-    int? customMode,
-    int? type,
-    int? autopilot,
-    int? baseMode,
-    int? systemStatus,
-    int? mavlinkVersion,
+    uint32_t? customMode,
+    MavType? type,
+    MavAutopilot? autopilot,
+    MavModeFlag? baseMode,
+    MavState? systemStatus,
+    uint8_t? mavlinkVersion,
   }) {
     return Heartbeat(
       customMode: customMode ?? this.customMode,
@@ -1259,7 +1259,8 @@ class Heartbeat implements MavlinkMessage {
   factory Heartbeat.parse(ByteData data_) {
     if (data_.lengthInBytes < Heartbeat.mavlinkEncodedLength) {
       var len = Heartbeat.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var customMode = data_.getUint32(0, Endian.little);
@@ -1351,11 +1352,11 @@ class ProtocolVersion implements MavlinkMessage {
   });
 
   ProtocolVersion copyWith({
-    int? version,
-    int? minVersion,
-    int? maxVersion,
-    List<int>? specVersionHash,
-    List<int>? libraryVersionHash,
+    uint16_t? version,
+    uint16_t? minVersion,
+    uint16_t? maxVersion,
+    List<int8_t>? specVersionHash,
+    List<int8_t>? libraryVersionHash,
   }) {
     return ProtocolVersion(
       version: version ?? this.version,
@@ -1369,7 +1370,8 @@ class ProtocolVersion implements MavlinkMessage {
   factory ProtocolVersion.parse(ByteData data_) {
     if (data_.lengthInBytes < ProtocolVersion.mavlinkEncodedLength) {
       var len = ProtocolVersion.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var version = data_.getUint16(0, Endian.little);

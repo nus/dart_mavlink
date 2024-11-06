@@ -543,10 +543,7 @@ class ParsedMavlinkType {
 
   final String mavlinkType;
 
-  // The underlying Dart type of the object; e.g: int, float, bigInt, etc
-  final dynamic dartType;
-
-  ParsedMavlinkType(this.type, this.bit, this.arrayLength, this.mavlinkType, this.dartType);
+  ParsedMavlinkType(this.type, this.bit, this.arrayLength, this.mavlinkType);
 
   bool get isArray => arrayLength > 1;
 
@@ -568,38 +565,32 @@ class ParsedMavlinkType {
 
     var t = BasicType.int;  // type
     var b = 8;      // bit
-    dynamic dt;
     switch (m.group(1)) {
     case 'int':
       t = BasicType.int;
       b = int.parse(m.group(2)!);
-      dt = int;
       break;
     case 'uint':
       t = BasicType.uint;
       b = int.parse(m.group(2)!);
-      dt = int;
       break;
     case 'char':
       t = BasicType.int;
       b = 8;
-      dt = int;
       break;
     case 'float':
       t = BasicType.float;
       b = 32;
-      dt = double;
       break;
     case 'double':
       t = BasicType.float;
       b = 64;
-      dt = double;
       break;
     default:
       throw FormatException('Unexpected type, ${m.group(1)}');
     }
 
-    return ParsedMavlinkType(t, b, arrayLength, mavlinkType, dt);
+    return ParsedMavlinkType(t, b, arrayLength, mavlinkType);
   }
 }
 
@@ -698,11 +689,7 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     // copyWith builder
     content += '${msg.nameForDart} copyWith({\n';
     for (var f in msg.orderedFields) {
-      if (f.parsedType.isArray) {
-        content += 'List<${f.parsedType.dartType}>? ${f.nameForDart},\n';
-      } else {
-        content += '${f.parsedType.dartType}? ${f.nameForDart},\n';
-      }
+      content += '${asDartType(f.type, f.enum_)}? ${f.nameForDart},\n';
     }
     content += '}){\n';
     content += 'return ${msg.nameForDart}(\n';
