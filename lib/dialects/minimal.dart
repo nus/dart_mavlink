@@ -338,6 +338,11 @@ const MavType mavTypeWinch = 42;
 /// MAV_TYPE_GENERIC_MULTIROTOR
 const MavType mavTypeGenericMultirotor = 43;
 
+/// Illuminator. An illuminator is a light source that is used for lighting up dark areas external to the sytstem: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
+///
+/// MAV_TYPE_ILLUMINATOR
+const MavType mavTypeIlluminator = 44;
+
 /// These flags encode the MAV mode.
 ///
 /// MAV_MODE_FLAG
@@ -1156,6 +1161,11 @@ const MavComponent mavCompIdUartBridge = 241;
 /// MAV_COMP_ID_TUNNEL_NODE
 const MavComponent mavCompIdTunnelNode = 242;
 
+/// Illuminator
+///
+/// MAV_COMP_ID_ILLUMINATOR
+const MavComponent mavCompIdIlluminator = 243;
+
 /// Deprecated, don't use. Component for handling system messages (e.g. to ARM, takeoff, etc.).
 ///
 /// MAV_COMP_ID_SYSTEM_CONTROL
@@ -1238,10 +1248,29 @@ class Heartbeat implements MavlinkMessage {
     required this.mavlinkVersion,
   });
 
+  Heartbeat copyWith({
+    uint32_t? customMode,
+    MavType? type,
+    MavAutopilot? autopilot,
+    MavModeFlag? baseMode,
+    MavState? systemStatus,
+    uint8_t? mavlinkVersion,
+  }) {
+    return Heartbeat(
+      customMode: customMode ?? this.customMode,
+      type: type ?? this.type,
+      autopilot: autopilot ?? this.autopilot,
+      baseMode: baseMode ?? this.baseMode,
+      systemStatus: systemStatus ?? this.systemStatus,
+      mavlinkVersion: mavlinkVersion ?? this.mavlinkVersion,
+    );
+  }
+
   factory Heartbeat.parse(ByteData data_) {
     if (data_.lengthInBytes < Heartbeat.mavlinkEncodedLength) {
       var len = Heartbeat.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var customMode = data_.getUint32(0, Endian.little);
@@ -1332,10 +1361,27 @@ class ProtocolVersion implements MavlinkMessage {
     required this.libraryVersionHash,
   });
 
+  ProtocolVersion copyWith({
+    uint16_t? version,
+    uint16_t? minVersion,
+    uint16_t? maxVersion,
+    List<int8_t>? specVersionHash,
+    List<int8_t>? libraryVersionHash,
+  }) {
+    return ProtocolVersion(
+      version: version ?? this.version,
+      minVersion: minVersion ?? this.minVersion,
+      maxVersion: maxVersion ?? this.maxVersion,
+      specVersionHash: specVersionHash ?? this.specVersionHash,
+      libraryVersionHash: libraryVersionHash ?? this.libraryVersionHash,
+    );
+  }
+
   factory ProtocolVersion.parse(ByteData data_) {
     if (data_.lengthInBytes < ProtocolVersion.mavlinkEncodedLength) {
       var len = ProtocolVersion.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var version = data_.getUint16(0, Endian.little);

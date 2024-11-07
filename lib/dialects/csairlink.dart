@@ -104,10 +104,21 @@ class AirlinkAuth implements MavlinkMessage {
     required this.password,
   });
 
+  AirlinkAuth copyWith({
+    List<char>? login,
+    List<char>? password,
+  }) {
+    return AirlinkAuth(
+      login: login ?? this.login,
+      password: password ?? this.password,
+    );
+  }
+
   factory AirlinkAuth.parse(ByteData data_) {
     if (data_.lengthInBytes < AirlinkAuth.mavlinkEncodedLength) {
       var len = AirlinkAuth.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var login = MavlinkMessage.asInt8List(data_, 0, 50);
@@ -154,10 +165,19 @@ class AirlinkAuthResponse implements MavlinkMessage {
     required this.respType,
   });
 
+  AirlinkAuthResponse copyWith({
+    AirlinkAuthResponseType? respType,
+  }) {
+    return AirlinkAuthResponse(
+      respType: respType ?? this.respType,
+    );
+  }
+
   factory AirlinkAuthResponse.parse(ByteData data_) {
     if (data_.lengthInBytes < AirlinkAuthResponse.mavlinkEncodedLength) {
       var len = AirlinkAuthResponse.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var respType = data_.getUint8(0);
@@ -202,12 +222,21 @@ class AirlinkEyeGsHolePushRequest implements MavlinkMessage {
     required this.respType,
   });
 
+  AirlinkEyeGsHolePushRequest copyWith({
+    AirlinkEyeGsHolePushRespType? respType,
+  }) {
+    return AirlinkEyeGsHolePushRequest(
+      respType: respType ?? this.respType,
+    );
+  }
+
   factory AirlinkEyeGsHolePushRequest.parse(ByteData data_) {
     if (data_.lengthInBytes <
         AirlinkEyeGsHolePushRequest.mavlinkEncodedLength) {
       var len = AirlinkEyeGsHolePushRequest.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var respType = data_.getUint8(0);
@@ -286,12 +315,29 @@ class AirlinkEyeGsHolePushResponse implements MavlinkMessage {
     required this.ipAddress6,
   });
 
+  AirlinkEyeGsHolePushResponse copyWith({
+    uint32_t? ipPort,
+    AirlinkEyeGsHolePushRespType? respType,
+    AirlinkEyeIpVersion? ipVersion,
+    List<int8_t>? ipAddress4,
+    List<int8_t>? ipAddress6,
+  }) {
+    return AirlinkEyeGsHolePushResponse(
+      ipPort: ipPort ?? this.ipPort,
+      respType: respType ?? this.respType,
+      ipVersion: ipVersion ?? this.ipVersion,
+      ipAddress4: ipAddress4 ?? this.ipAddress4,
+      ipAddress6: ipAddress6 ?? this.ipAddress6,
+    );
+  }
+
   factory AirlinkEyeGsHolePushResponse.parse(ByteData data_) {
     if (data_.lengthInBytes <
         AirlinkEyeGsHolePushResponse.mavlinkEncodedLength) {
       var len = AirlinkEyeGsHolePushResponse.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var ipPort = data_.getUint32(0, Endian.little);
@@ -349,10 +395,19 @@ class AirlinkEyeHp implements MavlinkMessage {
     required this.respType,
   });
 
+  AirlinkEyeHp copyWith({
+    AirlinkEyeHolePushType? respType,
+  }) {
+    return AirlinkEyeHp(
+      respType: respType ?? this.respType,
+    );
+  }
+
   factory AirlinkEyeHp.parse(ByteData data_) {
     if (data_.lengthInBytes < AirlinkEyeHp.mavlinkEncodedLength) {
       var len = AirlinkEyeHp.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var respType = data_.getUint8(0);
@@ -397,10 +452,19 @@ class AirlinkEyeTurnInit implements MavlinkMessage {
     required this.respType,
   });
 
+  AirlinkEyeTurnInit copyWith({
+    AirlinkEyeTurnInitType? respType,
+  }) {
+    return AirlinkEyeTurnInit(
+      respType: respType ?? this.respType,
+    );
+  }
+
   factory AirlinkEyeTurnInit.parse(ByteData data_) {
     if (data_.lengthInBytes < AirlinkEyeTurnInit.mavlinkEncodedLength) {
       var len = AirlinkEyeTurnInit.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var respType = data_.getUint8(0);

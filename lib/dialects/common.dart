@@ -338,6 +338,11 @@ const MavType mavTypeWinch = 42;
 /// MAV_TYPE_GENERIC_MULTIROTOR
 const MavType mavTypeGenericMultirotor = 43;
 
+/// Illuminator. An illuminator is a light source that is used for lighting up dark areas external to the sytstem: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
+///
+/// MAV_TYPE_ILLUMINATOR
+const MavType mavTypeIlluminator = 44;
+
 /// These flags encode the MAV mode.
 ///
 /// MAV_MODE_FLAG
@@ -1156,6 +1161,11 @@ const MavComponent mavCompIdUartBridge = 241;
 /// MAV_COMP_ID_TUNNEL_NODE
 const MavComponent mavCompIdTunnelNode = 242;
 
+/// Illuminator
+///
+/// MAV_COMP_ID_ILLUMINATOR
+const MavComponent mavCompIdIlluminator = 243;
+
 /// Deprecated, don't use. Component for handling system messages (e.g. to ARM, takeoff, etc.).
 ///
 /// MAV_COMP_ID_SYSTEM_CONTROL
@@ -1549,7 +1559,7 @@ const MavSysStatusSensorExtended mavSysStatusRecoverySystem = 1;
 /// MAV_FRAME
 typedef MavFrame = int;
 
-/// Global (WGS84) coordinate frame + MSL altitude. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL).
+/// Global (WGS84) coordinate frame + altitude relative to mean sea level (MSL).
 ///
 /// MAV_FRAME_GLOBAL
 const MavFrame mavFrameGlobal = 0;
@@ -1566,7 +1576,6 @@ const MavFrame mavFrameMission = 2;
 
 ///
 /// Global (WGS84) coordinate frame + altitude relative to the home position.
-/// First value / x: latitude, second value / y: longitude, third value / z: positive altitude with 0 being at the altitude of the home position.
 ///
 ///
 /// MAV_FRAME_GLOBAL_RELATIVE_ALT
@@ -1577,17 +1586,18 @@ const MavFrame mavFrameGlobalRelativeAlt = 3;
 /// MAV_FRAME_LOCAL_ENU
 const MavFrame mavFrameLocalEnu = 4;
 
-/// Global (WGS84) coordinate frame (scaled) + MSL altitude. First value / x: latitude in degrees*1E7, second value / y: longitude in degrees*1E7, third value / z: positive altitude over mean sea level (MSL).
+/// Global (WGS84) coordinate frame (scaled) + altitude relative to mean sea level (MSL).
 ///
 /// MAV_FRAME_GLOBAL_INT
+@Deprecated(
+    "Replaced by [MAV_FRAME_GLOBAL] since 2024-03. Use MAV_FRAME_GLOBAL in COMMAND_INT (and elsewhere) as a synonymous replacement.")
 const MavFrame mavFrameGlobalInt = 5;
 
-///
 /// Global (WGS84) coordinate frame (scaled) + altitude relative to the home position.
-/// First value / x: latitude in degrees*1E7, second value / y: longitude in degrees*1E7, third value / z: positive altitude with 0 being at the altitude of the home position.
-///
 ///
 /// MAV_FRAME_GLOBAL_RELATIVE_ALT_INT
+@Deprecated(
+    "Replaced by [MAV_FRAME_GLOBAL_RELATIVE_ALT] since 2024-03. Use MAV_FRAME_GLOBAL_RELATIVE_ALT in COMMAND_INT (and elsewhere) as a synonymous replacement.")
 const MavFrame mavFrameGlobalRelativeAltInt = 6;
 
 /// NED local tangent frame (x: North, y: East, z: Down) with origin that travels with the vehicle.
@@ -1607,14 +1617,16 @@ const MavFrame mavFrameBodyNed = 8;
 @Deprecated("Replaced by [MAV_FRAME_BODY_FRD] since 2019-08. ")
 const MavFrame mavFrameBodyOffsetNed = 9;
 
-/// Global (WGS84) coordinate frame with AGL altitude (at the waypoint coordinate). First value / x: latitude in degrees, second value / y: longitude in degrees, third value / z: positive altitude in meters with 0 being at ground level in terrain model.
+/// Global (WGS84) coordinate frame with AGL altitude (altitude at ground level).
 ///
 /// MAV_FRAME_GLOBAL_TERRAIN_ALT
 const MavFrame mavFrameGlobalTerrainAlt = 10;
 
-/// Global (WGS84) coordinate frame (scaled) with AGL altitude (at the waypoint coordinate). First value / x: latitude in degrees*1E7, second value / y: longitude in degrees*1E7, third value / z: positive altitude in meters with 0 being at ground level in terrain model.
+/// Global (WGS84) coordinate frame (scaled) with AGL altitude (altitude at ground level).
 ///
 /// MAV_FRAME_GLOBAL_TERRAIN_ALT_INT
+@Deprecated(
+    "Replaced by [MAV_FRAME_GLOBAL_TERRAIN_ALT] since 2024-03. Use MAV_FRAME_GLOBAL_TERRAIN_ALT in COMMAND_INT (and elsewhere) as a synonymous replacement.")
 const MavFrame mavFrameGlobalTerrainAltInt = 11;
 
 /// FRD local frame aligned to the vehicle's attitude (x: Forward, y: Right, z: Down) with an origin that travels with vehicle.
@@ -1796,6 +1808,35 @@ const FenceMitigate fenceMitigateNone = 1;
 ///
 /// FENCE_MITIGATE_VEL_LIMIT
 const FenceMitigate fenceMitigateVelLimit = 2;
+
+///
+/// FENCE_TYPE
+typedef FenceType = int;
+
+/// All fence types
+///
+/// FENCE_TYPE_ALL
+const FenceType fenceTypeAll = 0;
+
+/// Maximum altitude fence
+///
+/// FENCE_TYPE_ALT_MAX
+const FenceType fenceTypeAltMax = 1;
+
+/// Circle fence
+///
+/// FENCE_TYPE_CIRCLE
+const FenceType fenceTypeCircle = 2;
+
+/// Polygon fence
+///
+/// FENCE_TYPE_POLYGON
+const FenceType fenceTypePolygon = 4;
+
+/// Minimum altitude fence
+///
+/// FENCE_TYPE_ALT_MIN
+const FenceType fenceTypeAltMin = 8;
 
 /// Enumeration of possible mount operation modes. This message is used by obsolete/deprecated gimbal messages.
 ///
@@ -2498,6 +2539,11 @@ const OrbitYawBehaviour orbitYawBehaviourHoldFrontTangentToCircle = 3;
 /// ORBIT_YAW_BEHAVIOUR_RC_CONTROLLED
 const OrbitYawBehaviour orbitYawBehaviourRcControlled = 4;
 
+/// Vehicle uses current yaw behaviour (unchanged). The vehicle-default yaw behaviour is used if this value is specified when orbit is first commanded.
+///
+/// ORBIT_YAW_BEHAVIOUR_UNCHANGED
+const OrbitYawBehaviour orbitYawBehaviourUnchanged = 5;
+
 /// Possible responses from a WIFI_CONFIG_AP message.
 ///
 /// WIFI_CONFIG_AP_RESPONSE
@@ -2993,7 +3039,7 @@ const MavCmd mavCmdDoOrbit = 34;
 /// Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras.
 ///
 /// MAV_CMD_NAV_ROI
-@Deprecated("Replaced by [MAV_CMD_DO_SET_ROI_*] since 2018-01. ")
+@Deprecated("Replaced by [`MAV_CMD_DO_SET_ROI_*`] since 2018-01. ")
 const MavCmd mavCmdNavRoi = 80;
 
 /// Control autonomous path planning on the MAV.
@@ -3089,6 +3135,7 @@ const MavCmd mavCmdDoSetHome = 179;
 /// Set a system parameter.  Caution!  Use of this command requires knowledge of the numeric enumeration value of the parameter.
 ///
 /// MAV_CMD_DO_SET_PARAMETER
+@Deprecated("Replaced by [PARAM_SET] since 2024-04. ")
 const MavCmd mavCmdDoSetParameter = 180;
 
 /// Set a relay to a condition.
@@ -3132,6 +3179,21 @@ const MavCmd mavCmdDoChangeAltitude = 186;
 ///
 /// MAV_CMD_DO_SET_ACTUATOR
 const MavCmd mavCmdDoSetActuator = 187;
+
+/// WIP.
+/// Mission item to specify the start of a failsafe/landing return-path segment (the end of the segment is the next MAV_CMD_DO_LAND_START item).
+/// A vehicle that is using missions for landing (e.g. in a return mode) will join the mission on the closest path of the return-path segment (instead of MAV_CMD_DO_LAND_START or the nearest waypoint).
+/// The main use case is to minimize the failsafe flight path in corridor missions, where the inbound/outbound paths are constrained (by geofences) to the same particular path.
+/// The MAV_CMD_NAV_RETURN_PATH_START would be placed at the start of the return path.
+/// If a failsafe occurs on the outbound path the vehicle will move to the nearest point on the return path (which is parallel for this kind of mission), effectively turning round and following the shortest path to landing.
+/// If a failsafe occurs on the inbound path the vehicle is already on the return segment and will continue to landing.
+/// The Latitude/Longitude/Altitude are optional, and may be set to 0 if not needed.
+/// If specified, the item defines the waypoint at which the return segment starts.
+/// If sent using as a command, the vehicle will perform a mission landing (using the land segment if defined) or reject the command if mission landings are not supported, or no mission landing is defined. When used as a command any position information in the command is ignored.
+///
+///
+/// MAV_CMD_DO_RETURN_PATH_START
+const MavCmd mavCmdDoReturnPathStart = 188;
 
 /// Mission command to perform a landing. This is used as a marker in a mission to tell the autopilot where a sequence of mission items that represents a landing starts.
 /// It may also be sent via a COMMAND_LONG to trigger a landing, in which case the nearest (geographically) landing sequence in the mission will be used.
@@ -3194,7 +3256,7 @@ const MavCmd mavCmdDoControlVideo = 200;
 /// Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras.
 ///
 /// MAV_CMD_DO_SET_ROI
-@Deprecated("Replaced by [MAV_CMD_DO_SET_ROI_*] since 2018-01. ")
+@Deprecated("Replaced by [`MAV_CMD_DO_SET_ROI_*`] since 2018-01. ")
 const MavCmd mavCmdDoSetRoi = 201;
 
 /// Configure digital camera. This is a fallback message for systems that have not yet implemented PARAM_EXT_XXX messages and camera definition files (see https://mavlink.io/en/services/camera_def.html ).
@@ -3218,7 +3280,7 @@ const MavCmd mavCmdDoMountConfigure = 204;
 ///
 /// MAV_CMD_DO_MOUNT_CONTROL
 @Deprecated(
-    "Replaced by [MAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW] since 2020-01. This message is ambiguous and inconsistent. It has been superseded by MAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW and MAV_CMD_DO_SET_ROI_*. The message can still be used to communicate with legacy gimbals implementing it.")
+    "Replaced by [MAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW] since 2020-01. This message is ambiguous and inconsistent. It has been superseded by MAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW and `MAV_CMD_DO_SET_ROI_*` variants. The message can still be used to communicate with legacy gimbals implementing it.")
 const MavCmd mavCmdDoMountControl = 205;
 
 /// Mission command to set camera trigger distance for this flight. The camera is triggered each time this distance is exceeded. This command can also be used to set the shutter integration time for the camera.
@@ -3226,7 +3288,13 @@ const MavCmd mavCmdDoMountControl = 205;
 /// MAV_CMD_DO_SET_CAM_TRIGG_DIST
 const MavCmd mavCmdDoSetCamTriggDist = 206;
 
-/// Mission command to enable the geofence
+///
+/// Enable the geofence.
+/// This can be used in a mission or via the command protocol.
+/// The persistence/lifetime of the setting is undefined.
+/// Depending on flight stack implementation it may persist until superseded, or it may revert to a system default at the end of a mission.
+/// Flight stacks typically reset the setting to system defaults on reboot.
+///
 ///
 /// MAV_CMD_DO_FENCE_ENABLE
 const MavCmd mavCmdDoFenceEnable = 207;
@@ -3376,11 +3444,15 @@ const MavCmd mavCmdComponentArmDisarm = 400;
 /// MAV_CMD_RUN_PREARM_CHECKS
 const MavCmd mavCmdRunPrearmChecks = 401;
 
-/// WIP.
 /// Turns illuminators ON/OFF. An illuminator is a light source that is used for lighting up dark areas external to the system: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
 ///
 /// MAV_CMD_ILLUMINATOR_ON_OFF
 const MavCmd mavCmdIlluminatorOnOff = 405;
+
+/// Configures illuminator settings. An illuminator is a light source that is used for lighting up dark areas external to the system: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
+///
+/// MAV_CMD_DO_ILLUMINATOR_CONFIGURE
+const MavCmd mavCmdDoIlluminatorConfigure = 406;
 
 /// Request the home position from the vehicle.
 /// The vehicle will ACK the command and then emit the HOME_POSITION message.
@@ -3493,6 +3565,11 @@ const MavCmd mavCmdSetCameraFocus = 532;
 ///
 /// MAV_CMD_SET_STORAGE_USAGE
 const MavCmd mavCmdSetStorageUsage = 533;
+
+/// Set camera source. Changes the camera's active sources on cameras with multiple image sensors.
+///
+/// MAV_CMD_SET_CAMERA_SOURCE
+const MavCmd mavCmdSetCameraSource = 534;
 
 /// Tagged jump target. Can be jumped to with MAV_CMD_DO_JUMP_TAG.
 ///
@@ -4074,6 +4151,12 @@ const MavResult mavResultCommandIntOnly = 8;
 ///
 /// MAV_RESULT_COMMAND_UNSUPPORTED_MAV_FRAME
 const MavResult mavResultCommandUnsupportedMavFrame = 9;
+
+/// WIP.
+/// Sender is not authorized to control this MAV component. Control may be requested using MAV_CMD_REQUEST_OPERATOR_CONTROL.
+///
+/// MAV_RESULT_PERMISSION_DENIED
+const MavResult mavResultPermissionDenied = 10;
 
 /// Result of mission operation (in a MISSION_ACK message).
 ///
@@ -4701,6 +4784,20 @@ const MavProtocolCapability mavProtocolCapabilityReserved2 = 65536;
 ///
 /// MAV_PROTOCOL_CAPABILITY_PARAM_ENCODE_C_CAST
 const MavProtocolCapability mavProtocolCapabilityParamEncodeCCast = 131072;
+
+/// This component implements/is a gimbal manager. This means the GIMBAL_MANAGER_INFORMATION, and other messages can be requested.
+///
+///
+/// MAV_PROTOCOL_CAPABILITY_COMPONENT_IMPLEMENTS_GIMBAL_MANAGER
+const MavProtocolCapability
+    mavProtocolCapabilityComponentImplementsGimbalManager = 262144;
+
+/// WIP.
+/// Component supports locking control to a particular GCS independent of its system (via MAV_CMD_REQUEST_OPERATOR_CONTROL).
+///
+/// MAV_PROTOCOL_CAPABILITY_COMPONENT_ACCEPTS_GCS_CONTROL
+const MavProtocolCapability mavProtocolCapabilityComponentAcceptsGcsControl =
+    524288;
 
 /// Type of mission items being requested/sent in mission protocol.
 ///
@@ -5731,6 +5828,11 @@ const CameraCapFlags cameraCapFlagsHasTrackingRectangle = 1024;
 /// CAMERA_CAP_FLAGS_HAS_TRACKING_GEO_STATUS
 const CameraCapFlags cameraCapFlagsHasTrackingGeoStatus = 2048;
 
+/// Camera supports absolute thermal range (request CAMERA_THERMAL_RANGE with MAV_CMD_REQUEST_MESSAGE) (WIP).
+///
+/// CAMERA_CAP_FLAGS_HAS_THERMAL_RANGE
+const CameraCapFlags cameraCapFlagsHasThermalRange = 4096;
+
 /// Stream status flags (Bitmap)
 ///
 /// VIDEO_STREAM_STATUS_FLAGS
@@ -5745,6 +5847,11 @@ const VideoStreamStatusFlags videoStreamStatusFlagsRunning = 1;
 ///
 /// VIDEO_STREAM_STATUS_FLAGS_THERMAL
 const VideoStreamStatusFlags videoStreamStatusFlagsThermal = 2;
+
+/// Stream can report absolute thermal range (see CAMERA_THERMAL_RANGE). (WIP).
+///
+/// VIDEO_STREAM_STATUS_FLAGS_THERMAL_RANGE_ENABLED
+const VideoStreamStatusFlags videoStreamStatusFlagsThermalRangeEnabled = 4;
 
 /// Video stream types
 ///
@@ -5766,10 +5873,30 @@ const VideoStreamType videoStreamTypeRtpudp = 1;
 /// VIDEO_STREAM_TYPE_TCP_MPEG
 const VideoStreamType videoStreamTypeTcpMpeg = 2;
 
-/// Stream is h.264 on MPEG TS (URI gives the port number)
+/// Stream is MPEG TS (URI gives the port number)
 ///
-/// VIDEO_STREAM_TYPE_MPEG_TS_H264
-const VideoStreamType videoStreamTypeMpegTsH264 = 3;
+/// VIDEO_STREAM_TYPE_MPEG_TS
+const VideoStreamType videoStreamTypeMpegTs = 3;
+
+/// Video stream encodings
+///
+/// VIDEO_STREAM_ENCODING
+typedef VideoStreamEncoding = int;
+
+/// Stream encoding is unknown
+///
+/// VIDEO_STREAM_ENCODING_UNKNOWN
+const VideoStreamEncoding videoStreamEncodingUnknown = 0;
+
+/// Stream encoding is H.264
+///
+/// VIDEO_STREAM_ENCODING_H264
+const VideoStreamEncoding videoStreamEncodingH264 = 1;
+
+/// Stream encoding is H.265
+///
+/// VIDEO_STREAM_ENCODING_H265
+const VideoStreamEncoding videoStreamEncodingH265 = 2;
 
 /// Camera tracking status flags
 ///
@@ -5906,6 +6033,31 @@ const SetFocusType focusTypeAutoSingle = 5;
 /// FOCUS_TYPE_AUTO_CONTINUOUS
 const SetFocusType focusTypeAutoContinuous = 6;
 
+/// Camera sources for MAV_CMD_SET_CAMERA_SOURCE
+///
+/// CAMERA_SOURCE
+typedef CameraSource = int;
+
+/// Default camera source.
+///
+/// CAMERA_SOURCE_DEFAULT
+const CameraSource cameraSourceDefault = 0;
+
+/// RGB camera source.
+///
+/// CAMERA_SOURCE_RGB
+const CameraSource cameraSourceRgb = 1;
+
+/// IR camera source.
+///
+/// CAMERA_SOURCE_IR
+const CameraSource cameraSourceIr = 2;
+
+/// NDVI camera source.
+///
+/// CAMERA_SOURCE_NDVI
+const CameraSource cameraSourceNdvi = 3;
+
 /// Result from PARAM_EXT_SET message (or a PARAM_SET within a transaction).
 ///
 /// PARAM_ACK
@@ -5985,20 +6137,40 @@ const MavArmAuthDeniedReason mavArmAuthDeniedReasonAirspaceInUse = 4;
 /// MAV_ARM_AUTH_DENIED_REASON_BAD_WEATHER
 const MavArmAuthDeniedReason mavArmAuthDeniedReasonBadWeather = 5;
 
-/// RC type
+/// RC type. Used in MAV_CMD_START_RX_PAIR.
 ///
 /// RC_TYPE
 typedef RcType = int;
 
+/// Spektrum
+///
+/// RC_TYPE_SPEKTRUM
+const RcType rcTypeSpektrum = 0;
+
+/// CRSF
+///
+/// RC_TYPE_CRSF
+const RcType rcTypeCrsf = 1;
+
+/// RC sub-type of types defined in RC_TYPE. Used in MAV_CMD_START_RX_PAIR. Ignored if value does not correspond to the set RC_TYPE.
+///
+/// RC_SUB_TYPE
+typedef RcSubType = int;
+
 /// Spektrum DSM2
 ///
-/// RC_TYPE_SPEKTRUM_DSM2
-const RcType rcTypeSpektrumDsm2 = 0;
+/// RC_SUB_TYPE_SPEKTRUM_DSM2
+const RcSubType rcSubTypeSpektrumDsm2 = 0;
 
 /// Spektrum DSMX
 ///
-/// RC_TYPE_SPEKTRUM_DSMX
-const RcType rcTypeSpektrumDsmx = 1;
+/// RC_SUB_TYPE_SPEKTRUM_DSMX
+const RcSubType rcSubTypeSpektrumDsmx = 1;
+
+/// Spektrum DSMX8
+///
+/// RC_SUB_TYPE_SPEKTRUM_DSMX8
+const RcSubType rcSubTypeSpektrumDsmx8 = 2;
 
 /// Bitmap to indicate which dimensions should be ignored by the vehicle: a value of 0b0000000000000000 or 0b0000001000000000 indicates that none of the setpoint dimensions should be ignored. If bit 9 is set the floats afx afy afz should be interpreted as force instead of acceleration.
 ///
@@ -8162,6 +8334,46 @@ const SafetySwitchState safetySwitchStateSafe = 0;
 /// SAFETY_SWITCH_STATE_DANGEROUS
 const SafetySwitchState safetySwitchStateDangerous = 1;
 
+/// Modes of illuminator
+///
+/// ILLUMINATOR_MODE
+typedef IlluminatorMode = int;
+
+/// Illuminator mode is not specified/unknown
+///
+/// ILLUMINATOR_MODE_UNKNOWN
+const IlluminatorMode illuminatorModeUnknown = 0;
+
+/// Illuminator behavior is controlled by MAV_CMD_DO_ILLUMINATOR_CONFIGURE settings
+///
+/// ILLUMINATOR_MODE_INTERNAL_CONTROL
+const IlluminatorMode illuminatorModeInternalControl = 1;
+
+/// Illuminator behavior is controlled by external factors: e.g. an external hardware signal
+///
+/// ILLUMINATOR_MODE_EXTERNAL_SYNC
+const IlluminatorMode illuminatorModeExternalSync = 2;
+
+/// Illuminator module error flags (bitmap, 0 means no error)
+///
+/// ILLUMINATOR_ERROR_FLAGS
+typedef IlluminatorErrorFlags = int;
+
+/// Illuminator thermal throttling error.
+///
+/// ILLUMINATOR_ERROR_FLAGS_THERMAL_THROTTLING
+const IlluminatorErrorFlags illuminatorErrorFlagsThermalThrottling = 1;
+
+/// Illuminator over temperature shutdown error.
+///
+/// ILLUMINATOR_ERROR_FLAGS_OVER_TEMPERATURE_SHUTDOWN
+const IlluminatorErrorFlags illuminatorErrorFlagsOverTemperatureShutdown = 2;
+
+/// Illuminator thermistor failure.
+///
+/// ILLUMINATOR_ERROR_FLAGS_THERMISTOR_FAILURE
+const IlluminatorErrorFlags illuminatorErrorFlagsThermistorFailure = 4;
+
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 ///
 /// HEARTBEAT
@@ -8237,10 +8449,29 @@ class Heartbeat implements MavlinkMessage {
     required this.mavlinkVersion,
   });
 
+  Heartbeat copyWith({
+    uint32_t? customMode,
+    MavType? type,
+    MavAutopilot? autopilot,
+    MavModeFlag? baseMode,
+    MavState? systemStatus,
+    uint8_t? mavlinkVersion,
+  }) {
+    return Heartbeat(
+      customMode: customMode ?? this.customMode,
+      type: type ?? this.type,
+      autopilot: autopilot ?? this.autopilot,
+      baseMode: baseMode ?? this.baseMode,
+      systemStatus: systemStatus ?? this.systemStatus,
+      mavlinkVersion: mavlinkVersion ?? this.mavlinkVersion,
+    );
+  }
+
   factory Heartbeat.parse(ByteData data_) {
     if (data_.lengthInBytes < Heartbeat.mavlinkEncodedLength) {
       var len = Heartbeat.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var customMode = data_.getUint32(0, Endian.little);
@@ -8331,10 +8562,27 @@ class ProtocolVersion implements MavlinkMessage {
     required this.libraryVersionHash,
   });
 
+  ProtocolVersion copyWith({
+    uint16_t? version,
+    uint16_t? minVersion,
+    uint16_t? maxVersion,
+    List<int8_t>? specVersionHash,
+    List<int8_t>? libraryVersionHash,
+  }) {
+    return ProtocolVersion(
+      version: version ?? this.version,
+      minVersion: minVersion ?? this.minVersion,
+      maxVersion: maxVersion ?? this.maxVersion,
+      specVersionHash: specVersionHash ?? this.specVersionHash,
+      libraryVersionHash: libraryVersionHash ?? this.libraryVersionHash,
+    );
+  }
+
   factory ProtocolVersion.parse(ByteData data_) {
     if (data_.lengthInBytes < ProtocolVersion.mavlinkEncodedLength) {
       var len = ProtocolVersion.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var version = data_.getUint16(0, Endian.little);
@@ -8538,10 +8786,58 @@ class SysStatus implements MavlinkMessage {
     required this.onboardControlSensorsHealthExtended,
   });
 
+  SysStatus copyWith({
+    MavSysStatusSensor? onboardControlSensorsPresent,
+    MavSysStatusSensor? onboardControlSensorsEnabled,
+    MavSysStatusSensor? onboardControlSensorsHealth,
+    uint16_t? load,
+    uint16_t? voltageBattery,
+    int16_t? currentBattery,
+    uint16_t? dropRateComm,
+    uint16_t? errorsComm,
+    uint16_t? errorsCount1,
+    uint16_t? errorsCount2,
+    uint16_t? errorsCount3,
+    uint16_t? errorsCount4,
+    int8_t? batteryRemaining,
+    MavSysStatusSensorExtended? onboardControlSensorsPresentExtended,
+    MavSysStatusSensorExtended? onboardControlSensorsEnabledExtended,
+    MavSysStatusSensorExtended? onboardControlSensorsHealthExtended,
+  }) {
+    return SysStatus(
+      onboardControlSensorsPresent:
+          onboardControlSensorsPresent ?? this.onboardControlSensorsPresent,
+      onboardControlSensorsEnabled:
+          onboardControlSensorsEnabled ?? this.onboardControlSensorsEnabled,
+      onboardControlSensorsHealth:
+          onboardControlSensorsHealth ?? this.onboardControlSensorsHealth,
+      load: load ?? this.load,
+      voltageBattery: voltageBattery ?? this.voltageBattery,
+      currentBattery: currentBattery ?? this.currentBattery,
+      dropRateComm: dropRateComm ?? this.dropRateComm,
+      errorsComm: errorsComm ?? this.errorsComm,
+      errorsCount1: errorsCount1 ?? this.errorsCount1,
+      errorsCount2: errorsCount2 ?? this.errorsCount2,
+      errorsCount3: errorsCount3 ?? this.errorsCount3,
+      errorsCount4: errorsCount4 ?? this.errorsCount4,
+      batteryRemaining: batteryRemaining ?? this.batteryRemaining,
+      onboardControlSensorsPresentExtended:
+          onboardControlSensorsPresentExtended ??
+              this.onboardControlSensorsPresentExtended,
+      onboardControlSensorsEnabledExtended:
+          onboardControlSensorsEnabledExtended ??
+              this.onboardControlSensorsEnabledExtended,
+      onboardControlSensorsHealthExtended:
+          onboardControlSensorsHealthExtended ??
+              this.onboardControlSensorsHealthExtended,
+    );
+  }
+
   factory SysStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < SysStatus.mavlinkEncodedLength) {
       var len = SysStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var onboardControlSensorsPresent = data_.getUint32(0, Endian.little);
@@ -8648,10 +8944,21 @@ class SystemTime implements MavlinkMessage {
     required this.timeBootMs,
   });
 
+  SystemTime copyWith({
+    uint64_t? timeUnixUsec,
+    uint32_t? timeBootMs,
+  }) {
+    return SystemTime(
+      timeUnixUsec: timeUnixUsec ?? this.timeUnixUsec,
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+    );
+  }
+
   factory SystemTime.parse(ByteData data_) {
     if (data_.lengthInBytes < SystemTime.mavlinkEncodedLength) {
       var len = SystemTime.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUnixUsec = data_.getUint64(0, Endian.little);
@@ -8722,10 +9029,25 @@ class Ping implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  Ping copyWith({
+    uint64_t? timeUsec,
+    uint32_t? seq,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return Ping(
+      timeUsec: timeUsec ?? this.timeUsec,
+      seq: seq ?? this.seq,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory Ping.parse(ByteData data_) {
     if (data_.lengthInBytes < Ping.mavlinkEncodedLength) {
       var len = Ping.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -8804,11 +9126,26 @@ class ChangeOperatorControl implements MavlinkMessage {
     required this.passkey,
   });
 
+  ChangeOperatorControl copyWith({
+    uint8_t? targetSystem,
+    uint8_t? controlRequest,
+    uint8_t? version,
+    List<char>? passkey,
+  }) {
+    return ChangeOperatorControl(
+      targetSystem: targetSystem ?? this.targetSystem,
+      controlRequest: controlRequest ?? this.controlRequest,
+      version: version ?? this.version,
+      passkey: passkey ?? this.passkey,
+    );
+  }
+
   factory ChangeOperatorControl.parse(ByteData data_) {
     if (data_.lengthInBytes < ChangeOperatorControl.mavlinkEncodedLength) {
       var len =
           ChangeOperatorControl.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -8877,11 +9214,24 @@ class ChangeOperatorControlAck implements MavlinkMessage {
     required this.ack,
   });
 
+  ChangeOperatorControlAck copyWith({
+    uint8_t? gcsSystemId,
+    uint8_t? controlRequest,
+    uint8_t? ack,
+  }) {
+    return ChangeOperatorControlAck(
+      gcsSystemId: gcsSystemId ?? this.gcsSystemId,
+      controlRequest: controlRequest ?? this.controlRequest,
+      ack: ack ?? this.ack,
+    );
+  }
+
   factory ChangeOperatorControlAck.parse(ByteData data_) {
     if (data_.lengthInBytes < ChangeOperatorControlAck.mavlinkEncodedLength) {
       var len =
           ChangeOperatorControlAck.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var gcsSystemId = data_.getUint8(0);
@@ -8929,10 +9279,19 @@ class AuthKey implements MavlinkMessage {
     required this.key,
   });
 
+  AuthKey copyWith({
+    List<char>? key,
+  }) {
+    return AuthKey(
+      key: key ?? this.key,
+    );
+  }
+
   factory AuthKey.parse(ByteData data_) {
     if (data_.lengthInBytes < AuthKey.mavlinkEncodedLength) {
       var len = AuthKey.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var key = MavlinkMessage.asInt8List(data_, 0, 32);
@@ -9071,10 +9430,39 @@ class LinkNodeStatus implements MavlinkMessage {
     required this.rxBuf,
   });
 
+  LinkNodeStatus copyWith({
+    uint64_t? timestamp,
+    uint32_t? txRate,
+    uint32_t? rxRate,
+    uint32_t? messagesSent,
+    uint32_t? messagesReceived,
+    uint32_t? messagesLost,
+    uint16_t? rxParseErr,
+    uint16_t? txOverflows,
+    uint16_t? rxOverflows,
+    uint8_t? txBuf,
+    uint8_t? rxBuf,
+  }) {
+    return LinkNodeStatus(
+      timestamp: timestamp ?? this.timestamp,
+      txRate: txRate ?? this.txRate,
+      rxRate: rxRate ?? this.rxRate,
+      messagesSent: messagesSent ?? this.messagesSent,
+      messagesReceived: messagesReceived ?? this.messagesReceived,
+      messagesLost: messagesLost ?? this.messagesLost,
+      rxParseErr: rxParseErr ?? this.rxParseErr,
+      txOverflows: txOverflows ?? this.txOverflows,
+      rxOverflows: rxOverflows ?? this.rxOverflows,
+      txBuf: txBuf ?? this.txBuf,
+      rxBuf: rxBuf ?? this.rxBuf,
+    );
+  }
+
   factory LinkNodeStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < LinkNodeStatus.mavlinkEncodedLength) {
       var len = LinkNodeStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timestamp = data_.getUint64(0, Endian.little);
@@ -9166,10 +9554,23 @@ class SetMode implements MavlinkMessage {
     required this.baseMode,
   });
 
+  SetMode copyWith({
+    uint32_t? customMode,
+    uint8_t? targetSystem,
+    MavMode? baseMode,
+  }) {
+    return SetMode(
+      customMode: customMode ?? this.customMode,
+      targetSystem: targetSystem ?? this.targetSystem,
+      baseMode: baseMode ?? this.baseMode,
+    );
+  }
+
   factory SetMode.parse(ByteData data_) {
     if (data_.lengthInBytes < SetMode.mavlinkEncodedLength) {
       var len = SetMode.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var customMode = data_.getUint32(0, Endian.little);
@@ -9241,10 +9642,25 @@ class ParamRequestRead implements MavlinkMessage {
     required this.paramId,
   });
 
+  ParamRequestRead copyWith({
+    int16_t? paramIndex,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<char>? paramId,
+  }) {
+    return ParamRequestRead(
+      paramIndex: paramIndex ?? this.paramIndex,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      paramId: paramId ?? this.paramId,
+    );
+  }
+
   factory ParamRequestRead.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamRequestRead.mavlinkEncodedLength) {
       var len = ParamRequestRead.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var paramIndex = data_.getInt16(0, Endian.little);
@@ -9305,10 +9721,21 @@ class ParamRequestList implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  ParamRequestList copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return ParamRequestList(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory ParamRequestList.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamRequestList.mavlinkEncodedLength) {
       var len = ParamRequestList.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -9388,10 +9815,27 @@ class ParamValue implements MavlinkMessage {
     required this.paramType,
   });
 
+  ParamValue copyWith({
+    float? paramValue,
+    uint16_t? paramCount,
+    uint16_t? paramIndex,
+    List<char>? paramId,
+    MavParamType? paramType,
+  }) {
+    return ParamValue(
+      paramValue: paramValue ?? this.paramValue,
+      paramCount: paramCount ?? this.paramCount,
+      paramIndex: paramIndex ?? this.paramIndex,
+      paramId: paramId ?? this.paramId,
+      paramType: paramType ?? this.paramType,
+    );
+  }
+
   factory ParamValue.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamValue.mavlinkEncodedLength) {
       var len = ParamValue.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var paramValue = data_.getFloat32(0, Endian.little);
@@ -9483,10 +9927,27 @@ class ParamSet implements MavlinkMessage {
     required this.paramType,
   });
 
+  ParamSet copyWith({
+    float? paramValue,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<char>? paramId,
+    MavParamType? paramType,
+  }) {
+    return ParamSet(
+      paramValue: paramValue ?? this.paramValue,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      paramId: paramId ?? this.paramId,
+      paramType: paramType ?? this.paramType,
+    );
+  }
+
   factory ParamSet.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamSet.mavlinkEncodedLength) {
       var len = ParamSet.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var paramValue = data_.getFloat32(0, Endian.little);
@@ -9701,10 +10162,49 @@ class GpsRawInt implements MavlinkMessage {
     required this.yaw,
   });
 
+  GpsRawInt copyWith({
+    uint64_t? timeUsec,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    uint16_t? eph,
+    uint16_t? epv,
+    uint16_t? vel,
+    uint16_t? cog,
+    GpsFixType? fixType,
+    uint8_t? satellitesVisible,
+    int32_t? altEllipsoid,
+    uint32_t? hAcc,
+    uint32_t? vAcc,
+    uint32_t? velAcc,
+    uint32_t? hdgAcc,
+    uint16_t? yaw,
+  }) {
+    return GpsRawInt(
+      timeUsec: timeUsec ?? this.timeUsec,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      eph: eph ?? this.eph,
+      epv: epv ?? this.epv,
+      vel: vel ?? this.vel,
+      cog: cog ?? this.cog,
+      fixType: fixType ?? this.fixType,
+      satellitesVisible: satellitesVisible ?? this.satellitesVisible,
+      altEllipsoid: altEllipsoid ?? this.altEllipsoid,
+      hAcc: hAcc ?? this.hAcc,
+      vAcc: vAcc ?? this.vAcc,
+      velAcc: velAcc ?? this.velAcc,
+      hdgAcc: hdgAcc ?? this.hdgAcc,
+      yaw: yaw ?? this.yaw,
+    );
+  }
+
   factory GpsRawInt.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsRawInt.mavlinkEncodedLength) {
       var len = GpsRawInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -9839,10 +10339,29 @@ class GpsStatus implements MavlinkMessage {
     required this.satelliteSnr,
   });
 
+  GpsStatus copyWith({
+    uint8_t? satellitesVisible,
+    List<int8_t>? satellitePrn,
+    List<int8_t>? satelliteUsed,
+    List<int8_t>? satelliteElevation,
+    List<int8_t>? satelliteAzimuth,
+    List<int8_t>? satelliteSnr,
+  }) {
+    return GpsStatus(
+      satellitesVisible: satellitesVisible ?? this.satellitesVisible,
+      satellitePrn: satellitePrn ?? this.satellitePrn,
+      satelliteUsed: satelliteUsed ?? this.satelliteUsed,
+      satelliteElevation: satelliteElevation ?? this.satelliteElevation,
+      satelliteAzimuth: satelliteAzimuth ?? this.satelliteAzimuth,
+      satelliteSnr: satelliteSnr ?? this.satelliteSnr,
+    );
+  }
+
   factory GpsStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsStatus.mavlinkEncodedLength) {
       var len = GpsStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var satellitesVisible = data_.getUint8(0);
@@ -10005,10 +10524,39 @@ class ScaledImu implements MavlinkMessage {
     required this.temperature,
   });
 
+  ScaledImu copyWith({
+    uint32_t? timeBootMs,
+    int16_t? xacc,
+    int16_t? yacc,
+    int16_t? zacc,
+    int16_t? xgyro,
+    int16_t? ygyro,
+    int16_t? zgyro,
+    int16_t? xmag,
+    int16_t? ymag,
+    int16_t? zmag,
+    int16_t? temperature,
+  }) {
+    return ScaledImu(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+      xgyro: xgyro ?? this.xgyro,
+      ygyro: ygyro ?? this.ygyro,
+      zgyro: zgyro ?? this.zgyro,
+      xmag: xmag ?? this.xmag,
+      ymag: ymag ?? this.ymag,
+      zmag: zmag ?? this.zmag,
+      temperature: temperature ?? this.temperature,
+    );
+  }
+
   factory ScaledImu.parse(ByteData data_) {
     if (data_.lengthInBytes < ScaledImu.mavlinkEncodedLength) {
       var len = ScaledImu.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -10178,10 +10726,41 @@ class RawImu implements MavlinkMessage {
     required this.temperature,
   });
 
+  RawImu copyWith({
+    uint64_t? timeUsec,
+    int16_t? xacc,
+    int16_t? yacc,
+    int16_t? zacc,
+    int16_t? xgyro,
+    int16_t? ygyro,
+    int16_t? zgyro,
+    int16_t? xmag,
+    int16_t? ymag,
+    int16_t? zmag,
+    uint8_t? id,
+    int16_t? temperature,
+  }) {
+    return RawImu(
+      timeUsec: timeUsec ?? this.timeUsec,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+      xgyro: xgyro ?? this.xgyro,
+      ygyro: ygyro ?? this.ygyro,
+      zgyro: zgyro ?? this.zgyro,
+      xmag: xmag ?? this.xmag,
+      ymag: ymag ?? this.ymag,
+      zmag: zmag ?? this.zmag,
+      id: id ?? this.id,
+      temperature: temperature ?? this.temperature,
+    );
+  }
+
   factory RawImu.parse(ByteData data_) {
     if (data_.lengthInBytes < RawImu.mavlinkEncodedLength) {
       var len = RawImu.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -10292,10 +10871,27 @@ class RawPressure implements MavlinkMessage {
     required this.temperature,
   });
 
+  RawPressure copyWith({
+    uint64_t? timeUsec,
+    int16_t? pressAbs,
+    int16_t? pressDiff1,
+    int16_t? pressDiff2,
+    int16_t? temperature,
+  }) {
+    return RawPressure(
+      timeUsec: timeUsec ?? this.timeUsec,
+      pressAbs: pressAbs ?? this.pressAbs,
+      pressDiff1: pressDiff1 ?? this.pressDiff1,
+      pressDiff2: pressDiff2 ?? this.pressDiff2,
+      temperature: temperature ?? this.temperature,
+    );
+  }
+
   factory RawPressure.parse(ByteData data_) {
     if (data_.lengthInBytes < RawPressure.mavlinkEncodedLength) {
       var len = RawPressure.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -10395,10 +10991,27 @@ class ScaledPressure implements MavlinkMessage {
     required this.temperaturePressDiff,
   });
 
+  ScaledPressure copyWith({
+    uint32_t? timeBootMs,
+    float? pressAbs,
+    float? pressDiff,
+    int16_t? temperature,
+    int16_t? temperaturePressDiff,
+  }) {
+    return ScaledPressure(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      pressAbs: pressAbs ?? this.pressAbs,
+      pressDiff: pressDiff ?? this.pressDiff,
+      temperature: temperature ?? this.temperature,
+      temperaturePressDiff: temperaturePressDiff ?? this.temperaturePressDiff,
+    );
+  }
+
   factory ScaledPressure.parse(ByteData data_) {
     if (data_.lengthInBytes < ScaledPressure.mavlinkEncodedLength) {
       var len = ScaledPressure.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -10516,10 +11129,31 @@ class Attitude implements MavlinkMessage {
     required this.yawspeed,
   });
 
+  Attitude copyWith({
+    uint32_t? timeBootMs,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    float? rollspeed,
+    float? pitchspeed,
+    float? yawspeed,
+  }) {
+    return Attitude(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      rollspeed: rollspeed ?? this.rollspeed,
+      pitchspeed: pitchspeed ?? this.pitchspeed,
+      yawspeed: yawspeed ?? this.yawspeed,
+    );
+  }
+
   factory Attitude.parse(ByteData data_) {
     if (data_.lengthInBytes < Attitude.mavlinkEncodedLength) {
       var len = Attitude.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -10655,10 +11289,35 @@ class AttitudeQuaternion implements MavlinkMessage {
     required this.reprOffsetQ,
   });
 
+  AttitudeQuaternion copyWith({
+    uint32_t? timeBootMs,
+    float? q1,
+    float? q2,
+    float? q3,
+    float? q4,
+    float? rollspeed,
+    float? pitchspeed,
+    float? yawspeed,
+    List<float>? reprOffsetQ,
+  }) {
+    return AttitudeQuaternion(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      q1: q1 ?? this.q1,
+      q2: q2 ?? this.q2,
+      q3: q3 ?? this.q3,
+      q4: q4 ?? this.q4,
+      rollspeed: rollspeed ?? this.rollspeed,
+      pitchspeed: pitchspeed ?? this.pitchspeed,
+      yawspeed: yawspeed ?? this.yawspeed,
+      reprOffsetQ: reprOffsetQ ?? this.reprOffsetQ,
+    );
+  }
+
   factory AttitudeQuaternion.parse(ByteData data_) {
     if (data_.lengthInBytes < AttitudeQuaternion.mavlinkEncodedLength) {
       var len = AttitudeQuaternion.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -10788,10 +11447,31 @@ class LocalPositionNed implements MavlinkMessage {
     required this.vz,
   });
 
+  LocalPositionNed copyWith({
+    uint32_t? timeBootMs,
+    float? x,
+    float? y,
+    float? z,
+    float? vx,
+    float? vy,
+    float? vz,
+  }) {
+    return LocalPositionNed(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+    );
+  }
+
   factory LocalPositionNed.parse(ByteData data_) {
     if (data_.lengthInBytes < LocalPositionNed.mavlinkEncodedLength) {
       var len = LocalPositionNed.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -10873,7 +11553,7 @@ class GlobalPositionInt implements MavlinkMessage {
   /// alt
   final int32_t alt;
 
-  /// Altitude above ground
+  /// Altitude above home
   ///
   /// MAVLink type: int32_t
   ///
@@ -10930,10 +11610,35 @@ class GlobalPositionInt implements MavlinkMessage {
     required this.hdg,
   });
 
+  GlobalPositionInt copyWith({
+    uint32_t? timeBootMs,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    int32_t? relativeAlt,
+    int16_t? vx,
+    int16_t? vy,
+    int16_t? vz,
+    uint16_t? hdg,
+  }) {
+    return GlobalPositionInt(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      relativeAlt: relativeAlt ?? this.relativeAlt,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      hdg: hdg ?? this.hdg,
+    );
+  }
+
   factory GlobalPositionInt.parse(ByteData data_) {
     if (data_.lengthInBytes < GlobalPositionInt.mavlinkEncodedLength) {
       var len = GlobalPositionInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -11083,10 +11788,39 @@ class RcChannelsScaled implements MavlinkMessage {
     required this.rssi,
   });
 
+  RcChannelsScaled copyWith({
+    uint32_t? timeBootMs,
+    int16_t? chan1Scaled,
+    int16_t? chan2Scaled,
+    int16_t? chan3Scaled,
+    int16_t? chan4Scaled,
+    int16_t? chan5Scaled,
+    int16_t? chan6Scaled,
+    int16_t? chan7Scaled,
+    int16_t? chan8Scaled,
+    uint8_t? port,
+    uint8_t? rssi,
+  }) {
+    return RcChannelsScaled(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      chan1Scaled: chan1Scaled ?? this.chan1Scaled,
+      chan2Scaled: chan2Scaled ?? this.chan2Scaled,
+      chan3Scaled: chan3Scaled ?? this.chan3Scaled,
+      chan4Scaled: chan4Scaled ?? this.chan4Scaled,
+      chan5Scaled: chan5Scaled ?? this.chan5Scaled,
+      chan6Scaled: chan6Scaled ?? this.chan6Scaled,
+      chan7Scaled: chan7Scaled ?? this.chan7Scaled,
+      chan8Scaled: chan8Scaled ?? this.chan8Scaled,
+      port: port ?? this.port,
+      rssi: rssi ?? this.rssi,
+    );
+  }
+
   factory RcChannelsScaled.parse(ByteData data_) {
     if (data_.lengthInBytes < RcChannelsScaled.mavlinkEncodedLength) {
       var len = RcChannelsScaled.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -11258,10 +11992,39 @@ class RcChannelsRaw implements MavlinkMessage {
     required this.rssi,
   });
 
+  RcChannelsRaw copyWith({
+    uint32_t? timeBootMs,
+    uint16_t? chan1Raw,
+    uint16_t? chan2Raw,
+    uint16_t? chan3Raw,
+    uint16_t? chan4Raw,
+    uint16_t? chan5Raw,
+    uint16_t? chan6Raw,
+    uint16_t? chan7Raw,
+    uint16_t? chan8Raw,
+    uint8_t? port,
+    uint8_t? rssi,
+  }) {
+    return RcChannelsRaw(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      chan1Raw: chan1Raw ?? this.chan1Raw,
+      chan2Raw: chan2Raw ?? this.chan2Raw,
+      chan3Raw: chan3Raw ?? this.chan3Raw,
+      chan4Raw: chan4Raw ?? this.chan4Raw,
+      chan5Raw: chan5Raw ?? this.chan5Raw,
+      chan6Raw: chan6Raw ?? this.chan6Raw,
+      chan7Raw: chan7Raw ?? this.chan7Raw,
+      chan8Raw: chan8Raw ?? this.chan8Raw,
+      port: port ?? this.port,
+      rssi: rssi ?? this.rssi,
+    );
+  }
+
   factory RcChannelsRaw.parse(ByteData data_) {
     if (data_.lengthInBytes < RcChannelsRaw.mavlinkEncodedLength) {
       var len = RcChannelsRaw.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -11521,10 +12284,53 @@ class ServoOutputRaw implements MavlinkMessage {
     required this.servo16Raw,
   });
 
+  ServoOutputRaw copyWith({
+    uint32_t? timeUsec,
+    uint16_t? servo1Raw,
+    uint16_t? servo2Raw,
+    uint16_t? servo3Raw,
+    uint16_t? servo4Raw,
+    uint16_t? servo5Raw,
+    uint16_t? servo6Raw,
+    uint16_t? servo7Raw,
+    uint16_t? servo8Raw,
+    uint8_t? port,
+    uint16_t? servo9Raw,
+    uint16_t? servo10Raw,
+    uint16_t? servo11Raw,
+    uint16_t? servo12Raw,
+    uint16_t? servo13Raw,
+    uint16_t? servo14Raw,
+    uint16_t? servo15Raw,
+    uint16_t? servo16Raw,
+  }) {
+    return ServoOutputRaw(
+      timeUsec: timeUsec ?? this.timeUsec,
+      servo1Raw: servo1Raw ?? this.servo1Raw,
+      servo2Raw: servo2Raw ?? this.servo2Raw,
+      servo3Raw: servo3Raw ?? this.servo3Raw,
+      servo4Raw: servo4Raw ?? this.servo4Raw,
+      servo5Raw: servo5Raw ?? this.servo5Raw,
+      servo6Raw: servo6Raw ?? this.servo6Raw,
+      servo7Raw: servo7Raw ?? this.servo7Raw,
+      servo8Raw: servo8Raw ?? this.servo8Raw,
+      port: port ?? this.port,
+      servo9Raw: servo9Raw ?? this.servo9Raw,
+      servo10Raw: servo10Raw ?? this.servo10Raw,
+      servo11Raw: servo11Raw ?? this.servo11Raw,
+      servo12Raw: servo12Raw ?? this.servo12Raw,
+      servo13Raw: servo13Raw ?? this.servo13Raw,
+      servo14Raw: servo14Raw ?? this.servo14Raw,
+      servo15Raw: servo15Raw ?? this.servo15Raw,
+      servo16Raw: servo16Raw ?? this.servo16Raw,
+    );
+  }
+
   factory ServoOutputRaw.parse(ByteData data_) {
     if (data_.lengthInBytes < ServoOutputRaw.mavlinkEncodedLength) {
       var len = ServoOutputRaw.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint32(0, Endian.little);
@@ -11655,11 +12461,28 @@ class MissionRequestPartialList implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionRequestPartialList copyWith({
+    int16_t? startIndex,
+    int16_t? endIndex,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionType? missionType,
+  }) {
+    return MissionRequestPartialList(
+      startIndex: startIndex ?? this.startIndex,
+      endIndex: endIndex ?? this.endIndex,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionRequestPartialList.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionRequestPartialList.mavlinkEncodedLength) {
       var len =
           MissionRequestPartialList.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var startIndex = data_.getInt16(0, Endian.little);
@@ -11751,11 +12574,28 @@ class MissionWritePartialList implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionWritePartialList copyWith({
+    int16_t? startIndex,
+    int16_t? endIndex,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionType? missionType,
+  }) {
+    return MissionWritePartialList(
+      startIndex: startIndex ?? this.startIndex,
+      endIndex: endIndex ?? this.endIndex,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionWritePartialList.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionWritePartialList.mavlinkEncodedLength) {
       var len =
           MissionWritePartialList.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var startIndex = data_.getInt16(0, Endian.little);
@@ -11932,10 +12772,47 @@ class MissionItem implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionItem copyWith({
+    float? param1,
+    float? param2,
+    float? param3,
+    float? param4,
+    float? x,
+    float? y,
+    float? z,
+    uint16_t? seq,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? frame,
+    uint8_t? current,
+    uint8_t? autocontinue,
+    MavMissionType? missionType,
+  }) {
+    return MissionItem(
+      param1: param1 ?? this.param1,
+      param2: param2 ?? this.param2,
+      param3: param3 ?? this.param3,
+      param4: param4 ?? this.param4,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      seq: seq ?? this.seq,
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      frame: frame ?? this.frame,
+      current: current ?? this.current,
+      autocontinue: autocontinue ?? this.autocontinue,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionItem.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionItem.mavlinkEncodedLength) {
       var len = MissionItem.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var param1 = data_.getFloat32(0, Endian.little);
@@ -12049,10 +12926,25 @@ class MissionRequest implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionRequest copyWith({
+    uint16_t? seq,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionType? missionType,
+  }) {
+    return MissionRequest(
+      seq: seq ?? this.seq,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionRequest.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionRequest.mavlinkEncodedLength) {
       var len = MissionRequest.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var seq = data_.getUint16(0, Endian.little);
@@ -12129,10 +13021,23 @@ class MissionSetCurrent implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  MissionSetCurrent copyWith({
+    uint16_t? seq,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return MissionSetCurrent(
+      seq: seq ?? this.seq,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory MissionSetCurrent.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionSetCurrent.mavlinkEncodedLength) {
       var len = MissionSetCurrent.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var seq = data_.getUint16(0, Endian.little);
@@ -12246,10 +13151,31 @@ class MissionCurrent implements MavlinkMessage {
     required this.rallyPointsId,
   });
 
+  MissionCurrent copyWith({
+    uint16_t? seq,
+    uint16_t? total,
+    MissionState? missionState,
+    uint8_t? missionMode,
+    uint32_t? missionId,
+    uint32_t? fenceId,
+    uint32_t? rallyPointsId,
+  }) {
+    return MissionCurrent(
+      seq: seq ?? this.seq,
+      total: total ?? this.total,
+      missionState: missionState ?? this.missionState,
+      missionMode: missionMode ?? this.missionMode,
+      missionId: missionId ?? this.missionId,
+      fenceId: fenceId ?? this.fenceId,
+      rallyPointsId: rallyPointsId ?? this.rallyPointsId,
+    );
+  }
+
   factory MissionCurrent.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionCurrent.mavlinkEncodedLength) {
       var len = MissionCurrent.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var seq = data_.getUint16(0, Endian.little);
@@ -12331,10 +13257,23 @@ class MissionRequestList implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionRequestList copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionType? missionType,
+  }) {
+    return MissionRequestList(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionRequestList.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionRequestList.mavlinkEncodedLength) {
       var len = MissionRequestList.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -12428,10 +13367,27 @@ class MissionCount implements MavlinkMessage {
     required this.opaqueId,
   });
 
+  MissionCount copyWith({
+    uint16_t? count,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionType? missionType,
+    uint32_t? opaqueId,
+  }) {
+    return MissionCount(
+      count: count ?? this.count,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      missionType: missionType ?? this.missionType,
+      opaqueId: opaqueId ?? this.opaqueId,
+    );
+  }
+
   factory MissionCount.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionCount.mavlinkEncodedLength) {
       var len = MissionCount.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var count = data_.getUint16(0, Endian.little);
@@ -12507,10 +13463,23 @@ class MissionClearAll implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionClearAll copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionType? missionType,
+  }) {
+    return MissionClearAll(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionClearAll.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionClearAll.mavlinkEncodedLength) {
       var len = MissionClearAll.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -12560,10 +13529,19 @@ class MissionItemReached implements MavlinkMessage {
     required this.seq,
   });
 
+  MissionItemReached copyWith({
+    uint16_t? seq,
+  }) {
+    return MissionItemReached(
+      seq: seq ?? this.seq,
+    );
+  }
+
   factory MissionItemReached.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionItemReached.mavlinkEncodedLength) {
       var len = MissionItemReached.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var seq = data_.getUint16(0, Endian.little);
@@ -12652,10 +13630,27 @@ class MissionAck implements MavlinkMessage {
     required this.opaqueId,
   });
 
+  MissionAck copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionResult? type,
+    MavMissionType? missionType,
+    uint32_t? opaqueId,
+  }) {
+    return MissionAck(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      type: type ?? this.type,
+      missionType: missionType ?? this.missionType,
+      opaqueId: opaqueId ?? this.opaqueId,
+    );
+  }
+
   factory MissionAck.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionAck.mavlinkEncodedLength) {
       var len = MissionAck.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -12753,10 +13748,27 @@ class SetGpsGlobalOrigin implements MavlinkMessage {
     required this.timeUsec,
   });
 
+  SetGpsGlobalOrigin copyWith({
+    int32_t? latitude,
+    int32_t? longitude,
+    int32_t? altitude,
+    uint8_t? targetSystem,
+    uint64_t? timeUsec,
+  }) {
+    return SetGpsGlobalOrigin(
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      altitude: altitude ?? this.altitude,
+      targetSystem: targetSystem ?? this.targetSystem,
+      timeUsec: timeUsec ?? this.timeUsec,
+    );
+  }
+
   factory SetGpsGlobalOrigin.parse(ByteData data_) {
     if (data_.lengthInBytes < SetGpsGlobalOrigin.mavlinkEncodedLength) {
       var len = SetGpsGlobalOrigin.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var latitude = data_.getInt32(0, Endian.little);
@@ -12846,10 +13858,25 @@ class GpsGlobalOrigin implements MavlinkMessage {
     required this.timeUsec,
   });
 
+  GpsGlobalOrigin copyWith({
+    int32_t? latitude,
+    int32_t? longitude,
+    int32_t? altitude,
+    uint64_t? timeUsec,
+  }) {
+    return GpsGlobalOrigin(
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      altitude: altitude ?? this.altitude,
+      timeUsec: timeUsec ?? this.timeUsec,
+    );
+  }
+
   factory GpsGlobalOrigin.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsGlobalOrigin.mavlinkEncodedLength) {
       var len = GpsGlobalOrigin.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var latitude = data_.getInt32(0, Endian.little);
@@ -12966,10 +13993,36 @@ class ParamMapRc implements MavlinkMessage {
     required this.parameterRcChannelIndex,
   });
 
+  ParamMapRc copyWith({
+    float? paramValue0,
+    float? scale,
+    float? paramValueMin,
+    float? paramValueMax,
+    int16_t? paramIndex,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<char>? paramId,
+    uint8_t? parameterRcChannelIndex,
+  }) {
+    return ParamMapRc(
+      paramValue0: paramValue0 ?? this.paramValue0,
+      scale: scale ?? this.scale,
+      paramValueMin: paramValueMin ?? this.paramValueMin,
+      paramValueMax: paramValueMax ?? this.paramValueMax,
+      paramIndex: paramIndex ?? this.paramIndex,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      paramId: paramId ?? this.paramId,
+      parameterRcChannelIndex:
+          parameterRcChannelIndex ?? this.parameterRcChannelIndex,
+    );
+  }
+
   factory ParamMapRc.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamMapRc.mavlinkEncodedLength) {
       var len = ParamMapRc.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var paramValue0 = data_.getFloat32(0, Endian.little);
@@ -13065,10 +14118,25 @@ class MissionRequestInt implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionRequestInt copyWith({
+    uint16_t? seq,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavMissionType? missionType,
+  }) {
+    return MissionRequestInt(
+      seq: seq ?? this.seq,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionRequestInt.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionRequestInt.mavlinkEncodedLength) {
       var len = MissionRequestInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var seq = data_.getUint16(0, Endian.little);
@@ -13199,10 +14267,35 @@ class SafetySetAllowedArea implements MavlinkMessage {
     required this.frame,
   });
 
+  SafetySetAllowedArea copyWith({
+    float? p1x,
+    float? p1y,
+    float? p1z,
+    float? p2x,
+    float? p2y,
+    float? p2z,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? frame,
+  }) {
+    return SafetySetAllowedArea(
+      p1x: p1x ?? this.p1x,
+      p1y: p1y ?? this.p1y,
+      p1z: p1z ?? this.p1z,
+      p2x: p2x ?? this.p2x,
+      p2y: p2y ?? this.p2y,
+      p2z: p2z ?? this.p2z,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      frame: frame ?? this.frame,
+    );
+  }
+
   factory SafetySetAllowedArea.parse(ByteData data_) {
     if (data_.lengthInBytes < SafetySetAllowedArea.mavlinkEncodedLength) {
       var len = SafetySetAllowedArea.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var p1x = data_.getFloat32(0, Endian.little);
@@ -13332,10 +14425,31 @@ class SafetyAllowedArea implements MavlinkMessage {
     required this.frame,
   });
 
+  SafetyAllowedArea copyWith({
+    float? p1x,
+    float? p1y,
+    float? p1z,
+    float? p2x,
+    float? p2y,
+    float? p2z,
+    MavFrame? frame,
+  }) {
+    return SafetyAllowedArea(
+      p1x: p1x ?? this.p1x,
+      p1y: p1y ?? this.p1y,
+      p1z: p1z ?? this.p1z,
+      p2x: p2x ?? this.p2x,
+      p2y: p2y ?? this.p2y,
+      p2z: p2z ?? this.p2z,
+      frame: frame ?? this.frame,
+    );
+  }
+
   factory SafetyAllowedArea.parse(ByteData data_) {
     if (data_.lengthInBytes < SafetyAllowedArea.mavlinkEncodedLength) {
       var len = SafetyAllowedArea.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var p1x = data_.getFloat32(0, Endian.little);
@@ -13445,11 +14559,30 @@ class AttitudeQuaternionCov implements MavlinkMessage {
     required this.covariance,
   });
 
+  AttitudeQuaternionCov copyWith({
+    uint64_t? timeUsec,
+    List<float>? q,
+    float? rollspeed,
+    float? pitchspeed,
+    float? yawspeed,
+    List<float>? covariance,
+  }) {
+    return AttitudeQuaternionCov(
+      timeUsec: timeUsec ?? this.timeUsec,
+      q: q ?? this.q,
+      rollspeed: rollspeed ?? this.rollspeed,
+      pitchspeed: pitchspeed ?? this.pitchspeed,
+      yawspeed: yawspeed ?? this.yawspeed,
+      covariance: covariance ?? this.covariance,
+    );
+  }
+
   factory AttitudeQuaternionCov.parse(ByteData data_) {
     if (data_.lengthInBytes < AttitudeQuaternionCov.mavlinkEncodedLength) {
       var len =
           AttitudeQuaternionCov.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -13580,10 +14713,33 @@ class NavControllerOutput implements MavlinkMessage {
     required this.wpDist,
   });
 
+  NavControllerOutput copyWith({
+    float? navRoll,
+    float? navPitch,
+    float? altError,
+    float? aspdError,
+    float? xtrackError,
+    int16_t? navBearing,
+    int16_t? targetBearing,
+    uint16_t? wpDist,
+  }) {
+    return NavControllerOutput(
+      navRoll: navRoll ?? this.navRoll,
+      navPitch: navPitch ?? this.navPitch,
+      altError: altError ?? this.altError,
+      aspdError: aspdError ?? this.aspdError,
+      xtrackError: xtrackError ?? this.xtrackError,
+      navBearing: navBearing ?? this.navBearing,
+      targetBearing: targetBearing ?? this.targetBearing,
+      wpDist: wpDist ?? this.wpDist,
+    );
+  }
+
   factory NavControllerOutput.parse(ByteData data_) {
     if (data_.lengthInBytes < NavControllerOutput.mavlinkEncodedLength) {
       var len = NavControllerOutput.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var navRoll = data_.getFloat32(0, Endian.little);
@@ -13738,10 +14894,37 @@ class GlobalPositionIntCov implements MavlinkMessage {
     required this.estimatorType,
   });
 
+  GlobalPositionIntCov copyWith({
+    uint64_t? timeUsec,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    int32_t? relativeAlt,
+    float? vx,
+    float? vy,
+    float? vz,
+    List<float>? covariance,
+    MavEstimatorType? estimatorType,
+  }) {
+    return GlobalPositionIntCov(
+      timeUsec: timeUsec ?? this.timeUsec,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      relativeAlt: relativeAlt ?? this.relativeAlt,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      covariance: covariance ?? this.covariance,
+      estimatorType: estimatorType ?? this.estimatorType,
+    );
+  }
+
   factory GlobalPositionIntCov.parse(ByteData data_) {
     if (data_.lengthInBytes < GlobalPositionIntCov.mavlinkEncodedLength) {
       var len = GlobalPositionIntCov.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -13922,10 +15105,41 @@ class LocalPositionNedCov implements MavlinkMessage {
     required this.estimatorType,
   });
 
+  LocalPositionNedCov copyWith({
+    uint64_t? timeUsec,
+    float? x,
+    float? y,
+    float? z,
+    float? vx,
+    float? vy,
+    float? vz,
+    float? ax,
+    float? ay,
+    float? az,
+    List<float>? covariance,
+    MavEstimatorType? estimatorType,
+  }) {
+    return LocalPositionNedCov(
+      timeUsec: timeUsec ?? this.timeUsec,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      ax: ax ?? this.ax,
+      ay: ay ?? this.ay,
+      az: az ?? this.az,
+      covariance: covariance ?? this.covariance,
+      estimatorType: estimatorType ?? this.estimatorType,
+    );
+  }
+
   factory LocalPositionNedCov.parse(ByteData data_) {
     if (data_.lengthInBytes < LocalPositionNedCov.mavlinkEncodedLength) {
       var len = LocalPositionNedCov.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -14200,10 +15414,59 @@ class RcChannels implements MavlinkMessage {
     required this.rssi,
   });
 
+  RcChannels copyWith({
+    uint32_t? timeBootMs,
+    uint16_t? chan1Raw,
+    uint16_t? chan2Raw,
+    uint16_t? chan3Raw,
+    uint16_t? chan4Raw,
+    uint16_t? chan5Raw,
+    uint16_t? chan6Raw,
+    uint16_t? chan7Raw,
+    uint16_t? chan8Raw,
+    uint16_t? chan9Raw,
+    uint16_t? chan10Raw,
+    uint16_t? chan11Raw,
+    uint16_t? chan12Raw,
+    uint16_t? chan13Raw,
+    uint16_t? chan14Raw,
+    uint16_t? chan15Raw,
+    uint16_t? chan16Raw,
+    uint16_t? chan17Raw,
+    uint16_t? chan18Raw,
+    uint8_t? chancount,
+    uint8_t? rssi,
+  }) {
+    return RcChannels(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      chan1Raw: chan1Raw ?? this.chan1Raw,
+      chan2Raw: chan2Raw ?? this.chan2Raw,
+      chan3Raw: chan3Raw ?? this.chan3Raw,
+      chan4Raw: chan4Raw ?? this.chan4Raw,
+      chan5Raw: chan5Raw ?? this.chan5Raw,
+      chan6Raw: chan6Raw ?? this.chan6Raw,
+      chan7Raw: chan7Raw ?? this.chan7Raw,
+      chan8Raw: chan8Raw ?? this.chan8Raw,
+      chan9Raw: chan9Raw ?? this.chan9Raw,
+      chan10Raw: chan10Raw ?? this.chan10Raw,
+      chan11Raw: chan11Raw ?? this.chan11Raw,
+      chan12Raw: chan12Raw ?? this.chan12Raw,
+      chan13Raw: chan13Raw ?? this.chan13Raw,
+      chan14Raw: chan14Raw ?? this.chan14Raw,
+      chan15Raw: chan15Raw ?? this.chan15Raw,
+      chan16Raw: chan16Raw ?? this.chan16Raw,
+      chan17Raw: chan17Raw ?? this.chan17Raw,
+      chan18Raw: chan18Raw ?? this.chan18Raw,
+      chancount: chancount ?? this.chancount,
+      rssi: rssi ?? this.rssi,
+    );
+  }
+
   factory RcChannels.parse(ByteData data_) {
     if (data_.lengthInBytes < RcChannels.mavlinkEncodedLength) {
       var len = RcChannels.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -14341,10 +15604,27 @@ class RequestDataStream implements MavlinkMessage {
     required this.startStop,
   });
 
+  RequestDataStream copyWith({
+    uint16_t? reqMessageRate,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? reqStreamId,
+    uint8_t? startStop,
+  }) {
+    return RequestDataStream(
+      reqMessageRate: reqMessageRate ?? this.reqMessageRate,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      reqStreamId: reqStreamId ?? this.reqStreamId,
+      startStop: startStop ?? this.startStop,
+    );
+  }
+
   factory RequestDataStream.parse(ByteData data_) {
     if (data_.lengthInBytes < RequestDataStream.mavlinkEncodedLength) {
       var len = RequestDataStream.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var reqMessageRate = data_.getUint16(0, Endian.little);
@@ -14418,10 +15698,23 @@ class DataStream implements MavlinkMessage {
     required this.onOff,
   });
 
+  DataStream copyWith({
+    uint16_t? messageRate,
+    uint8_t? streamId,
+    uint8_t? onOff,
+  }) {
+    return DataStream(
+      messageRate: messageRate ?? this.messageRate,
+      streamId: streamId ?? this.streamId,
+      onOff: onOff ?? this.onOff,
+    );
+  }
+
   factory DataStream.parse(ByteData data_) {
     if (data_.lengthInBytes < DataStream.mavlinkEncodedLength) {
       var len = DataStream.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var messageRate = data_.getUint16(0, Endian.little);
@@ -14609,10 +15902,49 @@ class ManualControl implements MavlinkMessage {
     required this.aux6,
   });
 
+  ManualControl copyWith({
+    int16_t? x,
+    int16_t? y,
+    int16_t? z,
+    int16_t? r,
+    uint16_t? buttons,
+    uint8_t? target,
+    uint16_t? buttons2,
+    uint8_t? enabledExtensions,
+    int16_t? s,
+    int16_t? t,
+    int16_t? aux1,
+    int16_t? aux2,
+    int16_t? aux3,
+    int16_t? aux4,
+    int16_t? aux5,
+    int16_t? aux6,
+  }) {
+    return ManualControl(
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      r: r ?? this.r,
+      buttons: buttons ?? this.buttons,
+      target: target ?? this.target,
+      buttons2: buttons2 ?? this.buttons2,
+      enabledExtensions: enabledExtensions ?? this.enabledExtensions,
+      s: s ?? this.s,
+      t: t ?? this.t,
+      aux1: aux1 ?? this.aux1,
+      aux2: aux2 ?? this.aux2,
+      aux3: aux3 ?? this.aux3,
+      aux4: aux4 ?? this.aux4,
+      aux5: aux5 ?? this.aux5,
+      aux6: aux6 ?? this.aux6,
+    );
+  }
+
   factory ManualControl.parse(ByteData data_) {
     if (data_.lengthInBytes < ManualControl.mavlinkEncodedLength) {
       var len = ManualControl.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var x = data_.getInt16(0, Endian.little);
@@ -14909,10 +16241,57 @@ class RcChannelsOverride implements MavlinkMessage {
     required this.chan18Raw,
   });
 
+  RcChannelsOverride copyWith({
+    uint16_t? chan1Raw,
+    uint16_t? chan2Raw,
+    uint16_t? chan3Raw,
+    uint16_t? chan4Raw,
+    uint16_t? chan5Raw,
+    uint16_t? chan6Raw,
+    uint16_t? chan7Raw,
+    uint16_t? chan8Raw,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint16_t? chan9Raw,
+    uint16_t? chan10Raw,
+    uint16_t? chan11Raw,
+    uint16_t? chan12Raw,
+    uint16_t? chan13Raw,
+    uint16_t? chan14Raw,
+    uint16_t? chan15Raw,
+    uint16_t? chan16Raw,
+    uint16_t? chan17Raw,
+    uint16_t? chan18Raw,
+  }) {
+    return RcChannelsOverride(
+      chan1Raw: chan1Raw ?? this.chan1Raw,
+      chan2Raw: chan2Raw ?? this.chan2Raw,
+      chan3Raw: chan3Raw ?? this.chan3Raw,
+      chan4Raw: chan4Raw ?? this.chan4Raw,
+      chan5Raw: chan5Raw ?? this.chan5Raw,
+      chan6Raw: chan6Raw ?? this.chan6Raw,
+      chan7Raw: chan7Raw ?? this.chan7Raw,
+      chan8Raw: chan8Raw ?? this.chan8Raw,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      chan9Raw: chan9Raw ?? this.chan9Raw,
+      chan10Raw: chan10Raw ?? this.chan10Raw,
+      chan11Raw: chan11Raw ?? this.chan11Raw,
+      chan12Raw: chan12Raw ?? this.chan12Raw,
+      chan13Raw: chan13Raw ?? this.chan13Raw,
+      chan14Raw: chan14Raw ?? this.chan14Raw,
+      chan15Raw: chan15Raw ?? this.chan15Raw,
+      chan16Raw: chan16Raw ?? this.chan16Raw,
+      chan17Raw: chan17Raw ?? this.chan17Raw,
+      chan18Raw: chan18Raw ?? this.chan18Raw,
+    );
+  }
+
   factory RcChannelsOverride.parse(ByteData data_) {
     if (data_.lengthInBytes < RcChannelsOverride.mavlinkEncodedLength) {
       var len = RcChannelsOverride.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var chan1Raw = data_.getUint16(0, Endian.little);
@@ -15134,10 +16513,47 @@ class MissionItemInt implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionItemInt copyWith({
+    float? param1,
+    float? param2,
+    float? param3,
+    float? param4,
+    int32_t? x,
+    int32_t? y,
+    float? z,
+    uint16_t? seq,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? frame,
+    uint8_t? current,
+    uint8_t? autocontinue,
+    MavMissionType? missionType,
+  }) {
+    return MissionItemInt(
+      param1: param1 ?? this.param1,
+      param2: param2 ?? this.param2,
+      param3: param3 ?? this.param3,
+      param4: param4 ?? this.param4,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      seq: seq ?? this.seq,
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      frame: frame ?? this.frame,
+      current: current ?? this.current,
+      autocontinue: autocontinue ?? this.autocontinue,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionItemInt.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionItemInt.mavlinkEncodedLength) {
       var len = MissionItemInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var param1 = data_.getFloat32(0, Endian.little);
@@ -15275,10 +16691,29 @@ class VfrHud implements MavlinkMessage {
     required this.throttle,
   });
 
+  VfrHud copyWith({
+    float? airspeed,
+    float? groundspeed,
+    float? alt,
+    float? climb,
+    int16_t? heading,
+    uint16_t? throttle,
+  }) {
+    return VfrHud(
+      airspeed: airspeed ?? this.airspeed,
+      groundspeed: groundspeed ?? this.groundspeed,
+      alt: alt ?? this.alt,
+      climb: climb ?? this.climb,
+      heading: heading ?? this.heading,
+      throttle: throttle ?? this.throttle,
+    );
+  }
+
   factory VfrHud.parse(ByteData data_) {
     if (data_.lengthInBytes < VfrHud.mavlinkEncodedLength) {
       var len = VfrHud.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var airspeed = data_.getFloat32(0, Endian.little);
@@ -15437,10 +16872,43 @@ class CommandInt implements MavlinkMessage {
     required this.autocontinue,
   });
 
+  CommandInt copyWith({
+    float? param1,
+    float? param2,
+    float? param3,
+    float? param4,
+    int32_t? x,
+    int32_t? y,
+    float? z,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? frame,
+    uint8_t? current,
+    uint8_t? autocontinue,
+  }) {
+    return CommandInt(
+      param1: param1 ?? this.param1,
+      param2: param2 ?? this.param2,
+      param3: param3 ?? this.param3,
+      param4: param4 ?? this.param4,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      frame: frame ?? this.frame,
+      current: current ?? this.current,
+      autocontinue: autocontinue ?? this.autocontinue,
+    );
+  }
+
   factory CommandInt.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandInt.mavlinkEncodedLength) {
       var len = CommandInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var param1 = data_.getFloat32(0, Endian.little);
@@ -15602,10 +17070,39 @@ class CommandLong implements MavlinkMessage {
     required this.confirmation,
   });
 
+  CommandLong copyWith({
+    float? param1,
+    float? param2,
+    float? param3,
+    float? param4,
+    float? param5,
+    float? param6,
+    float? param7,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? confirmation,
+  }) {
+    return CommandLong(
+      param1: param1 ?? this.param1,
+      param2: param2 ?? this.param2,
+      param3: param3 ?? this.param3,
+      param4: param4 ?? this.param4,
+      param5: param5 ?? this.param5,
+      param6: param6 ?? this.param6,
+      param7: param7 ?? this.param7,
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      confirmation: confirmation ?? this.confirmation,
+    );
+  }
+
   factory CommandLong.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandLong.mavlinkEncodedLength) {
       var len = CommandLong.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var param1 = data_.getFloat32(0, Endian.little);
@@ -15733,10 +17230,29 @@ class CommandAck implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  CommandAck copyWith({
+    MavCmd? command,
+    MavResult? result,
+    uint8_t? progress,
+    int32_t? resultParam2,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return CommandAck(
+      command: command ?? this.command,
+      result: result ?? this.result,
+      progress: progress ?? this.progress,
+      resultParam2: resultParam2 ?? this.resultParam2,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory CommandAck.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandAck.mavlinkEncodedLength) {
       var len = CommandAck.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var command = data_.getUint16(0, Endian.little);
@@ -15813,10 +17329,23 @@ class CommandCancel implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  CommandCancel copyWith({
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return CommandCancel(
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory CommandCancel.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandCancel.mavlinkEncodedLength) {
       var len = CommandCancel.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var command = data_.getUint16(0, Endian.little);
@@ -15922,10 +17451,31 @@ class ManualSetpoint implements MavlinkMessage {
     required this.manualOverrideSwitch,
   });
 
+  ManualSetpoint copyWith({
+    uint32_t? timeBootMs,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    float? thrust,
+    uint8_t? modeSwitch,
+    uint8_t? manualOverrideSwitch,
+  }) {
+    return ManualSetpoint(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      thrust: thrust ?? this.thrust,
+      modeSwitch: modeSwitch ?? this.modeSwitch,
+      manualOverrideSwitch: manualOverrideSwitch ?? this.manualOverrideSwitch,
+    );
+  }
+
   factory ManualSetpoint.parse(ByteData data_) {
     if (data_.lengthInBytes < ManualSetpoint.mavlinkEncodedLength) {
       var len = ManualSetpoint.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -16071,10 +17621,37 @@ class SetAttitudeTarget implements MavlinkMessage {
     required this.thrustBody,
   });
 
+  SetAttitudeTarget copyWith({
+    uint32_t? timeBootMs,
+    List<float>? q,
+    float? bodyRollRate,
+    float? bodyPitchRate,
+    float? bodyYawRate,
+    float? thrust,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    AttitudeTargetTypemask? typeMask,
+    List<float>? thrustBody,
+  }) {
+    return SetAttitudeTarget(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      q: q ?? this.q,
+      bodyRollRate: bodyRollRate ?? this.bodyRollRate,
+      bodyPitchRate: bodyPitchRate ?? this.bodyPitchRate,
+      bodyYawRate: bodyYawRate ?? this.bodyYawRate,
+      thrust: thrust ?? this.thrust,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      typeMask: typeMask ?? this.typeMask,
+      thrustBody: thrustBody ?? this.thrustBody,
+    );
+  }
+
   factory SetAttitudeTarget.parse(ByteData data_) {
     if (data_.lengthInBytes < SetAttitudeTarget.mavlinkEncodedLength) {
       var len = SetAttitudeTarget.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -16203,10 +17780,31 @@ class AttitudeTarget implements MavlinkMessage {
     required this.typeMask,
   });
 
+  AttitudeTarget copyWith({
+    uint32_t? timeBootMs,
+    List<float>? q,
+    float? bodyRollRate,
+    float? bodyPitchRate,
+    float? bodyYawRate,
+    float? thrust,
+    AttitudeTargetTypemask? typeMask,
+  }) {
+    return AttitudeTarget(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      q: q ?? this.q,
+      bodyRollRate: bodyRollRate ?? this.bodyRollRate,
+      bodyPitchRate: bodyPitchRate ?? this.bodyPitchRate,
+      bodyYawRate: bodyYawRate ?? this.bodyYawRate,
+      thrust: thrust ?? this.thrust,
+      typeMask: typeMask ?? this.typeMask,
+    );
+  }
+
   factory AttitudeTarget.parse(ByteData data_) {
     if (data_.lengthInBytes < AttitudeTarget.mavlinkEncodedLength) {
       var len = AttitudeTarget.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -16416,11 +18014,50 @@ class SetPositionTargetLocalNed implements MavlinkMessage {
     required this.coordinateFrame,
   });
 
+  SetPositionTargetLocalNed copyWith({
+    uint32_t? timeBootMs,
+    float? x,
+    float? y,
+    float? z,
+    float? vx,
+    float? vy,
+    float? vz,
+    float? afx,
+    float? afy,
+    float? afz,
+    float? yaw,
+    float? yawRate,
+    PositionTargetTypemask? typeMask,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? coordinateFrame,
+  }) {
+    return SetPositionTargetLocalNed(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      afx: afx ?? this.afx,
+      afy: afy ?? this.afy,
+      afz: afz ?? this.afz,
+      yaw: yaw ?? this.yaw,
+      yawRate: yawRate ?? this.yawRate,
+      typeMask: typeMask ?? this.typeMask,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      coordinateFrame: coordinateFrame ?? this.coordinateFrame,
+    );
+  }
+
   factory SetPositionTargetLocalNed.parse(ByteData data_) {
     if (data_.lengthInBytes < SetPositionTargetLocalNed.mavlinkEncodedLength) {
       var len =
           SetPositionTargetLocalNed.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -16641,11 +18278,46 @@ class PositionTargetLocalNed implements MavlinkMessage {
     required this.coordinateFrame,
   });
 
+  PositionTargetLocalNed copyWith({
+    uint32_t? timeBootMs,
+    float? x,
+    float? y,
+    float? z,
+    float? vx,
+    float? vy,
+    float? vz,
+    float? afx,
+    float? afy,
+    float? afz,
+    float? yaw,
+    float? yawRate,
+    PositionTargetTypemask? typeMask,
+    MavFrame? coordinateFrame,
+  }) {
+    return PositionTargetLocalNed(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      afx: afx ?? this.afx,
+      afy: afy ?? this.afy,
+      afz: afz ?? this.afz,
+      yaw: yaw ?? this.yaw,
+      yawRate: yawRate ?? this.yawRate,
+      typeMask: typeMask ?? this.typeMask,
+      coordinateFrame: coordinateFrame ?? this.coordinateFrame,
+    );
+  }
+
   factory PositionTargetLocalNed.parse(ByteData data_) {
     if (data_.lengthInBytes < PositionTargetLocalNed.mavlinkEncodedLength) {
       var len =
           PositionTargetLocalNed.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -16726,7 +18398,7 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
   /// time_boot_ms
   final uint32_t timeBootMs;
 
-  /// X Position in WGS84 frame
+  /// Latitude in WGS84 frame
   ///
   /// MAVLink type: int32_t
   ///
@@ -16735,7 +18407,7 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
   /// lat_int
   final int32_t latInt;
 
-  /// Y Position in WGS84 frame
+  /// Longitude in WGS84 frame
   ///
   /// MAVLink type: int32_t
   ///
@@ -16848,7 +18520,7 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
   /// target_component
   final uint8_t targetComponent;
 
-  /// Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11
+  /// Valid options are: MAV_FRAME_GLOBAL = 0, MAV_FRAME_GLOBAL_RELATIVE_ALT = 3, MAV_FRAME_GLOBAL_TERRAIN_ALT = 10 (MAV_FRAME_GLOBAL_INT, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT are allowed synonyms, but have been deprecated)
   ///
   /// MAVLink type: uint8_t
   ///
@@ -16876,11 +18548,50 @@ class SetPositionTargetGlobalInt implements MavlinkMessage {
     required this.coordinateFrame,
   });
 
+  SetPositionTargetGlobalInt copyWith({
+    uint32_t? timeBootMs,
+    int32_t? latInt,
+    int32_t? lonInt,
+    float? alt,
+    float? vx,
+    float? vy,
+    float? vz,
+    float? afx,
+    float? afy,
+    float? afz,
+    float? yaw,
+    float? yawRate,
+    PositionTargetTypemask? typeMask,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? coordinateFrame,
+  }) {
+    return SetPositionTargetGlobalInt(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      latInt: latInt ?? this.latInt,
+      lonInt: lonInt ?? this.lonInt,
+      alt: alt ?? this.alt,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      afx: afx ?? this.afx,
+      afy: afy ?? this.afy,
+      afz: afz ?? this.afz,
+      yaw: yaw ?? this.yaw,
+      yawRate: yawRate ?? this.yawRate,
+      typeMask: typeMask ?? this.typeMask,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      coordinateFrame: coordinateFrame ?? this.coordinateFrame,
+    );
+  }
+
   factory SetPositionTargetGlobalInt.parse(ByteData data_) {
     if (data_.lengthInBytes < SetPositionTargetGlobalInt.mavlinkEncodedLength) {
       var len =
           SetPositionTargetGlobalInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -16967,7 +18678,7 @@ class PositionTargetGlobalInt implements MavlinkMessage {
   /// time_boot_ms
   final uint32_t timeBootMs;
 
-  /// X Position in WGS84 frame
+  /// Latitude in WGS84 frame
   ///
   /// MAVLink type: int32_t
   ///
@@ -16976,7 +18687,7 @@ class PositionTargetGlobalInt implements MavlinkMessage {
   /// lat_int
   final int32_t latInt;
 
-  /// Y Position in WGS84 frame
+  /// Longitude in WGS84 frame
   ///
   /// MAVLink type: int32_t
   ///
@@ -17075,7 +18786,7 @@ class PositionTargetGlobalInt implements MavlinkMessage {
   /// type_mask
   final PositionTargetTypemask typeMask;
 
-  /// Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11
+  /// Valid options are: MAV_FRAME_GLOBAL = 0, MAV_FRAME_GLOBAL_RELATIVE_ALT = 3, MAV_FRAME_GLOBAL_TERRAIN_ALT = 10 (MAV_FRAME_GLOBAL_INT, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT are allowed synonyms, but have been deprecated)
   ///
   /// MAVLink type: uint8_t
   ///
@@ -17101,11 +18812,46 @@ class PositionTargetGlobalInt implements MavlinkMessage {
     required this.coordinateFrame,
   });
 
+  PositionTargetGlobalInt copyWith({
+    uint32_t? timeBootMs,
+    int32_t? latInt,
+    int32_t? lonInt,
+    float? alt,
+    float? vx,
+    float? vy,
+    float? vz,
+    float? afx,
+    float? afy,
+    float? afz,
+    float? yaw,
+    float? yawRate,
+    PositionTargetTypemask? typeMask,
+    MavFrame? coordinateFrame,
+  }) {
+    return PositionTargetGlobalInt(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      latInt: latInt ?? this.latInt,
+      lonInt: lonInt ?? this.lonInt,
+      alt: alt ?? this.alt,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      afx: afx ?? this.afx,
+      afy: afy ?? this.afy,
+      afz: afz ?? this.afz,
+      yaw: yaw ?? this.yaw,
+      yawRate: yawRate ?? this.yawRate,
+      typeMask: typeMask ?? this.typeMask,
+      coordinateFrame: coordinateFrame ?? this.coordinateFrame,
+    );
+  }
+
   factory PositionTargetGlobalInt.parse(ByteData data_) {
     if (data_.lengthInBytes < PositionTargetGlobalInt.mavlinkEncodedLength) {
       var len =
           PositionTargetGlobalInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -17250,12 +18996,33 @@ class LocalPositionNedSystemGlobalOffset implements MavlinkMessage {
     required this.yaw,
   });
 
+  LocalPositionNedSystemGlobalOffset copyWith({
+    uint32_t? timeBootMs,
+    float? x,
+    float? y,
+    float? z,
+    float? roll,
+    float? pitch,
+    float? yaw,
+  }) {
+    return LocalPositionNedSystemGlobalOffset(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+    );
+  }
+
   factory LocalPositionNedSystemGlobalOffset.parse(ByteData data_) {
     if (data_.lengthInBytes <
         LocalPositionNedSystemGlobalOffset.mavlinkEncodedLength) {
       var len = LocalPositionNedSystemGlobalOffset.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -17469,10 +19236,49 @@ class HilState implements MavlinkMessage {
     required this.zacc,
   });
 
+  HilState copyWith({
+    uint64_t? timeUsec,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    float? rollspeed,
+    float? pitchspeed,
+    float? yawspeed,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    int16_t? vx,
+    int16_t? vy,
+    int16_t? vz,
+    int16_t? xacc,
+    int16_t? yacc,
+    int16_t? zacc,
+  }) {
+    return HilState(
+      timeUsec: timeUsec ?? this.timeUsec,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      rollspeed: rollspeed ?? this.rollspeed,
+      pitchspeed: pitchspeed ?? this.pitchspeed,
+      yawspeed: yawspeed ?? this.yawspeed,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+    );
+  }
+
   factory HilState.parse(ByteData data_) {
     if (data_.lengthInBytes < HilState.mavlinkEncodedLength) {
       var len = HilState.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -17645,10 +19451,39 @@ class HilControls implements MavlinkMessage {
     required this.navMode,
   });
 
+  HilControls copyWith({
+    uint64_t? timeUsec,
+    float? rollAilerons,
+    float? pitchElevator,
+    float? yawRudder,
+    float? throttle,
+    float? aux1,
+    float? aux2,
+    float? aux3,
+    float? aux4,
+    MavMode? mode,
+    uint8_t? navMode,
+  }) {
+    return HilControls(
+      timeUsec: timeUsec ?? this.timeUsec,
+      rollAilerons: rollAilerons ?? this.rollAilerons,
+      pitchElevator: pitchElevator ?? this.pitchElevator,
+      yawRudder: yawRudder ?? this.yawRudder,
+      throttle: throttle ?? this.throttle,
+      aux1: aux1 ?? this.aux1,
+      aux2: aux2 ?? this.aux2,
+      aux3: aux3 ?? this.aux3,
+      aux4: aux4 ?? this.aux4,
+      mode: mode ?? this.mode,
+      navMode: navMode ?? this.navMode,
+    );
+  }
+
   factory HilControls.parse(ByteData data_) {
     if (data_.lengthInBytes < HilControls.mavlinkEncodedLength) {
       var len = HilControls.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -17852,10 +19687,45 @@ class HilRcInputsRaw implements MavlinkMessage {
     required this.rssi,
   });
 
+  HilRcInputsRaw copyWith({
+    uint64_t? timeUsec,
+    uint16_t? chan1Raw,
+    uint16_t? chan2Raw,
+    uint16_t? chan3Raw,
+    uint16_t? chan4Raw,
+    uint16_t? chan5Raw,
+    uint16_t? chan6Raw,
+    uint16_t? chan7Raw,
+    uint16_t? chan8Raw,
+    uint16_t? chan9Raw,
+    uint16_t? chan10Raw,
+    uint16_t? chan11Raw,
+    uint16_t? chan12Raw,
+    uint8_t? rssi,
+  }) {
+    return HilRcInputsRaw(
+      timeUsec: timeUsec ?? this.timeUsec,
+      chan1Raw: chan1Raw ?? this.chan1Raw,
+      chan2Raw: chan2Raw ?? this.chan2Raw,
+      chan3Raw: chan3Raw ?? this.chan3Raw,
+      chan4Raw: chan4Raw ?? this.chan4Raw,
+      chan5Raw: chan5Raw ?? this.chan5Raw,
+      chan6Raw: chan6Raw ?? this.chan6Raw,
+      chan7Raw: chan7Raw ?? this.chan7Raw,
+      chan8Raw: chan8Raw ?? this.chan8Raw,
+      chan9Raw: chan9Raw ?? this.chan9Raw,
+      chan10Raw: chan10Raw ?? this.chan10Raw,
+      chan11Raw: chan11Raw ?? this.chan11Raw,
+      chan12Raw: chan12Raw ?? this.chan12Raw,
+      rssi: rssi ?? this.rssi,
+    );
+  }
+
   factory HilRcInputsRaw.parse(ByteData data_) {
     if (data_.lengthInBytes < HilRcInputsRaw.mavlinkEncodedLength) {
       var len = HilRcInputsRaw.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -17966,10 +19836,25 @@ class HilActuatorControls implements MavlinkMessage {
     required this.mode,
   });
 
+  HilActuatorControls copyWith({
+    uint64_t? timeUsec,
+    uint64_t? flags,
+    List<float>? controls,
+    MavModeFlag? mode,
+  }) {
+    return HilActuatorControls(
+      timeUsec: timeUsec ?? this.timeUsec,
+      flags: flags ?? this.flags,
+      controls: controls ?? this.controls,
+      mode: mode ?? this.mode,
+    );
+  }
+
   factory HilActuatorControls.parse(ByteData data_) {
     if (data_.lengthInBytes < HilActuatorControls.mavlinkEncodedLength) {
       var len = HilActuatorControls.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -18111,10 +19996,37 @@ class OpticalFlow implements MavlinkMessage {
     required this.flowRateY,
   });
 
+  OpticalFlow copyWith({
+    uint64_t? timeUsec,
+    float? flowCompMX,
+    float? flowCompMY,
+    float? groundDistance,
+    int16_t? flowX,
+    int16_t? flowY,
+    uint8_t? sensorId,
+    uint8_t? quality,
+    float? flowRateX,
+    float? flowRateY,
+  }) {
+    return OpticalFlow(
+      timeUsec: timeUsec ?? this.timeUsec,
+      flowCompMX: flowCompMX ?? this.flowCompMX,
+      flowCompMY: flowCompMY ?? this.flowCompMY,
+      groundDistance: groundDistance ?? this.groundDistance,
+      flowX: flowX ?? this.flowX,
+      flowY: flowY ?? this.flowY,
+      sensorId: sensorId ?? this.sensorId,
+      quality: quality ?? this.quality,
+      flowRateX: flowRateX ?? this.flowRateX,
+      flowRateY: flowRateY ?? this.flowRateY,
+    );
+  }
+
   factory OpticalFlow.parse(ByteData data_) {
     if (data_.lengthInBytes < OpticalFlow.mavlinkEncodedLength) {
       var len = OpticalFlow.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -18267,12 +20179,37 @@ class GlobalVisionPositionEstimate implements MavlinkMessage {
     required this.resetCounter,
   });
 
+  GlobalVisionPositionEstimate copyWith({
+    uint64_t? usec,
+    float? x,
+    float? y,
+    float? z,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    List<float>? covariance,
+    uint8_t? resetCounter,
+  }) {
+    return GlobalVisionPositionEstimate(
+      usec: usec ?? this.usec,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      covariance: covariance ?? this.covariance,
+      resetCounter: resetCounter ?? this.resetCounter,
+    );
+  }
+
   factory GlobalVisionPositionEstimate.parse(ByteData data_) {
     if (data_.lengthInBytes <
         GlobalVisionPositionEstimate.mavlinkEncodedLength) {
       var len = GlobalVisionPositionEstimate.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var usec = data_.getUint64(0, Endian.little);
@@ -18422,11 +20359,36 @@ class VisionPositionEstimate implements MavlinkMessage {
     required this.resetCounter,
   });
 
+  VisionPositionEstimate copyWith({
+    uint64_t? usec,
+    float? x,
+    float? y,
+    float? z,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    List<float>? covariance,
+    uint8_t? resetCounter,
+  }) {
+    return VisionPositionEstimate(
+      usec: usec ?? this.usec,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      covariance: covariance ?? this.covariance,
+      resetCounter: resetCounter ?? this.resetCounter,
+    );
+  }
+
   factory VisionPositionEstimate.parse(ByteData data_) {
     if (data_.lengthInBytes < VisionPositionEstimate.mavlinkEncodedLength) {
       var len =
           VisionPositionEstimate.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var usec = data_.getUint64(0, Endian.little);
@@ -18546,10 +20508,29 @@ class VisionSpeedEstimate implements MavlinkMessage {
     required this.resetCounter,
   });
 
+  VisionSpeedEstimate copyWith({
+    uint64_t? usec,
+    float? x,
+    float? y,
+    float? z,
+    List<float>? covariance,
+    uint8_t? resetCounter,
+  }) {
+    return VisionSpeedEstimate(
+      usec: usec ?? this.usec,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      covariance: covariance ?? this.covariance,
+      resetCounter: resetCounter ?? this.resetCounter,
+    );
+  }
+
   factory VisionSpeedEstimate.parse(ByteData data_) {
     if (data_.lengthInBytes < VisionSpeedEstimate.mavlinkEncodedLength) {
       var len = VisionSpeedEstimate.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var usec = data_.getUint64(0, Endian.little);
@@ -18680,11 +20661,34 @@ class ViconPositionEstimate implements MavlinkMessage {
     required this.covariance,
   });
 
+  ViconPositionEstimate copyWith({
+    uint64_t? usec,
+    float? x,
+    float? y,
+    float? z,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    List<float>? covariance,
+  }) {
+    return ViconPositionEstimate(
+      usec: usec ?? this.usec,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      covariance: covariance ?? this.covariance,
+    );
+  }
+
   factory ViconPositionEstimate.parse(ByteData data_) {
     if (data_.lengthInBytes < ViconPositionEstimate.mavlinkEncodedLength) {
       var len =
           ViconPositionEstimate.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var usec = data_.getUint64(0, Endian.little);
@@ -18899,10 +20903,49 @@ class HighresImu implements MavlinkMessage {
     required this.id,
   });
 
+  HighresImu copyWith({
+    uint64_t? timeUsec,
+    float? xacc,
+    float? yacc,
+    float? zacc,
+    float? xgyro,
+    float? ygyro,
+    float? zgyro,
+    float? xmag,
+    float? ymag,
+    float? zmag,
+    float? absPressure,
+    float? diffPressure,
+    float? pressureAlt,
+    float? temperature,
+    HighresImuUpdatedFlags? fieldsUpdated,
+    uint8_t? id,
+  }) {
+    return HighresImu(
+      timeUsec: timeUsec ?? this.timeUsec,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+      xgyro: xgyro ?? this.xgyro,
+      ygyro: ygyro ?? this.ygyro,
+      zgyro: zgyro ?? this.zgyro,
+      xmag: xmag ?? this.xmag,
+      ymag: ymag ?? this.ymag,
+      zmag: zmag ?? this.zmag,
+      absPressure: absPressure ?? this.absPressure,
+      diffPressure: diffPressure ?? this.diffPressure,
+      pressureAlt: pressureAlt ?? this.pressureAlt,
+      temperature: temperature ?? this.temperature,
+      fieldsUpdated: fieldsUpdated ?? this.fieldsUpdated,
+      id: id ?? this.id,
+    );
+  }
+
   factory HighresImu.parse(ByteData data_) {
     if (data_.lengthInBytes < HighresImu.mavlinkEncodedLength) {
       var len = HighresImu.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -19099,10 +21142,41 @@ class OpticalFlowRad implements MavlinkMessage {
     required this.quality,
   });
 
+  OpticalFlowRad copyWith({
+    uint64_t? timeUsec,
+    uint32_t? integrationTimeUs,
+    float? integratedX,
+    float? integratedY,
+    float? integratedXgyro,
+    float? integratedYgyro,
+    float? integratedZgyro,
+    uint32_t? timeDeltaDistanceUs,
+    float? distance,
+    int16_t? temperature,
+    uint8_t? sensorId,
+    uint8_t? quality,
+  }) {
+    return OpticalFlowRad(
+      timeUsec: timeUsec ?? this.timeUsec,
+      integrationTimeUs: integrationTimeUs ?? this.integrationTimeUs,
+      integratedX: integratedX ?? this.integratedX,
+      integratedY: integratedY ?? this.integratedY,
+      integratedXgyro: integratedXgyro ?? this.integratedXgyro,
+      integratedYgyro: integratedYgyro ?? this.integratedYgyro,
+      integratedZgyro: integratedZgyro ?? this.integratedZgyro,
+      timeDeltaDistanceUs: timeDeltaDistanceUs ?? this.timeDeltaDistanceUs,
+      distance: distance ?? this.distance,
+      temperature: temperature ?? this.temperature,
+      sensorId: sensorId ?? this.sensorId,
+      quality: quality ?? this.quality,
+    );
+  }
+
   factory OpticalFlowRad.parse(ByteData data_) {
     if (data_.lengthInBytes < OpticalFlowRad.mavlinkEncodedLength) {
       var len = OpticalFlowRad.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -19329,10 +21403,49 @@ class HilSensor implements MavlinkMessage {
     required this.id,
   });
 
+  HilSensor copyWith({
+    uint64_t? timeUsec,
+    float? xacc,
+    float? yacc,
+    float? zacc,
+    float? xgyro,
+    float? ygyro,
+    float? zgyro,
+    float? xmag,
+    float? ymag,
+    float? zmag,
+    float? absPressure,
+    float? diffPressure,
+    float? pressureAlt,
+    float? temperature,
+    HilSensorUpdatedFlags? fieldsUpdated,
+    uint8_t? id,
+  }) {
+    return HilSensor(
+      timeUsec: timeUsec ?? this.timeUsec,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+      xgyro: xgyro ?? this.xgyro,
+      ygyro: ygyro ?? this.ygyro,
+      zgyro: zgyro ?? this.zgyro,
+      xmag: xmag ?? this.xmag,
+      ymag: ymag ?? this.ymag,
+      zmag: zmag ?? this.zmag,
+      absPressure: absPressure ?? this.absPressure,
+      diffPressure: diffPressure ?? this.diffPressure,
+      pressureAlt: pressureAlt ?? this.pressureAlt,
+      temperature: temperature ?? this.temperature,
+      fieldsUpdated: fieldsUpdated ?? this.fieldsUpdated,
+      id: id ?? this.id,
+    );
+  }
+
   factory HilSensor.parse(ByteData data_) {
     if (data_.lengthInBytes < HilSensor.mavlinkEncodedLength) {
       var len = HilSensor.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -19442,6 +21555,8 @@ class SimState implements MavlinkMessage {
   ///
   /// MAVLink type: float
   ///
+  /// units: rad
+  ///
   /// roll
   final float roll;
 
@@ -19449,12 +21564,16 @@ class SimState implements MavlinkMessage {
   ///
   /// MAVLink type: float
   ///
+  /// units: rad
+  ///
   /// pitch
   final float pitch;
 
   /// Attitude yaw expressed as Euler angles, not recommended except for human-readable outputs
   ///
   /// MAVLink type: float
+  ///
+  /// units: rad
   ///
   /// yaw
   final float yaw;
@@ -19629,10 +21748,63 @@ class SimState implements MavlinkMessage {
     required this.lonInt,
   });
 
+  SimState copyWith({
+    float? q1,
+    float? q2,
+    float? q3,
+    float? q4,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    float? xacc,
+    float? yacc,
+    float? zacc,
+    float? xgyro,
+    float? ygyro,
+    float? zgyro,
+    float? lat,
+    float? lon,
+    float? alt,
+    float? stdDevHorz,
+    float? stdDevVert,
+    float? vn,
+    float? ve,
+    float? vd,
+    int32_t? latInt,
+    int32_t? lonInt,
+  }) {
+    return SimState(
+      q1: q1 ?? this.q1,
+      q2: q2 ?? this.q2,
+      q3: q3 ?? this.q3,
+      q4: q4 ?? this.q4,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+      xgyro: xgyro ?? this.xgyro,
+      ygyro: ygyro ?? this.ygyro,
+      zgyro: zgyro ?? this.zgyro,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      stdDevHorz: stdDevHorz ?? this.stdDevHorz,
+      stdDevVert: stdDevVert ?? this.stdDevVert,
+      vn: vn ?? this.vn,
+      ve: ve ?? this.ve,
+      vd: vd ?? this.vd,
+      latInt: latInt ?? this.latInt,
+      lonInt: lonInt ?? this.lonInt,
+    );
+  }
+
   factory SimState.parse(ByteData data_) {
     if (data_.lengthInBytes < SimState.mavlinkEncodedLength) {
       var len = SimState.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var q1 = data_.getFloat32(0, Endian.little);
@@ -19792,10 +21964,31 @@ class RadioStatus implements MavlinkMessage {
     required this.remnoise,
   });
 
+  RadioStatus copyWith({
+    uint16_t? rxerrors,
+    uint16_t? fixed,
+    uint8_t? rssi,
+    uint8_t? remrssi,
+    uint8_t? txbuf,
+    uint8_t? noise,
+    uint8_t? remnoise,
+  }) {
+    return RadioStatus(
+      rxerrors: rxerrors ?? this.rxerrors,
+      fixed: fixed ?? this.fixed,
+      rssi: rssi ?? this.rssi,
+      remrssi: remrssi ?? this.remrssi,
+      txbuf: txbuf ?? this.txbuf,
+      noise: noise ?? this.noise,
+      remnoise: remnoise ?? this.remnoise,
+    );
+  }
+
   factory RadioStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < RadioStatus.mavlinkEncodedLength) {
       var len = RadioStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var rxerrors = data_.getUint16(0, Endian.little);
@@ -19881,10 +22074,25 @@ class FileTransferProtocol implements MavlinkMessage {
     required this.payload,
   });
 
+  FileTransferProtocol copyWith({
+    uint8_t? targetNetwork,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? payload,
+  }) {
+    return FileTransferProtocol(
+      targetNetwork: targetNetwork ?? this.targetNetwork,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      payload: payload ?? this.payload,
+    );
+  }
+
   factory FileTransferProtocol.parse(ByteData data_) {
     if (data_.lengthInBytes < FileTransferProtocol.mavlinkEncodedLength) {
       var len = FileTransferProtocol.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetNetwork = data_.getUint8(0);
@@ -19978,10 +22186,25 @@ class Timesync implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  Timesync copyWith({
+    int64_t? tc1,
+    int64_t? ts1,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return Timesync(
+      tc1: tc1 ?? this.tc1,
+      ts1: ts1 ?? this.ts1,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory Timesync.parse(ByteData data_) {
     if (data_.lengthInBytes < Timesync.mavlinkEncodedLength) {
       var len = Timesync.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var tc1 = data_.getInt64(0, Endian.little);
@@ -20044,10 +22267,21 @@ class CameraTrigger implements MavlinkMessage {
     required this.seq,
   });
 
+  CameraTrigger copyWith({
+    uint64_t? timeUsec,
+    uint32_t? seq,
+  }) {
+    return CameraTrigger(
+      timeUsec: timeUsec ?? this.timeUsec,
+      seq: seq ?? this.seq,
+    );
+  }
+
   factory CameraTrigger.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraTrigger.mavlinkEncodedLength) {
       var len = CameraTrigger.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -20229,10 +22463,47 @@ class HilGps implements MavlinkMessage {
     required this.yaw,
   });
 
+  HilGps copyWith({
+    uint64_t? timeUsec,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    uint16_t? eph,
+    uint16_t? epv,
+    uint16_t? vel,
+    int16_t? vn,
+    int16_t? ve,
+    int16_t? vd,
+    uint16_t? cog,
+    uint8_t? fixType,
+    uint8_t? satellitesVisible,
+    uint8_t? id,
+    uint16_t? yaw,
+  }) {
+    return HilGps(
+      timeUsec: timeUsec ?? this.timeUsec,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      eph: eph ?? this.eph,
+      epv: epv ?? this.epv,
+      vel: vel ?? this.vel,
+      vn: vn ?? this.vn,
+      ve: ve ?? this.ve,
+      vd: vd ?? this.vd,
+      cog: cog ?? this.cog,
+      fixType: fixType ?? this.fixType,
+      satellitesVisible: satellitesVisible ?? this.satellitesVisible,
+      id: id ?? this.id,
+      yaw: yaw ?? this.yaw,
+    );
+  }
+
   factory HilGps.parse(ByteData data_) {
     if (data_.lengthInBytes < HilGps.mavlinkEncodedLength) {
       var len = HilGps.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -20426,10 +22697,41 @@ class HilOpticalFlow implements MavlinkMessage {
     required this.quality,
   });
 
+  HilOpticalFlow copyWith({
+    uint64_t? timeUsec,
+    uint32_t? integrationTimeUs,
+    float? integratedX,
+    float? integratedY,
+    float? integratedXgyro,
+    float? integratedYgyro,
+    float? integratedZgyro,
+    uint32_t? timeDeltaDistanceUs,
+    float? distance,
+    int16_t? temperature,
+    uint8_t? sensorId,
+    uint8_t? quality,
+  }) {
+    return HilOpticalFlow(
+      timeUsec: timeUsec ?? this.timeUsec,
+      integrationTimeUs: integrationTimeUs ?? this.integrationTimeUs,
+      integratedX: integratedX ?? this.integratedX,
+      integratedY: integratedY ?? this.integratedY,
+      integratedXgyro: integratedXgyro ?? this.integratedXgyro,
+      integratedYgyro: integratedYgyro ?? this.integratedYgyro,
+      integratedZgyro: integratedZgyro ?? this.integratedZgyro,
+      timeDeltaDistanceUs: timeDeltaDistanceUs ?? this.timeDeltaDistanceUs,
+      distance: distance ?? this.distance,
+      temperature: temperature ?? this.temperature,
+      sensorId: sensorId ?? this.sensorId,
+      quality: quality ?? this.quality,
+    );
+  }
+
   factory HilOpticalFlow.parse(ByteData data_) {
     if (data_.lengthInBytes < HilOpticalFlow.mavlinkEncodedLength) {
       var len = HilOpticalFlow.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -20656,10 +22958,49 @@ class HilStateQuaternion implements MavlinkMessage {
     required this.zacc,
   });
 
+  HilStateQuaternion copyWith({
+    uint64_t? timeUsec,
+    List<float>? attitudeQuaternion,
+    float? rollspeed,
+    float? pitchspeed,
+    float? yawspeed,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    int16_t? vx,
+    int16_t? vy,
+    int16_t? vz,
+    uint16_t? indAirspeed,
+    uint16_t? trueAirspeed,
+    int16_t? xacc,
+    int16_t? yacc,
+    int16_t? zacc,
+  }) {
+    return HilStateQuaternion(
+      timeUsec: timeUsec ?? this.timeUsec,
+      attitudeQuaternion: attitudeQuaternion ?? this.attitudeQuaternion,
+      rollspeed: rollspeed ?? this.rollspeed,
+      pitchspeed: pitchspeed ?? this.pitchspeed,
+      yawspeed: yawspeed ?? this.yawspeed,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      indAirspeed: indAirspeed ?? this.indAirspeed,
+      trueAirspeed: trueAirspeed ?? this.trueAirspeed,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+    );
+  }
+
   factory HilStateQuaternion.parse(ByteData data_) {
     if (data_.lengthInBytes < HilStateQuaternion.mavlinkEncodedLength) {
       var len = HilStateQuaternion.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -20852,10 +23193,39 @@ class ScaledImu2 implements MavlinkMessage {
     required this.temperature,
   });
 
+  ScaledImu2 copyWith({
+    uint32_t? timeBootMs,
+    int16_t? xacc,
+    int16_t? yacc,
+    int16_t? zacc,
+    int16_t? xgyro,
+    int16_t? ygyro,
+    int16_t? zgyro,
+    int16_t? xmag,
+    int16_t? ymag,
+    int16_t? zmag,
+    int16_t? temperature,
+  }) {
+    return ScaledImu2(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+      xgyro: xgyro ?? this.xgyro,
+      ygyro: ygyro ?? this.ygyro,
+      zgyro: zgyro ?? this.zgyro,
+      xmag: xmag ?? this.xmag,
+      ymag: ymag ?? this.ymag,
+      zmag: zmag ?? this.zmag,
+      temperature: temperature ?? this.temperature,
+    );
+  }
+
   factory ScaledImu2.parse(ByteData data_) {
     if (data_.lengthInBytes < ScaledImu2.mavlinkEncodedLength) {
       var len = ScaledImu2.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -20953,10 +23323,25 @@ class LogRequestList implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  LogRequestList copyWith({
+    uint16_t? start,
+    uint16_t? end,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return LogRequestList(
+      start: start ?? this.start,
+      end: end ?? this.end,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory LogRequestList.parse(ByteData data_) {
     if (data_.lengthInBytes < LogRequestList.mavlinkEncodedLength) {
       var len = LogRequestList.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var start = data_.getUint16(0, Endian.little);
@@ -21045,10 +23430,27 @@ class LogEntry implements MavlinkMessage {
     required this.lastLogNum,
   });
 
+  LogEntry copyWith({
+    uint32_t? timeUtc,
+    uint32_t? size,
+    uint16_t? id,
+    uint16_t? numLogs,
+    uint16_t? lastLogNum,
+  }) {
+    return LogEntry(
+      timeUtc: timeUtc ?? this.timeUtc,
+      size: size ?? this.size,
+      id: id ?? this.id,
+      numLogs: numLogs ?? this.numLogs,
+      lastLogNum: lastLogNum ?? this.lastLogNum,
+    );
+  }
+
   factory LogEntry.parse(ByteData data_) {
     if (data_.lengthInBytes < LogEntry.mavlinkEncodedLength) {
       var len = LogEntry.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUtc = data_.getUint32(0, Endian.little);
@@ -21138,10 +23540,27 @@ class LogRequestData implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  LogRequestData copyWith({
+    uint32_t? ofs,
+    uint32_t? count,
+    uint16_t? id,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return LogRequestData(
+      ofs: ofs ?? this.ofs,
+      count: count ?? this.count,
+      id: id ?? this.id,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory LogRequestData.parse(ByteData data_) {
     if (data_.lengthInBytes < LogRequestData.mavlinkEncodedLength) {
       var len = LogRequestData.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var ofs = data_.getUint32(0, Endian.little);
@@ -21223,10 +23642,25 @@ class LogData implements MavlinkMessage {
     required this.data,
   });
 
+  LogData copyWith({
+    uint32_t? ofs,
+    uint16_t? id,
+    uint8_t? count,
+    List<int8_t>? data,
+  }) {
+    return LogData(
+      ofs: ofs ?? this.ofs,
+      id: id ?? this.id,
+      count: count ?? this.count,
+      data: data ?? this.data,
+    );
+  }
+
   factory LogData.parse(ByteData data_) {
     if (data_.lengthInBytes < LogData.mavlinkEncodedLength) {
       var len = LogData.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var ofs = data_.getUint32(0, Endian.little);
@@ -21283,10 +23717,21 @@ class LogErase implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  LogErase copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return LogErase(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory LogErase.parse(ByteData data_) {
     if (data_.lengthInBytes < LogErase.mavlinkEncodedLength) {
       var len = LogErase.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -21340,10 +23785,21 @@ class LogRequestEnd implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  LogRequestEnd copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return LogRequestEnd(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory LogRequestEnd.parse(ByteData data_) {
     if (data_.lengthInBytes < LogRequestEnd.mavlinkEncodedLength) {
       var len = LogRequestEnd.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -21415,10 +23871,25 @@ class GpsInjectData implements MavlinkMessage {
     required this.data,
   });
 
+  GpsInjectData copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? len,
+    List<int8_t>? data,
+  }) {
+    return GpsInjectData(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      len: len ?? this.len,
+      data: data ?? this.data,
+    );
+  }
+
   factory GpsInjectData.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsInjectData.mavlinkEncodedLength) {
       var len = GpsInjectData.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -21647,10 +24118,53 @@ class Gps2Raw implements MavlinkMessage {
     required this.hdgAcc,
   });
 
+  Gps2Raw copyWith({
+    uint64_t? timeUsec,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    uint32_t? dgpsAge,
+    uint16_t? eph,
+    uint16_t? epv,
+    uint16_t? vel,
+    uint16_t? cog,
+    GpsFixType? fixType,
+    uint8_t? satellitesVisible,
+    uint8_t? dgpsNumch,
+    uint16_t? yaw,
+    int32_t? altEllipsoid,
+    uint32_t? hAcc,
+    uint32_t? vAcc,
+    uint32_t? velAcc,
+    uint32_t? hdgAcc,
+  }) {
+    return Gps2Raw(
+      timeUsec: timeUsec ?? this.timeUsec,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      dgpsAge: dgpsAge ?? this.dgpsAge,
+      eph: eph ?? this.eph,
+      epv: epv ?? this.epv,
+      vel: vel ?? this.vel,
+      cog: cog ?? this.cog,
+      fixType: fixType ?? this.fixType,
+      satellitesVisible: satellitesVisible ?? this.satellitesVisible,
+      dgpsNumch: dgpsNumch ?? this.dgpsNumch,
+      yaw: yaw ?? this.yaw,
+      altEllipsoid: altEllipsoid ?? this.altEllipsoid,
+      hAcc: hAcc ?? this.hAcc,
+      vAcc: vAcc ?? this.vAcc,
+      velAcc: velAcc ?? this.velAcc,
+      hdgAcc: hdgAcc ?? this.hdgAcc,
+    );
+  }
+
   factory Gps2Raw.parse(ByteData data_) {
     if (data_.lengthInBytes < Gps2Raw.mavlinkEncodedLength) {
       var len = Gps2Raw.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -21767,10 +24281,23 @@ class PowerStatus implements MavlinkMessage {
     required this.flags,
   });
 
+  PowerStatus copyWith({
+    uint16_t? vcc,
+    uint16_t? vservo,
+    MavPowerStatus? flags,
+  }) {
+    return PowerStatus(
+      vcc: vcc ?? this.vcc,
+      vservo: vservo ?? this.vservo,
+      flags: flags ?? this.flags,
+    );
+  }
+
   factory PowerStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < PowerStatus.mavlinkEncodedLength) {
       var len = PowerStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var vcc = data_.getUint16(0, Endian.little);
@@ -21887,10 +24414,33 @@ class SerialControl implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  SerialControl copyWith({
+    uint32_t? baudrate,
+    uint16_t? timeout,
+    SerialControlDev? device,
+    SerialControlFlag? flags,
+    uint8_t? count,
+    List<int8_t>? data,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return SerialControl(
+      baudrate: baudrate ?? this.baudrate,
+      timeout: timeout ?? this.timeout,
+      device: device ?? this.device,
+      flags: flags ?? this.flags,
+      count: count ?? this.count,
+      data: data ?? this.data,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory SerialControl.parse(ByteData data_) {
     if (data_.lengthInBytes < SerialControl.mavlinkEncodedLength) {
       var len = SerialControl.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var baudrate = data_.getUint32(0, Endian.little);
@@ -22065,10 +24615,43 @@ class GpsRtk implements MavlinkMessage {
     required this.baselineCoordsType,
   });
 
+  GpsRtk copyWith({
+    uint32_t? timeLastBaselineMs,
+    uint32_t? tow,
+    int32_t? baselineAMm,
+    int32_t? baselineBMm,
+    int32_t? baselineCMm,
+    uint32_t? accuracy,
+    int32_t? iarNumHypotheses,
+    uint16_t? wn,
+    uint8_t? rtkReceiverId,
+    uint8_t? rtkHealth,
+    uint8_t? rtkRate,
+    uint8_t? nsats,
+    RtkBaselineCoordinateSystem? baselineCoordsType,
+  }) {
+    return GpsRtk(
+      timeLastBaselineMs: timeLastBaselineMs ?? this.timeLastBaselineMs,
+      tow: tow ?? this.tow,
+      baselineAMm: baselineAMm ?? this.baselineAMm,
+      baselineBMm: baselineBMm ?? this.baselineBMm,
+      baselineCMm: baselineCMm ?? this.baselineCMm,
+      accuracy: accuracy ?? this.accuracy,
+      iarNumHypotheses: iarNumHypotheses ?? this.iarNumHypotheses,
+      wn: wn ?? this.wn,
+      rtkReceiverId: rtkReceiverId ?? this.rtkReceiverId,
+      rtkHealth: rtkHealth ?? this.rtkHealth,
+      rtkRate: rtkRate ?? this.rtkRate,
+      nsats: nsats ?? this.nsats,
+      baselineCoordsType: baselineCoordsType ?? this.baselineCoordsType,
+    );
+  }
+
   factory GpsRtk.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsRtk.mavlinkEncodedLength) {
       var len = GpsRtk.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeLastBaselineMs = data_.getUint32(0, Endian.little);
@@ -22258,10 +24841,43 @@ class Gps2Rtk implements MavlinkMessage {
     required this.baselineCoordsType,
   });
 
+  Gps2Rtk copyWith({
+    uint32_t? timeLastBaselineMs,
+    uint32_t? tow,
+    int32_t? baselineAMm,
+    int32_t? baselineBMm,
+    int32_t? baselineCMm,
+    uint32_t? accuracy,
+    int32_t? iarNumHypotheses,
+    uint16_t? wn,
+    uint8_t? rtkReceiverId,
+    uint8_t? rtkHealth,
+    uint8_t? rtkRate,
+    uint8_t? nsats,
+    RtkBaselineCoordinateSystem? baselineCoordsType,
+  }) {
+    return Gps2Rtk(
+      timeLastBaselineMs: timeLastBaselineMs ?? this.timeLastBaselineMs,
+      tow: tow ?? this.tow,
+      baselineAMm: baselineAMm ?? this.baselineAMm,
+      baselineBMm: baselineBMm ?? this.baselineBMm,
+      baselineCMm: baselineCMm ?? this.baselineCMm,
+      accuracy: accuracy ?? this.accuracy,
+      iarNumHypotheses: iarNumHypotheses ?? this.iarNumHypotheses,
+      wn: wn ?? this.wn,
+      rtkReceiverId: rtkReceiverId ?? this.rtkReceiverId,
+      rtkHealth: rtkHealth ?? this.rtkHealth,
+      rtkRate: rtkRate ?? this.rtkRate,
+      nsats: nsats ?? this.nsats,
+      baselineCoordsType: baselineCoordsType ?? this.baselineCoordsType,
+    );
+  }
+
   factory Gps2Rtk.parse(ByteData data_) {
     if (data_.lengthInBytes < Gps2Rtk.mavlinkEncodedLength) {
       var len = Gps2Rtk.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeLastBaselineMs = data_.getUint32(0, Endian.little);
@@ -22445,10 +25061,39 @@ class ScaledImu3 implements MavlinkMessage {
     required this.temperature,
   });
 
+  ScaledImu3 copyWith({
+    uint32_t? timeBootMs,
+    int16_t? xacc,
+    int16_t? yacc,
+    int16_t? zacc,
+    int16_t? xgyro,
+    int16_t? ygyro,
+    int16_t? zgyro,
+    int16_t? xmag,
+    int16_t? ymag,
+    int16_t? zmag,
+    int16_t? temperature,
+  }) {
+    return ScaledImu3(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      xacc: xacc ?? this.xacc,
+      yacc: yacc ?? this.yacc,
+      zacc: zacc ?? this.zacc,
+      xgyro: xgyro ?? this.xgyro,
+      ygyro: ygyro ?? this.ygyro,
+      zgyro: zgyro ?? this.zgyro,
+      xmag: xmag ?? this.xmag,
+      ymag: ymag ?? this.ymag,
+      zmag: zmag ?? this.zmag,
+      temperature: temperature ?? this.temperature,
+    );
+  }
+
   factory ScaledImu3.parse(ByteData data_) {
     if (data_.lengthInBytes < ScaledImu3.mavlinkEncodedLength) {
       var len = ScaledImu3.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -22578,11 +25223,32 @@ class DataTransmissionHandshake implements MavlinkMessage {
     required this.jpgQuality,
   });
 
+  DataTransmissionHandshake copyWith({
+    uint32_t? size,
+    uint16_t? width,
+    uint16_t? height,
+    uint16_t? packets,
+    MavlinkDataStreamType? type,
+    uint8_t? payload,
+    uint8_t? jpgQuality,
+  }) {
+    return DataTransmissionHandshake(
+      size: size ?? this.size,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      packets: packets ?? this.packets,
+      type: type ?? this.type,
+      payload: payload ?? this.payload,
+      jpgQuality: jpgQuality ?? this.jpgQuality,
+    );
+  }
+
   factory DataTransmissionHandshake.parse(ByteData data_) {
     if (data_.lengthInBytes < DataTransmissionHandshake.mavlinkEncodedLength) {
       var len =
           DataTransmissionHandshake.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var size = data_.getUint32(0, Endian.little);
@@ -22652,10 +25318,21 @@ class EncapsulatedData implements MavlinkMessage {
     required this.data,
   });
 
+  EncapsulatedData copyWith({
+    uint16_t? seqnr,
+    List<int8_t>? data,
+  }) {
+    return EncapsulatedData(
+      seqnr: seqnr ?? this.seqnr,
+      data: data ?? this.data,
+    );
+  }
+
   factory EncapsulatedData.parse(ByteData data_) {
     if (data_.lengthInBytes < EncapsulatedData.mavlinkEncodedLength) {
       var len = EncapsulatedData.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var seqnr = data_.getUint16(0, Endian.little);
@@ -22816,10 +25493,41 @@ class DistanceSensor implements MavlinkMessage {
     required this.signalQuality,
   });
 
+  DistanceSensor copyWith({
+    uint32_t? timeBootMs,
+    uint16_t? minDistance,
+    uint16_t? maxDistance,
+    uint16_t? currentDistance,
+    MavDistanceSensor? type,
+    uint8_t? id,
+    MavSensorOrientation? orientation,
+    uint8_t? covariance,
+    float? horizontalFov,
+    float? verticalFov,
+    List<float>? quaternion,
+    uint8_t? signalQuality,
+  }) {
+    return DistanceSensor(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      minDistance: minDistance ?? this.minDistance,
+      maxDistance: maxDistance ?? this.maxDistance,
+      currentDistance: currentDistance ?? this.currentDistance,
+      type: type ?? this.type,
+      id: id ?? this.id,
+      orientation: orientation ?? this.orientation,
+      covariance: covariance ?? this.covariance,
+      horizontalFov: horizontalFov ?? this.horizontalFov,
+      verticalFov: verticalFov ?? this.verticalFov,
+      quaternion: quaternion ?? this.quaternion,
+      signalQuality: signalQuality ?? this.signalQuality,
+    );
+  }
+
   factory DistanceSensor.parse(ByteData data_) {
     if (data_.lengthInBytes < DistanceSensor.mavlinkEncodedLength) {
       var len = DistanceSensor.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -22926,10 +25634,25 @@ class TerrainRequest implements MavlinkMessage {
     required this.gridSpacing,
   });
 
+  TerrainRequest copyWith({
+    uint64_t? mask,
+    int32_t? lat,
+    int32_t? lon,
+    uint16_t? gridSpacing,
+  }) {
+    return TerrainRequest(
+      mask: mask ?? this.mask,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      gridSpacing: gridSpacing ?? this.gridSpacing,
+    );
+  }
+
   factory TerrainRequest.parse(ByteData data_) {
     if (data_.lengthInBytes < TerrainRequest.mavlinkEncodedLength) {
       var len = TerrainRequest.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var mask = data_.getUint64(0, Endian.little);
@@ -23019,10 +25742,27 @@ class TerrainData implements MavlinkMessage {
     required this.gridbit,
   });
 
+  TerrainData copyWith({
+    int32_t? lat,
+    int32_t? lon,
+    uint16_t? gridSpacing,
+    List<int16_t>? data,
+    uint8_t? gridbit,
+  }) {
+    return TerrainData(
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      gridSpacing: gridSpacing ?? this.gridSpacing,
+      data: data ?? this.data,
+      gridbit: gridbit ?? this.gridbit,
+    );
+  }
+
   factory TerrainData.parse(ByteData data_) {
     if (data_.lengthInBytes < TerrainData.mavlinkEncodedLength) {
       var len = TerrainData.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var lat = data_.getInt32(0, Endian.little);
@@ -23090,10 +25830,21 @@ class TerrainCheck implements MavlinkMessage {
     required this.lon,
   });
 
+  TerrainCheck copyWith({
+    int32_t? lat,
+    int32_t? lon,
+  }) {
+    return TerrainCheck(
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+    );
+  }
+
   factory TerrainCheck.parse(ByteData data_) {
     if (data_.lengthInBytes < TerrainCheck.mavlinkEncodedLength) {
       var len = TerrainCheck.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var lat = data_.getInt32(0, Endian.little);
@@ -23194,10 +25945,31 @@ class TerrainReport implements MavlinkMessage {
     required this.loaded,
   });
 
+  TerrainReport copyWith({
+    int32_t? lat,
+    int32_t? lon,
+    float? terrainHeight,
+    float? currentHeight,
+    uint16_t? spacing,
+    uint16_t? pending,
+    uint16_t? loaded,
+  }) {
+    return TerrainReport(
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      terrainHeight: terrainHeight ?? this.terrainHeight,
+      currentHeight: currentHeight ?? this.currentHeight,
+      spacing: spacing ?? this.spacing,
+      pending: pending ?? this.pending,
+      loaded: loaded ?? this.loaded,
+    );
+  }
+
   factory TerrainReport.parse(ByteData data_) {
     if (data_.lengthInBytes < TerrainReport.mavlinkEncodedLength) {
       var len = TerrainReport.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var lat = data_.getInt32(0, Endian.little);
@@ -23303,10 +26075,27 @@ class ScaledPressure2 implements MavlinkMessage {
     required this.temperaturePressDiff,
   });
 
+  ScaledPressure2 copyWith({
+    uint32_t? timeBootMs,
+    float? pressAbs,
+    float? pressDiff,
+    int16_t? temperature,
+    int16_t? temperaturePressDiff,
+  }) {
+    return ScaledPressure2(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      pressAbs: pressAbs ?? this.pressAbs,
+      pressDiff: pressDiff ?? this.pressDiff,
+      temperature: temperature ?? this.temperature,
+      temperaturePressDiff: temperaturePressDiff ?? this.temperaturePressDiff,
+    );
+  }
+
   factory ScaledPressure2.parse(ByteData data_) {
     if (data_.lengthInBytes < ScaledPressure2.mavlinkEncodedLength) {
       var len = ScaledPressure2.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -23412,10 +26201,29 @@ class AttPosMocap implements MavlinkMessage {
     required this.covariance,
   });
 
+  AttPosMocap copyWith({
+    uint64_t? timeUsec,
+    List<float>? q,
+    float? x,
+    float? y,
+    float? z,
+    List<float>? covariance,
+  }) {
+    return AttPosMocap(
+      timeUsec: timeUsec ?? this.timeUsec,
+      q: q ?? this.q,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      covariance: covariance ?? this.covariance,
+    );
+  }
+
   factory AttPosMocap.parse(ByteData data_) {
     if (data_.lengthInBytes < AttPosMocap.mavlinkEncodedLength) {
       var len = AttPosMocap.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -23503,11 +26311,28 @@ class SetActuatorControlTarget implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  SetActuatorControlTarget copyWith({
+    uint64_t? timeUsec,
+    List<float>? controls,
+    uint8_t? groupMlx,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return SetActuatorControlTarget(
+      timeUsec: timeUsec ?? this.timeUsec,
+      controls: controls ?? this.controls,
+      groupMlx: groupMlx ?? this.groupMlx,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory SetActuatorControlTarget.parse(ByteData data_) {
     if (data_.lengthInBytes < SetActuatorControlTarget.mavlinkEncodedLength) {
       var len =
           SetActuatorControlTarget.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -23581,11 +26406,24 @@ class ActuatorControlTarget implements MavlinkMessage {
     required this.groupMlx,
   });
 
+  ActuatorControlTarget copyWith({
+    uint64_t? timeUsec,
+    List<float>? controls,
+    uint8_t? groupMlx,
+  }) {
+    return ActuatorControlTarget(
+      timeUsec: timeUsec ?? this.timeUsec,
+      controls: controls ?? this.controls,
+      groupMlx: groupMlx ?? this.groupMlx,
+    );
+  }
+
   factory ActuatorControlTarget.parse(ByteData data_) {
     if (data_.lengthInBytes < ActuatorControlTarget.mavlinkEncodedLength) {
       var len =
           ActuatorControlTarget.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -23695,10 +26533,31 @@ class Altitude implements MavlinkMessage {
     required this.bottomClearance,
   });
 
+  Altitude copyWith({
+    uint64_t? timeUsec,
+    float? altitudeMonotonic,
+    float? altitudeAmsl,
+    float? altitudeLocal,
+    float? altitudeRelative,
+    float? altitudeTerrain,
+    float? bottomClearance,
+  }) {
+    return Altitude(
+      timeUsec: timeUsec ?? this.timeUsec,
+      altitudeMonotonic: altitudeMonotonic ?? this.altitudeMonotonic,
+      altitudeAmsl: altitudeAmsl ?? this.altitudeAmsl,
+      altitudeLocal: altitudeLocal ?? this.altitudeLocal,
+      altitudeRelative: altitudeRelative ?? this.altitudeRelative,
+      altitudeTerrain: altitudeTerrain ?? this.altitudeTerrain,
+      bottomClearance: bottomClearance ?? this.bottomClearance,
+    );
+  }
+
   factory Altitude.parse(ByteData data_) {
     if (data_.lengthInBytes < Altitude.mavlinkEncodedLength) {
       var len = Altitude.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -23792,10 +26651,27 @@ class ResourceRequest implements MavlinkMessage {
     required this.storage,
   });
 
+  ResourceRequest copyWith({
+    uint8_t? requestId,
+    uint8_t? uriType,
+    List<int8_t>? uri,
+    uint8_t? transferType,
+    List<int8_t>? storage,
+  }) {
+    return ResourceRequest(
+      requestId: requestId ?? this.requestId,
+      uriType: uriType ?? this.uriType,
+      uri: uri ?? this.uri,
+      transferType: transferType ?? this.transferType,
+      storage: storage ?? this.storage,
+    );
+  }
+
   factory ResourceRequest.parse(ByteData data_) {
     if (data_.lengthInBytes < ResourceRequest.mavlinkEncodedLength) {
       var len = ResourceRequest.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var requestId = data_.getUint8(0);
@@ -23895,10 +26771,27 @@ class ScaledPressure3 implements MavlinkMessage {
     required this.temperaturePressDiff,
   });
 
+  ScaledPressure3 copyWith({
+    uint32_t? timeBootMs,
+    float? pressAbs,
+    float? pressDiff,
+    int16_t? temperature,
+    int16_t? temperaturePressDiff,
+  }) {
+    return ScaledPressure3(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      pressAbs: pressAbs ?? this.pressAbs,
+      pressDiff: pressDiff ?? this.pressDiff,
+      temperature: temperature ?? this.temperature,
+      temperaturePressDiff: temperaturePressDiff ?? this.temperaturePressDiff,
+    );
+  }
+
   factory ScaledPressure3.parse(ByteData data_) {
     if (data_.lengthInBytes < ScaledPressure3.mavlinkEncodedLength) {
       var len = ScaledPressure3.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -24046,10 +26939,39 @@ class FollowTarget implements MavlinkMessage {
     required this.estCapabilities,
   });
 
+  FollowTarget copyWith({
+    uint64_t? timestamp,
+    uint64_t? customState,
+    int32_t? lat,
+    int32_t? lon,
+    float? alt,
+    List<float>? vel,
+    List<float>? acc,
+    List<float>? attitudeQ,
+    List<float>? rates,
+    List<float>? positionCov,
+    uint8_t? estCapabilities,
+  }) {
+    return FollowTarget(
+      timestamp: timestamp ?? this.timestamp,
+      customState: customState ?? this.customState,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      vel: vel ?? this.vel,
+      acc: acc ?? this.acc,
+      attitudeQ: attitudeQ ?? this.attitudeQ,
+      rates: rates ?? this.rates,
+      positionCov: positionCov ?? this.positionCov,
+      estCapabilities: estCapabilities ?? this.estCapabilities,
+    );
+  }
+
   factory FollowTarget.parse(ByteData data_) {
     if (data_.lengthInBytes < FollowTarget.mavlinkEncodedLength) {
       var len = FollowTarget.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timestamp = data_.getUint64(0, Endian.little);
@@ -24279,10 +27201,51 @@ class ControlSystemState implements MavlinkMessage {
     required this.yawRate,
   });
 
+  ControlSystemState copyWith({
+    uint64_t? timeUsec,
+    float? xAcc,
+    float? yAcc,
+    float? zAcc,
+    float? xVel,
+    float? yVel,
+    float? zVel,
+    float? xPos,
+    float? yPos,
+    float? zPos,
+    float? airspeed,
+    List<float>? velVariance,
+    List<float>? posVariance,
+    List<float>? q,
+    float? rollRate,
+    float? pitchRate,
+    float? yawRate,
+  }) {
+    return ControlSystemState(
+      timeUsec: timeUsec ?? this.timeUsec,
+      xAcc: xAcc ?? this.xAcc,
+      yAcc: yAcc ?? this.yAcc,
+      zAcc: zAcc ?? this.zAcc,
+      xVel: xVel ?? this.xVel,
+      yVel: yVel ?? this.yVel,
+      zVel: zVel ?? this.zVel,
+      xPos: xPos ?? this.xPos,
+      yPos: yPos ?? this.yPos,
+      zPos: zPos ?? this.zPos,
+      airspeed: airspeed ?? this.airspeed,
+      velVariance: velVariance ?? this.velVariance,
+      posVariance: posVariance ?? this.posVariance,
+      q: q ?? this.q,
+      rollRate: rollRate ?? this.rollRate,
+      pitchRate: pitchRate ?? this.pitchRate,
+      yawRate: yawRate ?? this.yawRate,
+    );
+  }
+
   factory ControlSystemState.parse(ByteData data_) {
     if (data_.lengthInBytes < ControlSystemState.mavlinkEncodedLength) {
       var len = ControlSystemState.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -24514,10 +27477,45 @@ class BatteryStatus implements MavlinkMessage {
     required this.faultBitmask,
   });
 
+  BatteryStatus copyWith({
+    int32_t? currentConsumed,
+    int32_t? energyConsumed,
+    int16_t? temperature,
+    List<int16_t>? voltages,
+    int16_t? currentBattery,
+    uint8_t? id,
+    MavBatteryFunction? batteryFunction,
+    MavBatteryType? type,
+    int8_t? batteryRemaining,
+    int32_t? timeRemaining,
+    MavBatteryChargeState? chargeState,
+    List<int16_t>? voltagesExt,
+    MavBatteryMode? mode,
+    MavBatteryFault? faultBitmask,
+  }) {
+    return BatteryStatus(
+      currentConsumed: currentConsumed ?? this.currentConsumed,
+      energyConsumed: energyConsumed ?? this.energyConsumed,
+      temperature: temperature ?? this.temperature,
+      voltages: voltages ?? this.voltages,
+      currentBattery: currentBattery ?? this.currentBattery,
+      id: id ?? this.id,
+      batteryFunction: batteryFunction ?? this.batteryFunction,
+      type: type ?? this.type,
+      batteryRemaining: batteryRemaining ?? this.batteryRemaining,
+      timeRemaining: timeRemaining ?? this.timeRemaining,
+      chargeState: chargeState ?? this.chargeState,
+      voltagesExt: voltagesExt ?? this.voltagesExt,
+      mode: mode ?? this.mode,
+      faultBitmask: faultBitmask ?? this.faultBitmask,
+    );
+  }
+
   factory BatteryStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < BatteryStatus.mavlinkEncodedLength) {
       var len = BatteryStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var currentConsumed = data_.getInt32(0, Endian.little);
@@ -24692,10 +27690,42 @@ class AutopilotVersion implements MavlinkMessage {
     required this.uid2,
   });
 
+  AutopilotVersion copyWith({
+    MavProtocolCapability? capabilities,
+    uint64_t? uid,
+    uint32_t? flightSwVersion,
+    uint32_t? middlewareSwVersion,
+    uint32_t? osSwVersion,
+    uint32_t? boardVersion,
+    uint16_t? vendorId,
+    uint16_t? productId,
+    List<int8_t>? flightCustomVersion,
+    List<int8_t>? middlewareCustomVersion,
+    List<int8_t>? osCustomVersion,
+    List<int8_t>? uid2,
+  }) {
+    return AutopilotVersion(
+      capabilities: capabilities ?? this.capabilities,
+      uid: uid ?? this.uid,
+      flightSwVersion: flightSwVersion ?? this.flightSwVersion,
+      middlewareSwVersion: middlewareSwVersion ?? this.middlewareSwVersion,
+      osSwVersion: osSwVersion ?? this.osSwVersion,
+      boardVersion: boardVersion ?? this.boardVersion,
+      vendorId: vendorId ?? this.vendorId,
+      productId: productId ?? this.productId,
+      flightCustomVersion: flightCustomVersion ?? this.flightCustomVersion,
+      middlewareCustomVersion:
+          middlewareCustomVersion ?? this.middlewareCustomVersion,
+      osCustomVersion: osCustomVersion ?? this.osCustomVersion,
+      uid2: uid2 ?? this.uid2,
+    );
+  }
+
   factory AutopilotVersion.parse(ByteData data_) {
     if (data_.lengthInBytes < AutopilotVersion.mavlinkEncodedLength) {
       var len = AutopilotVersion.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var capabilities = data_.getUint64(0, Endian.little);
@@ -24910,10 +27940,45 @@ class LandingTarget implements MavlinkMessage {
     required this.positionValid,
   });
 
+  LandingTarget copyWith({
+    uint64_t? timeUsec,
+    float? angleX,
+    float? angleY,
+    float? distance,
+    float? sizeX,
+    float? sizeY,
+    uint8_t? targetNum,
+    MavFrame? frame,
+    float? x,
+    float? y,
+    float? z,
+    List<float>? q,
+    LandingTargetType? type,
+    uint8_t? positionValid,
+  }) {
+    return LandingTarget(
+      timeUsec: timeUsec ?? this.timeUsec,
+      angleX: angleX ?? this.angleX,
+      angleY: angleY ?? this.angleY,
+      distance: distance ?? this.distance,
+      sizeX: sizeX ?? this.sizeX,
+      sizeY: sizeY ?? this.sizeY,
+      targetNum: targetNum ?? this.targetNum,
+      frame: frame ?? this.frame,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      q: q ?? this.q,
+      type: type ?? this.type,
+      positionValid: positionValid ?? this.positionValid,
+    );
+  }
+
   factory LandingTarget.parse(ByteData data_) {
     if (data_.lengthInBytes < LandingTarget.mavlinkEncodedLength) {
       var len = LandingTarget.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -25036,10 +28101,27 @@ class FenceStatus implements MavlinkMessage {
     required this.breachMitigation,
   });
 
+  FenceStatus copyWith({
+    uint32_t? breachTime,
+    uint16_t? breachCount,
+    uint8_t? breachStatus,
+    FenceBreach? breachType,
+    FenceMitigate? breachMitigation,
+  }) {
+    return FenceStatus(
+      breachTime: breachTime ?? this.breachTime,
+      breachCount: breachCount ?? this.breachCount,
+      breachStatus: breachStatus ?? this.breachStatus,
+      breachType: breachType ?? this.breachType,
+      breachMitigation: breachMitigation ?? this.breachMitigation,
+    );
+  }
+
   factory FenceStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < FenceStatus.mavlinkEncodedLength) {
       var len = FenceStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var breachTime = data_.getUint32(0, Endian.little);
@@ -25247,10 +28329,54 @@ class MagCalReport implements MavlinkMessage {
     required this.scaleFactor,
   });
 
+  MagCalReport copyWith({
+    float? fitness,
+    float? ofsX,
+    float? ofsY,
+    float? ofsZ,
+    float? diagX,
+    float? diagY,
+    float? diagZ,
+    float? offdiagX,
+    float? offdiagY,
+    float? offdiagZ,
+    uint8_t? compassId,
+    uint8_t? calMask,
+    MagCalStatus? calStatus,
+    uint8_t? autosaved,
+    float? orientationConfidence,
+    MavSensorOrientation? oldOrientation,
+    MavSensorOrientation? newOrientation,
+    float? scaleFactor,
+  }) {
+    return MagCalReport(
+      fitness: fitness ?? this.fitness,
+      ofsX: ofsX ?? this.ofsX,
+      ofsY: ofsY ?? this.ofsY,
+      ofsZ: ofsZ ?? this.ofsZ,
+      diagX: diagX ?? this.diagX,
+      diagY: diagY ?? this.diagY,
+      diagZ: diagZ ?? this.diagZ,
+      offdiagX: offdiagX ?? this.offdiagX,
+      offdiagY: offdiagY ?? this.offdiagY,
+      offdiagZ: offdiagZ ?? this.offdiagZ,
+      compassId: compassId ?? this.compassId,
+      calMask: calMask ?? this.calMask,
+      calStatus: calStatus ?? this.calStatus,
+      autosaved: autosaved ?? this.autosaved,
+      orientationConfidence:
+          orientationConfidence ?? this.orientationConfidence,
+      oldOrientation: oldOrientation ?? this.oldOrientation,
+      newOrientation: newOrientation ?? this.newOrientation,
+      scaleFactor: scaleFactor ?? this.scaleFactor,
+    );
+  }
+
   factory MagCalReport.parse(ByteData data_) {
     if (data_.lengthInBytes < MagCalReport.mavlinkEncodedLength) {
       var len = MagCalReport.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var fitness = data_.getFloat32(0, Endian.little);
@@ -25523,10 +28649,59 @@ class EfiStatus implements MavlinkMessage {
     required this.fuelPressure,
   });
 
+  EfiStatus copyWith({
+    float? ecuIndex,
+    float? rpm,
+    float? fuelConsumed,
+    float? fuelFlow,
+    float? engineLoad,
+    float? throttlePosition,
+    float? sparkDwellTime,
+    float? barometricPressure,
+    float? intakeManifoldPressure,
+    float? intakeManifoldTemperature,
+    float? cylinderHeadTemperature,
+    float? ignitionTiming,
+    float? injectionTime,
+    float? exhaustGasTemperature,
+    float? throttleOut,
+    float? ptCompensation,
+    uint8_t? health,
+    float? ignitionVoltage,
+    float? fuelPressure,
+  }) {
+    return EfiStatus(
+      ecuIndex: ecuIndex ?? this.ecuIndex,
+      rpm: rpm ?? this.rpm,
+      fuelConsumed: fuelConsumed ?? this.fuelConsumed,
+      fuelFlow: fuelFlow ?? this.fuelFlow,
+      engineLoad: engineLoad ?? this.engineLoad,
+      throttlePosition: throttlePosition ?? this.throttlePosition,
+      sparkDwellTime: sparkDwellTime ?? this.sparkDwellTime,
+      barometricPressure: barometricPressure ?? this.barometricPressure,
+      intakeManifoldPressure:
+          intakeManifoldPressure ?? this.intakeManifoldPressure,
+      intakeManifoldTemperature:
+          intakeManifoldTemperature ?? this.intakeManifoldTemperature,
+      cylinderHeadTemperature:
+          cylinderHeadTemperature ?? this.cylinderHeadTemperature,
+      ignitionTiming: ignitionTiming ?? this.ignitionTiming,
+      injectionTime: injectionTime ?? this.injectionTime,
+      exhaustGasTemperature:
+          exhaustGasTemperature ?? this.exhaustGasTemperature,
+      throttleOut: throttleOut ?? this.throttleOut,
+      ptCompensation: ptCompensation ?? this.ptCompensation,
+      health: health ?? this.health,
+      ignitionVoltage: ignitionVoltage ?? this.ignitionVoltage,
+      fuelPressure: fuelPressure ?? this.fuelPressure,
+    );
+  }
+
   factory EfiStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < EfiStatus.mavlinkEncodedLength) {
       var len = EfiStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var ecuIndex = data_.getFloat32(0, Endian.little);
@@ -25704,10 +28879,37 @@ class EstimatorStatus implements MavlinkMessage {
     required this.flags,
   });
 
+  EstimatorStatus copyWith({
+    uint64_t? timeUsec,
+    float? velRatio,
+    float? posHorizRatio,
+    float? posVertRatio,
+    float? magRatio,
+    float? haglRatio,
+    float? tasRatio,
+    float? posHorizAccuracy,
+    float? posVertAccuracy,
+    EstimatorStatusFlags? flags,
+  }) {
+    return EstimatorStatus(
+      timeUsec: timeUsec ?? this.timeUsec,
+      velRatio: velRatio ?? this.velRatio,
+      posHorizRatio: posHorizRatio ?? this.posHorizRatio,
+      posVertRatio: posVertRatio ?? this.posVertRatio,
+      magRatio: magRatio ?? this.magRatio,
+      haglRatio: haglRatio ?? this.haglRatio,
+      tasRatio: tasRatio ?? this.tasRatio,
+      posHorizAccuracy: posHorizAccuracy ?? this.posHorizAccuracy,
+      posVertAccuracy: posVertAccuracy ?? this.posVertAccuracy,
+      flags: flags ?? this.flags,
+    );
+  }
+
   factory EstimatorStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < EstimatorStatus.mavlinkEncodedLength) {
       var len = EstimatorStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -25860,10 +29062,35 @@ class WindCov implements MavlinkMessage {
     required this.vertAccuracy,
   });
 
+  WindCov copyWith({
+    uint64_t? timeUsec,
+    float? windX,
+    float? windY,
+    float? windZ,
+    float? varHoriz,
+    float? varVert,
+    float? windAlt,
+    float? horizAccuracy,
+    float? vertAccuracy,
+  }) {
+    return WindCov(
+      timeUsec: timeUsec ?? this.timeUsec,
+      windX: windX ?? this.windX,
+      windY: windY ?? this.windY,
+      windZ: windZ ?? this.windZ,
+      varHoriz: varHoriz ?? this.varHoriz,
+      varVert: varVert ?? this.varVert,
+      windAlt: windAlt ?? this.windAlt,
+      horizAccuracy: horizAccuracy ?? this.horizAccuracy,
+      vertAccuracy: vertAccuracy ?? this.vertAccuracy,
+    );
+  }
+
   factory WindCov.parse(ByteData data_) {
     if (data_.lengthInBytes < WindCov.mavlinkEncodedLength) {
       var len = WindCov.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -26103,10 +29330,55 @@ class GpsInput implements MavlinkMessage {
     required this.yaw,
   });
 
+  GpsInput copyWith({
+    uint64_t? timeUsec,
+    uint32_t? timeWeekMs,
+    int32_t? lat,
+    int32_t? lon,
+    float? alt,
+    float? hdop,
+    float? vdop,
+    float? vn,
+    float? ve,
+    float? vd,
+    float? speedAccuracy,
+    float? horizAccuracy,
+    float? vertAccuracy,
+    GpsInputIgnoreFlags? ignoreFlags,
+    uint16_t? timeWeek,
+    uint8_t? gpsId,
+    uint8_t? fixType,
+    uint8_t? satellitesVisible,
+    uint16_t? yaw,
+  }) {
+    return GpsInput(
+      timeUsec: timeUsec ?? this.timeUsec,
+      timeWeekMs: timeWeekMs ?? this.timeWeekMs,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      hdop: hdop ?? this.hdop,
+      vdop: vdop ?? this.vdop,
+      vn: vn ?? this.vn,
+      ve: ve ?? this.ve,
+      vd: vd ?? this.vd,
+      speedAccuracy: speedAccuracy ?? this.speedAccuracy,
+      horizAccuracy: horizAccuracy ?? this.horizAccuracy,
+      vertAccuracy: vertAccuracy ?? this.vertAccuracy,
+      ignoreFlags: ignoreFlags ?? this.ignoreFlags,
+      timeWeek: timeWeek ?? this.timeWeek,
+      gpsId: gpsId ?? this.gpsId,
+      fixType: fixType ?? this.fixType,
+      satellitesVisible: satellitesVisible ?? this.satellitesVisible,
+      yaw: yaw ?? this.yaw,
+    );
+  }
+
   factory GpsInput.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsInput.mavlinkEncodedLength) {
       var len = GpsInput.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -26222,10 +29494,23 @@ class GpsRtcmData implements MavlinkMessage {
     required this.data,
   });
 
+  GpsRtcmData copyWith({
+    uint8_t? flags,
+    uint8_t? len,
+    List<int8_t>? data,
+  }) {
+    return GpsRtcmData(
+      flags: flags ?? this.flags,
+      len: len ?? this.len,
+      data: data ?? this.data,
+    );
+  }
+
   factory GpsRtcmData.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsRtcmData.mavlinkEncodedLength) {
       var len = GpsRtcmData.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var flags = data_.getUint8(0);
@@ -26496,10 +29781,65 @@ class HighLatency implements MavlinkMessage {
     required this.wpNum,
   });
 
+  HighLatency copyWith({
+    uint32_t? customMode,
+    int32_t? latitude,
+    int32_t? longitude,
+    int16_t? roll,
+    int16_t? pitch,
+    uint16_t? heading,
+    int16_t? headingSp,
+    int16_t? altitudeAmsl,
+    int16_t? altitudeSp,
+    uint16_t? wpDistance,
+    MavModeFlag? baseMode,
+    MavLandedState? landedState,
+    int8_t? throttle,
+    uint8_t? airspeed,
+    uint8_t? airspeedSp,
+    uint8_t? groundspeed,
+    int8_t? climbRate,
+    uint8_t? gpsNsat,
+    GpsFixType? gpsFixType,
+    uint8_t? batteryRemaining,
+    int8_t? temperature,
+    int8_t? temperatureAir,
+    uint8_t? failsafe,
+    uint8_t? wpNum,
+  }) {
+    return HighLatency(
+      customMode: customMode ?? this.customMode,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      heading: heading ?? this.heading,
+      headingSp: headingSp ?? this.headingSp,
+      altitudeAmsl: altitudeAmsl ?? this.altitudeAmsl,
+      altitudeSp: altitudeSp ?? this.altitudeSp,
+      wpDistance: wpDistance ?? this.wpDistance,
+      baseMode: baseMode ?? this.baseMode,
+      landedState: landedState ?? this.landedState,
+      throttle: throttle ?? this.throttle,
+      airspeed: airspeed ?? this.airspeed,
+      airspeedSp: airspeedSp ?? this.airspeedSp,
+      groundspeed: groundspeed ?? this.groundspeed,
+      climbRate: climbRate ?? this.climbRate,
+      gpsNsat: gpsNsat ?? this.gpsNsat,
+      gpsFixType: gpsFixType ?? this.gpsFixType,
+      batteryRemaining: batteryRemaining ?? this.batteryRemaining,
+      temperature: temperature ?? this.temperature,
+      temperatureAir: temperatureAir ?? this.temperatureAir,
+      failsafe: failsafe ?? this.failsafe,
+      wpNum: wpNum ?? this.wpNum,
+    );
+  }
+
   factory HighLatency.parse(ByteData data_) {
     if (data_.lengthInBytes < HighLatency.mavlinkEncodedLength) {
       var len = HighLatency.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var customMode = data_.getUint32(0, Endian.little);
@@ -26864,10 +30204,71 @@ class HighLatency2 implements MavlinkMessage {
     required this.custom2,
   });
 
+  HighLatency2 copyWith({
+    uint32_t? timestamp,
+    int32_t? latitude,
+    int32_t? longitude,
+    uint16_t? customMode,
+    int16_t? altitude,
+    int16_t? targetAltitude,
+    uint16_t? targetDistance,
+    uint16_t? wpNum,
+    HlFailureFlag? failureFlags,
+    MavType? type,
+    MavAutopilot? autopilot,
+    uint8_t? heading,
+    uint8_t? targetHeading,
+    uint8_t? throttle,
+    uint8_t? airspeed,
+    uint8_t? airspeedSp,
+    uint8_t? groundspeed,
+    uint8_t? windspeed,
+    uint8_t? windHeading,
+    uint8_t? eph,
+    uint8_t? epv,
+    int8_t? temperatureAir,
+    int8_t? climbRate,
+    int8_t? battery,
+    int8_t? custom0,
+    int8_t? custom1,
+    int8_t? custom2,
+  }) {
+    return HighLatency2(
+      timestamp: timestamp ?? this.timestamp,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      customMode: customMode ?? this.customMode,
+      altitude: altitude ?? this.altitude,
+      targetAltitude: targetAltitude ?? this.targetAltitude,
+      targetDistance: targetDistance ?? this.targetDistance,
+      wpNum: wpNum ?? this.wpNum,
+      failureFlags: failureFlags ?? this.failureFlags,
+      type: type ?? this.type,
+      autopilot: autopilot ?? this.autopilot,
+      heading: heading ?? this.heading,
+      targetHeading: targetHeading ?? this.targetHeading,
+      throttle: throttle ?? this.throttle,
+      airspeed: airspeed ?? this.airspeed,
+      airspeedSp: airspeedSp ?? this.airspeedSp,
+      groundspeed: groundspeed ?? this.groundspeed,
+      windspeed: windspeed ?? this.windspeed,
+      windHeading: windHeading ?? this.windHeading,
+      eph: eph ?? this.eph,
+      epv: epv ?? this.epv,
+      temperatureAir: temperatureAir ?? this.temperatureAir,
+      climbRate: climbRate ?? this.climbRate,
+      battery: battery ?? this.battery,
+      custom0: custom0 ?? this.custom0,
+      custom1: custom1 ?? this.custom1,
+      custom2: custom2 ?? this.custom2,
+    );
+  }
+
   factory HighLatency2.parse(ByteData data_) {
     if (data_.lengthInBytes < HighLatency2.mavlinkEncodedLength) {
       var len = HighLatency2.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timestamp = data_.getUint32(0, Endian.little);
@@ -27039,10 +30440,31 @@ class Vibration implements MavlinkMessage {
     required this.clipping2,
   });
 
+  Vibration copyWith({
+    uint64_t? timeUsec,
+    float? vibrationX,
+    float? vibrationY,
+    float? vibrationZ,
+    uint32_t? clipping0,
+    uint32_t? clipping1,
+    uint32_t? clipping2,
+  }) {
+    return Vibration(
+      timeUsec: timeUsec ?? this.timeUsec,
+      vibrationX: vibrationX ?? this.vibrationX,
+      vibrationY: vibrationY ?? this.vibrationY,
+      vibrationZ: vibrationZ ?? this.vibrationZ,
+      clipping0: clipping0 ?? this.clipping0,
+      clipping1: clipping1 ?? this.clipping1,
+      clipping2: clipping2 ?? this.clipping2,
+    );
+  }
+
   factory Vibration.parse(ByteData data_) {
     if (data_.lengthInBytes < Vibration.mavlinkEncodedLength) {
       var len = Vibration.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -27218,10 +30640,39 @@ class HomePosition implements MavlinkMessage {
     required this.timeUsec,
   });
 
+  HomePosition copyWith({
+    int32_t? latitude,
+    int32_t? longitude,
+    int32_t? altitude,
+    float? x,
+    float? y,
+    float? z,
+    List<float>? q,
+    float? approachX,
+    float? approachY,
+    float? approachZ,
+    uint64_t? timeUsec,
+  }) {
+    return HomePosition(
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      altitude: altitude ?? this.altitude,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      q: q ?? this.q,
+      approachX: approachX ?? this.approachX,
+      approachY: approachY ?? this.approachY,
+      approachZ: approachZ ?? this.approachZ,
+      timeUsec: timeUsec ?? this.timeUsec,
+    );
+  }
+
   factory HomePosition.parse(ByteData data_) {
     if (data_.lengthInBytes < HomePosition.mavlinkEncodedLength) {
       var len = HomePosition.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var latitude = data_.getInt32(0, Endian.little);
@@ -27413,10 +30864,41 @@ class SetHomePosition implements MavlinkMessage {
     required this.timeUsec,
   });
 
+  SetHomePosition copyWith({
+    int32_t? latitude,
+    int32_t? longitude,
+    int32_t? altitude,
+    float? x,
+    float? y,
+    float? z,
+    List<float>? q,
+    float? approachX,
+    float? approachY,
+    float? approachZ,
+    uint8_t? targetSystem,
+    uint64_t? timeUsec,
+  }) {
+    return SetHomePosition(
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      altitude: altitude ?? this.altitude,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      q: q ?? this.q,
+      approachX: approachX ?? this.approachX,
+      approachY: approachY ?? this.approachY,
+      approachZ: approachZ ?? this.approachZ,
+      targetSystem: targetSystem ?? this.targetSystem,
+      timeUsec: timeUsec ?? this.timeUsec,
+    );
+  }
+
   factory SetHomePosition.parse(ByteData data_) {
     if (data_.lengthInBytes < SetHomePosition.mavlinkEncodedLength) {
       var len = SetHomePosition.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var latitude = data_.getInt32(0, Endian.little);
@@ -27507,10 +30989,21 @@ class MessageInterval implements MavlinkMessage {
     required this.messageId,
   });
 
+  MessageInterval copyWith({
+    int32_t? intervalUs,
+    uint16_t? messageId,
+  }) {
+    return MessageInterval(
+      intervalUs: intervalUs ?? this.intervalUs,
+      messageId: messageId ?? this.messageId,
+    );
+  }
+
   factory MessageInterval.parse(ByteData data_) {
     if (data_.lengthInBytes < MessageInterval.mavlinkEncodedLength) {
       var len = MessageInterval.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var intervalUs = data_.getInt32(0, Endian.little);
@@ -27567,10 +31060,21 @@ class ExtendedSysState implements MavlinkMessage {
     required this.landedState,
   });
 
+  ExtendedSysState copyWith({
+    MavVtolState? vtolState,
+    MavLandedState? landedState,
+  }) {
+    return ExtendedSysState(
+      vtolState: vtolState ?? this.vtolState,
+      landedState: landedState ?? this.landedState,
+    );
+  }
+
   factory ExtendedSysState.parse(ByteData data_) {
     if (data_.lengthInBytes < ExtendedSysState.mavlinkEncodedLength) {
       var len = ExtendedSysState.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var vtolState = data_.getUint8(0);
@@ -27674,7 +31178,7 @@ class AdsbVehicle implements MavlinkMessage {
   /// flags
   final AdsbFlags flags;
 
-  /// Squawk code
+  /// Squawk code. Note that the code is in decimal: e.g. 7700 (general emergency) is encoded as binary 0b0001_1110_0001_0100, not(!) as 0b0000_111_111_000_000
   ///
   /// MAVLink type: uint16_t
   ///
@@ -27731,10 +31235,43 @@ class AdsbVehicle implements MavlinkMessage {
     required this.tslc,
   });
 
+  AdsbVehicle copyWith({
+    uint32_t? icaoAddress,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? altitude,
+    uint16_t? heading,
+    uint16_t? horVelocity,
+    int16_t? verVelocity,
+    AdsbFlags? flags,
+    uint16_t? squawk,
+    AdsbAltitudeType? altitudeType,
+    List<char>? callsign,
+    AdsbEmitterType? emitterType,
+    uint8_t? tslc,
+  }) {
+    return AdsbVehicle(
+      icaoAddress: icaoAddress ?? this.icaoAddress,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      altitude: altitude ?? this.altitude,
+      heading: heading ?? this.heading,
+      horVelocity: horVelocity ?? this.horVelocity,
+      verVelocity: verVelocity ?? this.verVelocity,
+      flags: flags ?? this.flags,
+      squawk: squawk ?? this.squawk,
+      altitudeType: altitudeType ?? this.altitudeType,
+      callsign: callsign ?? this.callsign,
+      emitterType: emitterType ?? this.emitterType,
+      tslc: tslc ?? this.tslc,
+    );
+  }
+
   factory AdsbVehicle.parse(ByteData data_) {
     if (data_.lengthInBytes < AdsbVehicle.mavlinkEncodedLength) {
       var len = AdsbVehicle.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var icaoAddress = data_.getUint32(0, Endian.little);
@@ -27874,10 +31411,32 @@ class Collision implements MavlinkMessage {
     required this.threatLevel,
   });
 
+  Collision copyWith({
+    uint32_t? id,
+    float? timeToMinimumDelta,
+    float? altitudeMinimumDelta,
+    float? horizontalMinimumDelta,
+    MavCollisionSrc? src,
+    MavCollisionAction? action,
+    MavCollisionThreatLevel? threatLevel,
+  }) {
+    return Collision(
+      id: id ?? this.id,
+      timeToMinimumDelta: timeToMinimumDelta ?? this.timeToMinimumDelta,
+      altitudeMinimumDelta: altitudeMinimumDelta ?? this.altitudeMinimumDelta,
+      horizontalMinimumDelta:
+          horizontalMinimumDelta ?? this.horizontalMinimumDelta,
+      src: src ?? this.src,
+      action: action ?? this.action,
+      threatLevel: threatLevel ?? this.threatLevel,
+    );
+  }
+
   factory Collision.parse(ByteData data_) {
     if (data_.lengthInBytes < Collision.mavlinkEncodedLength) {
       var len = Collision.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var id = data_.getUint32(0, Endian.little);
@@ -27971,10 +31530,27 @@ class V2Extension implements MavlinkMessage {
     required this.payload,
   });
 
+  V2Extension copyWith({
+    uint16_t? messageType,
+    uint8_t? targetNetwork,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? payload,
+  }) {
+    return V2Extension(
+      messageType: messageType ?? this.messageType,
+      targetNetwork: targetNetwork ?? this.targetNetwork,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      payload: payload ?? this.payload,
+    );
+  }
+
   factory V2Extension.parse(ByteData data_) {
     if (data_.lengthInBytes < V2Extension.mavlinkEncodedLength) {
       var len = V2Extension.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var messageType = data_.getUint16(0, Endian.little);
@@ -28054,10 +31630,25 @@ class MemoryVect implements MavlinkMessage {
     required this.value,
   });
 
+  MemoryVect copyWith({
+    uint16_t? address,
+    uint8_t? ver,
+    uint8_t? type,
+    List<int8_t>? value,
+  }) {
+    return MemoryVect(
+      address: address ?? this.address,
+      ver: ver ?? this.ver,
+      type: type ?? this.type,
+      value: value ?? this.value,
+    );
+  }
+
   factory MemoryVect.parse(ByteData data_) {
     if (data_.lengthInBytes < MemoryVect.mavlinkEncodedLength) {
       var len = MemoryVect.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var address = data_.getUint16(0, Endian.little);
@@ -28140,10 +31731,27 @@ class DebugVect implements MavlinkMessage {
     required this.name,
   });
 
+  DebugVect copyWith({
+    uint64_t? timeUsec,
+    float? x,
+    float? y,
+    float? z,
+    List<char>? name,
+  }) {
+    return DebugVect(
+      timeUsec: timeUsec ?? this.timeUsec,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      name: name ?? this.name,
+    );
+  }
+
   factory DebugVect.parse(ByteData data_) {
     if (data_.lengthInBytes < DebugVect.mavlinkEncodedLength) {
       var len = DebugVect.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -28212,10 +31820,23 @@ class NamedValueFloat implements MavlinkMessage {
     required this.name,
   });
 
+  NamedValueFloat copyWith({
+    uint32_t? timeBootMs,
+    float? value,
+    List<char>? name,
+  }) {
+    return NamedValueFloat(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      value: value ?? this.value,
+      name: name ?? this.name,
+    );
+  }
+
   factory NamedValueFloat.parse(ByteData data_) {
     if (data_.lengthInBytes < NamedValueFloat.mavlinkEncodedLength) {
       var len = NamedValueFloat.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -28280,10 +31901,23 @@ class NamedValueInt implements MavlinkMessage {
     required this.name,
   });
 
+  NamedValueInt copyWith({
+    uint32_t? timeBootMs,
+    int32_t? value,
+    List<char>? name,
+  }) {
+    return NamedValueInt(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      value: value ?? this.value,
+      name: name ?? this.name,
+    );
+  }
+
   factory NamedValueInt.parse(ByteData data_) {
     if (data_.lengthInBytes < NamedValueInt.mavlinkEncodedLength) {
       var len = NamedValueInt.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -28360,10 +31994,25 @@ class Statustext implements MavlinkMessage {
     required this.chunkSeq,
   });
 
+  Statustext copyWith({
+    MavSeverity? severity,
+    List<char>? text,
+    uint16_t? id,
+    uint8_t? chunkSeq,
+  }) {
+    return Statustext(
+      severity: severity ?? this.severity,
+      text: text ?? this.text,
+      id: id ?? this.id,
+      chunkSeq: chunkSeq ?? this.chunkSeq,
+    );
+  }
+
   factory Statustext.parse(ByteData data_) {
     if (data_.lengthInBytes < Statustext.mavlinkEncodedLength) {
       var len = Statustext.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var severity = data_.getUint8(0);
@@ -28431,10 +32080,23 @@ class Debug implements MavlinkMessage {
     required this.ind,
   });
 
+  Debug copyWith({
+    uint32_t? timeBootMs,
+    float? value,
+    uint8_t? ind,
+  }) {
+    return Debug(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      value: value ?? this.value,
+      ind: ind ?? this.ind,
+    );
+  }
+
   factory Debug.parse(ByteData data_) {
     if (data_.lengthInBytes < Debug.mavlinkEncodedLength) {
       var len = Debug.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -28505,10 +32167,25 @@ class SetupSigning implements MavlinkMessage {
     required this.secretKey,
   });
 
+  SetupSigning copyWith({
+    uint64_t? initialTimestamp,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? secretKey,
+  }) {
+    return SetupSigning(
+      initialTimestamp: initialTimestamp ?? this.initialTimestamp,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      secretKey: secretKey ?? this.secretKey,
+    );
+  }
+
   factory SetupSigning.parse(ByteData data_) {
     if (data_.lengthInBytes < SetupSigning.mavlinkEncodedLength) {
       var len = SetupSigning.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var initialTimestamp = data_.getUint64(0, Endian.little);
@@ -28581,10 +32258,23 @@ class ButtonChange implements MavlinkMessage {
     required this.state,
   });
 
+  ButtonChange copyWith({
+    uint32_t? timeBootMs,
+    uint32_t? lastChangeMs,
+    uint8_t? state,
+  }) {
+    return ButtonChange(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      lastChangeMs: lastChangeMs ?? this.lastChangeMs,
+      state: state ?? this.state,
+    );
+  }
+
   factory ButtonChange.parse(ByteData data_) {
     if (data_.lengthInBytes < ButtonChange.mavlinkEncodedLength) {
       var len = ButtonChange.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -28658,10 +32348,25 @@ class PlayTune implements MavlinkMessage {
     required this.tune2,
   });
 
+  PlayTune copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<char>? tune,
+    List<char>? tune2,
+  }) {
+    return PlayTune(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      tune: tune ?? this.tune,
+      tune2: tune2 ?? this.tune2,
+    );
+  }
+
   factory PlayTune.parse(ByteData data_) {
     if (data_.lengthInBytes < PlayTune.mavlinkEncodedLength) {
       var len = PlayTune.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -28695,7 +32400,7 @@ class CameraInformation implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 92;
 
-  static const int mavlinkEncodedLength = 236;
+  static const int mavlinkEncodedLength = 237;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -28817,6 +32522,15 @@ class CameraInformation implements MavlinkMessage {
   /// gimbal_device_id
   final uint8_t gimbalDeviceId;
 
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   CameraInformation({
     required this.timeBootMs,
     required this.firmwareVersion,
@@ -28832,12 +32546,50 @@ class CameraInformation implements MavlinkMessage {
     required this.lensId,
     required this.camDefinitionUri,
     required this.gimbalDeviceId,
+    required this.cameraDeviceId,
   });
+
+  CameraInformation copyWith({
+    uint32_t? timeBootMs,
+    uint32_t? firmwareVersion,
+    float? focalLength,
+    float? sensorSizeH,
+    float? sensorSizeV,
+    CameraCapFlags? flags,
+    uint16_t? resolutionH,
+    uint16_t? resolutionV,
+    uint16_t? camDefinitionVersion,
+    List<int8_t>? vendorName,
+    List<int8_t>? modelName,
+    uint8_t? lensId,
+    List<char>? camDefinitionUri,
+    uint8_t? gimbalDeviceId,
+    uint8_t? cameraDeviceId,
+  }) {
+    return CameraInformation(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      firmwareVersion: firmwareVersion ?? this.firmwareVersion,
+      focalLength: focalLength ?? this.focalLength,
+      sensorSizeH: sensorSizeH ?? this.sensorSizeH,
+      sensorSizeV: sensorSizeV ?? this.sensorSizeV,
+      flags: flags ?? this.flags,
+      resolutionH: resolutionH ?? this.resolutionH,
+      resolutionV: resolutionV ?? this.resolutionV,
+      camDefinitionVersion: camDefinitionVersion ?? this.camDefinitionVersion,
+      vendorName: vendorName ?? this.vendorName,
+      modelName: modelName ?? this.modelName,
+      lensId: lensId ?? this.lensId,
+      camDefinitionUri: camDefinitionUri ?? this.camDefinitionUri,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory CameraInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraInformation.mavlinkEncodedLength) {
       var len = CameraInformation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -28854,6 +32606,7 @@ class CameraInformation implements MavlinkMessage {
     var lensId = data_.getUint8(94);
     var camDefinitionUri = MavlinkMessage.asInt8List(data_, 95, 140);
     var gimbalDeviceId = data_.getUint8(235);
+    var cameraDeviceId = data_.getUint8(236);
 
     return CameraInformation(
         timeBootMs: timeBootMs,
@@ -28869,7 +32622,8 @@ class CameraInformation implements MavlinkMessage {
         modelName: modelName,
         lensId: lensId,
         camDefinitionUri: camDefinitionUri,
-        gimbalDeviceId: gimbalDeviceId);
+        gimbalDeviceId: gimbalDeviceId,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -28889,6 +32643,7 @@ class CameraInformation implements MavlinkMessage {
     data_.setUint8(94, lensId);
     MavlinkMessage.setInt8List(data_, 95, camDefinitionUri);
     data_.setUint8(235, gimbalDeviceId);
+    data_.setUint8(236, cameraDeviceId);
     return data_;
   }
 }
@@ -28901,7 +32656,7 @@ class CameraSettings implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 146;
 
-  static const int mavlinkEncodedLength = 13;
+  static const int mavlinkEncodedLength = 14;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -28945,29 +32700,58 @@ class CameraSettings implements MavlinkMessage {
   /// focusLevel
   final float focuslevel;
 
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   CameraSettings({
     required this.timeBootMs,
     required this.modeId,
     required this.zoomlevel,
     required this.focuslevel,
+    required this.cameraDeviceId,
   });
+
+  CameraSettings copyWith({
+    uint32_t? timeBootMs,
+    CameraMode? modeId,
+    float? zoomlevel,
+    float? focuslevel,
+    uint8_t? cameraDeviceId,
+  }) {
+    return CameraSettings(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      modeId: modeId ?? this.modeId,
+      zoomlevel: zoomlevel ?? this.zoomlevel,
+      focuslevel: focuslevel ?? this.focuslevel,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory CameraSettings.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraSettings.mavlinkEncodedLength) {
       var len = CameraSettings.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
     var modeId = data_.getUint8(4);
     var zoomlevel = data_.getFloat32(5, Endian.little);
     var focuslevel = data_.getFloat32(9, Endian.little);
+    var cameraDeviceId = data_.getUint8(13);
 
     return CameraSettings(
         timeBootMs: timeBootMs,
         modeId: modeId,
         zoomlevel: zoomlevel,
-        focuslevel: focuslevel);
+        focuslevel: focuslevel,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -28977,6 +32761,7 @@ class CameraSettings implements MavlinkMessage {
     data_.setUint8(4, modeId);
     data_.setFloat32(5, zoomlevel, Endian.little);
     data_.setFloat32(9, focuslevel, Endian.little);
+    data_.setUint8(13, cameraDeviceId);
     return data_;
   }
 }
@@ -29123,10 +32908,41 @@ class StorageInformation implements MavlinkMessage {
     required this.storageUsage,
   });
 
+  StorageInformation copyWith({
+    uint32_t? timeBootMs,
+    float? totalCapacity,
+    float? usedCapacity,
+    float? availableCapacity,
+    float? readSpeed,
+    float? writeSpeed,
+    uint8_t? storageId,
+    uint8_t? storageCount,
+    StorageStatus? status,
+    StorageType? type,
+    List<char>? name,
+    StorageUsageFlag? storageUsage,
+  }) {
+    return StorageInformation(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      totalCapacity: totalCapacity ?? this.totalCapacity,
+      usedCapacity: usedCapacity ?? this.usedCapacity,
+      availableCapacity: availableCapacity ?? this.availableCapacity,
+      readSpeed: readSpeed ?? this.readSpeed,
+      writeSpeed: writeSpeed ?? this.writeSpeed,
+      storageId: storageId ?? this.storageId,
+      storageCount: storageCount ?? this.storageCount,
+      status: status ?? this.status,
+      type: type ?? this.type,
+      name: name ?? this.name,
+      storageUsage: storageUsage ?? this.storageUsage,
+    );
+  }
+
   factory StorageInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < StorageInformation.mavlinkEncodedLength) {
       var len = StorageInformation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -29184,7 +33000,7 @@ class CameraCaptureStatus implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 12;
 
-  static const int mavlinkEncodedLength = 22;
+  static const int mavlinkEncodedLength = 23;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -29251,6 +33067,15 @@ class CameraCaptureStatus implements MavlinkMessage {
   /// image_count
   final int32_t imageCount;
 
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   CameraCaptureStatus({
     required this.timeBootMs,
     required this.imageInterval,
@@ -29259,12 +33084,36 @@ class CameraCaptureStatus implements MavlinkMessage {
     required this.imageStatus,
     required this.videoStatus,
     required this.imageCount,
+    required this.cameraDeviceId,
   });
+
+  CameraCaptureStatus copyWith({
+    uint32_t? timeBootMs,
+    float? imageInterval,
+    uint32_t? recordingTimeMs,
+    float? availableCapacity,
+    uint8_t? imageStatus,
+    uint8_t? videoStatus,
+    int32_t? imageCount,
+    uint8_t? cameraDeviceId,
+  }) {
+    return CameraCaptureStatus(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      imageInterval: imageInterval ?? this.imageInterval,
+      recordingTimeMs: recordingTimeMs ?? this.recordingTimeMs,
+      availableCapacity: availableCapacity ?? this.availableCapacity,
+      imageStatus: imageStatus ?? this.imageStatus,
+      videoStatus: videoStatus ?? this.videoStatus,
+      imageCount: imageCount ?? this.imageCount,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory CameraCaptureStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraCaptureStatus.mavlinkEncodedLength) {
       var len = CameraCaptureStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -29274,6 +33123,7 @@ class CameraCaptureStatus implements MavlinkMessage {
     var imageStatus = data_.getUint8(16);
     var videoStatus = data_.getUint8(17);
     var imageCount = data_.getInt32(18, Endian.little);
+    var cameraDeviceId = data_.getUint8(22);
 
     return CameraCaptureStatus(
         timeBootMs: timeBootMs,
@@ -29282,7 +33132,8 @@ class CameraCaptureStatus implements MavlinkMessage {
         availableCapacity: availableCapacity,
         imageStatus: imageStatus,
         videoStatus: videoStatus,
-        imageCount: imageCount);
+        imageCount: imageCount,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -29295,6 +33146,7 @@ class CameraCaptureStatus implements MavlinkMessage {
     data_.setUint8(16, imageStatus);
     data_.setUint8(17, videoStatus);
     data_.setInt32(18, imageCount, Endian.little);
+    data_.setUint8(22, cameraDeviceId);
     return data_;
   }
 }
@@ -29424,10 +33276,39 @@ class CameraImageCaptured implements MavlinkMessage {
     required this.fileUrl,
   });
 
+  CameraImageCaptured copyWith({
+    uint64_t? timeUtc,
+    uint32_t? timeBootMs,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    int32_t? relativeAlt,
+    List<float>? q,
+    int32_t? imageIndex,
+    uint8_t? cameraId,
+    int8_t? captureResult,
+    List<char>? fileUrl,
+  }) {
+    return CameraImageCaptured(
+      timeUtc: timeUtc ?? this.timeUtc,
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      relativeAlt: relativeAlt ?? this.relativeAlt,
+      q: q ?? this.q,
+      imageIndex: imageIndex ?? this.imageIndex,
+      cameraId: cameraId ?? this.cameraId,
+      captureResult: captureResult ?? this.captureResult,
+      fileUrl: fileUrl ?? this.fileUrl,
+    );
+  }
+
   factory CameraImageCaptured.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraImageCaptured.mavlinkEncodedLength) {
       var len = CameraImageCaptured.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUtc = data_.getUint64(0, Endian.little);
@@ -29548,10 +33429,27 @@ class FlightInformation implements MavlinkMessage {
     required this.landingTime,
   });
 
+  FlightInformation copyWith({
+    uint64_t? armingTimeUtc,
+    uint64_t? takeoffTimeUtc,
+    uint64_t? flightUuid,
+    uint32_t? timeBootMs,
+    uint32_t? landingTime,
+  }) {
+    return FlightInformation(
+      armingTimeUtc: armingTimeUtc ?? this.armingTimeUtc,
+      takeoffTimeUtc: takeoffTimeUtc ?? this.takeoffTimeUtc,
+      flightUuid: flightUuid ?? this.flightUuid,
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      landingTime: landingTime ?? this.landingTime,
+    );
+  }
+
   factory FlightInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < FlightInformation.mavlinkEncodedLength) {
       var len = FlightInformation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var armingTimeUtc = data_.getUint64(0, Endian.little);
@@ -29651,10 +33549,27 @@ class MountOrientation implements MavlinkMessage {
     required this.yawAbsolute,
   });
 
+  MountOrientation copyWith({
+    uint32_t? timeBootMs,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    float? yawAbsolute,
+  }) {
+    return MountOrientation(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      yawAbsolute: yawAbsolute ?? this.yawAbsolute,
+    );
+  }
+
   factory MountOrientation.parse(ByteData data_) {
     if (data_.lengthInBytes < MountOrientation.mavlinkEncodedLength) {
       var len = MountOrientation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -29754,10 +33669,29 @@ class LoggingData implements MavlinkMessage {
     required this.data,
   });
 
+  LoggingData copyWith({
+    uint16_t? sequence,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? length,
+    uint8_t? firstMessageOffset,
+    List<int8_t>? data,
+  }) {
+    return LoggingData(
+      sequence: sequence ?? this.sequence,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      length: length ?? this.length,
+      firstMessageOffset: firstMessageOffset ?? this.firstMessageOffset,
+      data: data ?? this.data,
+    );
+  }
+
   factory LoggingData.parse(ByteData data_) {
     if (data_.lengthInBytes < LoggingData.mavlinkEncodedLength) {
       var len = LoggingData.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var sequence = data_.getUint16(0, Endian.little);
@@ -29860,10 +33794,29 @@ class LoggingDataAcked implements MavlinkMessage {
     required this.data,
   });
 
+  LoggingDataAcked copyWith({
+    uint16_t? sequence,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? length,
+    uint8_t? firstMessageOffset,
+    List<int8_t>? data,
+  }) {
+    return LoggingDataAcked(
+      sequence: sequence ?? this.sequence,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      length: length ?? this.length,
+      firstMessageOffset: firstMessageOffset ?? this.firstMessageOffset,
+      data: data ?? this.data,
+    );
+  }
+
   factory LoggingDataAcked.parse(ByteData data_) {
     if (data_.lengthInBytes < LoggingDataAcked.mavlinkEncodedLength) {
       var len = LoggingDataAcked.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var sequence = data_.getUint16(0, Endian.little);
@@ -29938,10 +33891,23 @@ class LoggingAck implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  LoggingAck copyWith({
+    uint16_t? sequence,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return LoggingAck(
+      sequence: sequence ?? this.sequence,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory LoggingAck.parse(ByteData data_) {
     if (data_.lengthInBytes < LoggingAck.mavlinkEncodedLength) {
       var len = LoggingAck.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var sequence = data_.getUint16(0, Endian.little);
@@ -29972,7 +33938,7 @@ class VideoStreamInformation implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 109;
 
-  static const int mavlinkEncodedLength = 213;
+  static const int mavlinkEncodedLength = 215;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -30080,6 +34046,26 @@ class VideoStreamInformation implements MavlinkMessage {
   /// uri
   final List<char> uri;
 
+  /// Encoding of stream.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [VideoStreamEncoding]
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// encoding
+  final VideoStreamEncoding encoding;
+
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   VideoStreamInformation({
     required this.framerate,
     required this.bitrate,
@@ -30093,13 +34079,50 @@ class VideoStreamInformation implements MavlinkMessage {
     required this.type,
     required this.name,
     required this.uri,
+    required this.encoding,
+    required this.cameraDeviceId,
   });
+
+  VideoStreamInformation copyWith({
+    float? framerate,
+    uint32_t? bitrate,
+    VideoStreamStatusFlags? flags,
+    uint16_t? resolutionH,
+    uint16_t? resolutionV,
+    uint16_t? rotation,
+    uint16_t? hfov,
+    uint8_t? streamId,
+    uint8_t? count,
+    VideoStreamType? type,
+    List<char>? name,
+    List<char>? uri,
+    VideoStreamEncoding? encoding,
+    uint8_t? cameraDeviceId,
+  }) {
+    return VideoStreamInformation(
+      framerate: framerate ?? this.framerate,
+      bitrate: bitrate ?? this.bitrate,
+      flags: flags ?? this.flags,
+      resolutionH: resolutionH ?? this.resolutionH,
+      resolutionV: resolutionV ?? this.resolutionV,
+      rotation: rotation ?? this.rotation,
+      hfov: hfov ?? this.hfov,
+      streamId: streamId ?? this.streamId,
+      count: count ?? this.count,
+      type: type ?? this.type,
+      name: name ?? this.name,
+      uri: uri ?? this.uri,
+      encoding: encoding ?? this.encoding,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory VideoStreamInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < VideoStreamInformation.mavlinkEncodedLength) {
       var len =
           VideoStreamInformation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var framerate = data_.getFloat32(0, Endian.little);
@@ -30114,6 +34137,8 @@ class VideoStreamInformation implements MavlinkMessage {
     var type = data_.getUint8(20);
     var name = MavlinkMessage.asInt8List(data_, 21, 32);
     var uri = MavlinkMessage.asInt8List(data_, 53, 160);
+    var encoding = data_.getUint8(213);
+    var cameraDeviceId = data_.getUint8(214);
 
     return VideoStreamInformation(
         framerate: framerate,
@@ -30127,7 +34152,9 @@ class VideoStreamInformation implements MavlinkMessage {
         count: count,
         type: type,
         name: name,
-        uri: uri);
+        uri: uri,
+        encoding: encoding,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -30145,6 +34172,8 @@ class VideoStreamInformation implements MavlinkMessage {
     data_.setUint8(20, type);
     MavlinkMessage.setInt8List(data_, 21, name);
     MavlinkMessage.setInt8List(data_, 53, uri);
+    data_.setUint8(213, encoding);
+    data_.setUint8(214, cameraDeviceId);
     return data_;
   }
 }
@@ -30157,7 +34186,7 @@ class VideoStreamStatus implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 59;
 
-  static const int mavlinkEncodedLength = 19;
+  static const int mavlinkEncodedLength = 20;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -30235,6 +34264,15 @@ class VideoStreamStatus implements MavlinkMessage {
   /// stream_id
   final uint8_t streamId;
 
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   VideoStreamStatus({
     required this.framerate,
     required this.bitrate,
@@ -30244,12 +34282,38 @@ class VideoStreamStatus implements MavlinkMessage {
     required this.rotation,
     required this.hfov,
     required this.streamId,
+    required this.cameraDeviceId,
   });
+
+  VideoStreamStatus copyWith({
+    float? framerate,
+    uint32_t? bitrate,
+    VideoStreamStatusFlags? flags,
+    uint16_t? resolutionH,
+    uint16_t? resolutionV,
+    uint16_t? rotation,
+    uint16_t? hfov,
+    uint8_t? streamId,
+    uint8_t? cameraDeviceId,
+  }) {
+    return VideoStreamStatus(
+      framerate: framerate ?? this.framerate,
+      bitrate: bitrate ?? this.bitrate,
+      flags: flags ?? this.flags,
+      resolutionH: resolutionH ?? this.resolutionH,
+      resolutionV: resolutionV ?? this.resolutionV,
+      rotation: rotation ?? this.rotation,
+      hfov: hfov ?? this.hfov,
+      streamId: streamId ?? this.streamId,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory VideoStreamStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < VideoStreamStatus.mavlinkEncodedLength) {
       var len = VideoStreamStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var framerate = data_.getFloat32(0, Endian.little);
@@ -30260,6 +34324,7 @@ class VideoStreamStatus implements MavlinkMessage {
     var rotation = data_.getUint16(14, Endian.little);
     var hfov = data_.getUint16(16, Endian.little);
     var streamId = data_.getUint8(18);
+    var cameraDeviceId = data_.getUint8(19);
 
     return VideoStreamStatus(
         framerate: framerate,
@@ -30269,7 +34334,8 @@ class VideoStreamStatus implements MavlinkMessage {
         resolutionV: resolutionV,
         rotation: rotation,
         hfov: hfov,
-        streamId: streamId);
+        streamId: streamId,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -30283,6 +34349,7 @@ class VideoStreamStatus implements MavlinkMessage {
     data_.setUint16(14, rotation, Endian.little);
     data_.setUint16(16, hfov, Endian.little);
     data_.setUint8(18, streamId);
+    data_.setUint8(19, cameraDeviceId);
     return data_;
   }
 }
@@ -30295,7 +34362,7 @@ class CameraFovStatus implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 22;
 
-  static const int mavlinkEncodedLength = 52;
+  static const int mavlinkEncodedLength = 53;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -30391,6 +34458,15 @@ class CameraFovStatus implements MavlinkMessage {
   /// vfov
   final float vfov;
 
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   CameraFovStatus({
     required this.timeBootMs,
     required this.latCamera,
@@ -30402,12 +34478,42 @@ class CameraFovStatus implements MavlinkMessage {
     required this.q,
     required this.hfov,
     required this.vfov,
+    required this.cameraDeviceId,
   });
+
+  CameraFovStatus copyWith({
+    uint32_t? timeBootMs,
+    int32_t? latCamera,
+    int32_t? lonCamera,
+    int32_t? altCamera,
+    int32_t? latImage,
+    int32_t? lonImage,
+    int32_t? altImage,
+    List<float>? q,
+    float? hfov,
+    float? vfov,
+    uint8_t? cameraDeviceId,
+  }) {
+    return CameraFovStatus(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      latCamera: latCamera ?? this.latCamera,
+      lonCamera: lonCamera ?? this.lonCamera,
+      altCamera: altCamera ?? this.altCamera,
+      latImage: latImage ?? this.latImage,
+      lonImage: lonImage ?? this.lonImage,
+      altImage: altImage ?? this.altImage,
+      q: q ?? this.q,
+      hfov: hfov ?? this.hfov,
+      vfov: vfov ?? this.vfov,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory CameraFovStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraFovStatus.mavlinkEncodedLength) {
       var len = CameraFovStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -30420,6 +34526,7 @@ class CameraFovStatus implements MavlinkMessage {
     var q = MavlinkMessage.asFloat32List(data_, 28, 4);
     var hfov = data_.getFloat32(44, Endian.little);
     var vfov = data_.getFloat32(48, Endian.little);
+    var cameraDeviceId = data_.getUint8(52);
 
     return CameraFovStatus(
         timeBootMs: timeBootMs,
@@ -30431,7 +34538,8 @@ class CameraFovStatus implements MavlinkMessage {
         altImage: altImage,
         q: q,
         hfov: hfov,
-        vfov: vfov);
+        vfov: vfov,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -30447,6 +34555,7 @@ class CameraFovStatus implements MavlinkMessage {
     MavlinkMessage.setFloat32List(data_, 28, q);
     data_.setFloat32(44, hfov, Endian.little);
     data_.setFloat32(48, vfov, Endian.little);
+    data_.setUint8(52, cameraDeviceId);
     return data_;
   }
 }
@@ -30459,7 +34568,7 @@ class CameraTrackingImageStatus implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 126;
 
-  static const int mavlinkEncodedLength = 31;
+  static const int mavlinkEncodedLength = 32;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -30543,6 +34652,15 @@ class CameraTrackingImageStatus implements MavlinkMessage {
   /// target_data
   final CameraTrackingTargetData targetData;
 
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   CameraTrackingImageStatus({
     required this.pointX,
     required this.pointY,
@@ -30554,13 +34672,43 @@ class CameraTrackingImageStatus implements MavlinkMessage {
     required this.trackingStatus,
     required this.trackingMode,
     required this.targetData,
+    required this.cameraDeviceId,
   });
+
+  CameraTrackingImageStatus copyWith({
+    float? pointX,
+    float? pointY,
+    float? radius,
+    float? recTopX,
+    float? recTopY,
+    float? recBottomX,
+    float? recBottomY,
+    CameraTrackingStatusFlags? trackingStatus,
+    CameraTrackingMode? trackingMode,
+    CameraTrackingTargetData? targetData,
+    uint8_t? cameraDeviceId,
+  }) {
+    return CameraTrackingImageStatus(
+      pointX: pointX ?? this.pointX,
+      pointY: pointY ?? this.pointY,
+      radius: radius ?? this.radius,
+      recTopX: recTopX ?? this.recTopX,
+      recTopY: recTopY ?? this.recTopY,
+      recBottomX: recBottomX ?? this.recBottomX,
+      recBottomY: recBottomY ?? this.recBottomY,
+      trackingStatus: trackingStatus ?? this.trackingStatus,
+      trackingMode: trackingMode ?? this.trackingMode,
+      targetData: targetData ?? this.targetData,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory CameraTrackingImageStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraTrackingImageStatus.mavlinkEncodedLength) {
       var len =
           CameraTrackingImageStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var pointX = data_.getFloat32(0, Endian.little);
@@ -30573,6 +34721,7 @@ class CameraTrackingImageStatus implements MavlinkMessage {
     var trackingStatus = data_.getUint8(28);
     var trackingMode = data_.getUint8(29);
     var targetData = data_.getUint8(30);
+    var cameraDeviceId = data_.getUint8(31);
 
     return CameraTrackingImageStatus(
         pointX: pointX,
@@ -30584,7 +34733,8 @@ class CameraTrackingImageStatus implements MavlinkMessage {
         recBottomY: recBottomY,
         trackingStatus: trackingStatus,
         trackingMode: trackingMode,
-        targetData: targetData);
+        targetData: targetData,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -30600,6 +34750,7 @@ class CameraTrackingImageStatus implements MavlinkMessage {
     data_.setUint8(28, trackingStatus);
     data_.setUint8(29, trackingMode);
     data_.setUint8(30, targetData);
+    data_.setUint8(31, cameraDeviceId);
     return data_;
   }
 }
@@ -30612,7 +34763,7 @@ class CameraTrackingGeoStatus implements MavlinkMessage {
 
   static const int _mavlinkCrcExtra = 18;
 
-  static const int mavlinkEncodedLength = 49;
+  static const int mavlinkEncodedLength = 50;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -30737,6 +34888,15 @@ class CameraTrackingGeoStatus implements MavlinkMessage {
   /// tracking_status
   final CameraTrackingStatusFlags trackingStatus;
 
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
   CameraTrackingGeoStatus({
     required this.lat,
     required this.lon,
@@ -30751,13 +34911,49 @@ class CameraTrackingGeoStatus implements MavlinkMessage {
     required this.hdg,
     required this.hdgAcc,
     required this.trackingStatus,
+    required this.cameraDeviceId,
   });
+
+  CameraTrackingGeoStatus copyWith({
+    int32_t? lat,
+    int32_t? lon,
+    float? alt,
+    float? hAcc,
+    float? vAcc,
+    float? velN,
+    float? velE,
+    float? velD,
+    float? velAcc,
+    float? dist,
+    float? hdg,
+    float? hdgAcc,
+    CameraTrackingStatusFlags? trackingStatus,
+    uint8_t? cameraDeviceId,
+  }) {
+    return CameraTrackingGeoStatus(
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      hAcc: hAcc ?? this.hAcc,
+      vAcc: vAcc ?? this.vAcc,
+      velN: velN ?? this.velN,
+      velE: velE ?? this.velE,
+      velD: velD ?? this.velD,
+      velAcc: velAcc ?? this.velAcc,
+      dist: dist ?? this.dist,
+      hdg: hdg ?? this.hdg,
+      hdgAcc: hdgAcc ?? this.hdgAcc,
+      trackingStatus: trackingStatus ?? this.trackingStatus,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
 
   factory CameraTrackingGeoStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < CameraTrackingGeoStatus.mavlinkEncodedLength) {
       var len =
           CameraTrackingGeoStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var lat = data_.getInt32(0, Endian.little);
@@ -30773,6 +34969,7 @@ class CameraTrackingGeoStatus implements MavlinkMessage {
     var hdg = data_.getFloat32(40, Endian.little);
     var hdgAcc = data_.getFloat32(44, Endian.little);
     var trackingStatus = data_.getUint8(48);
+    var cameraDeviceId = data_.getUint8(49);
 
     return CameraTrackingGeoStatus(
         lat: lat,
@@ -30787,7 +34984,8 @@ class CameraTrackingGeoStatus implements MavlinkMessage {
         dist: dist,
         hdg: hdg,
         hdgAcc: hdgAcc,
-        trackingStatus: trackingStatus);
+        trackingStatus: trackingStatus,
+        cameraDeviceId: cameraDeviceId);
   }
 
   @override
@@ -30806,6 +35004,173 @@ class CameraTrackingGeoStatus implements MavlinkMessage {
     data_.setFloat32(40, hdg, Endian.little);
     data_.setFloat32(44, hdgAcc, Endian.little);
     data_.setUint8(48, trackingStatus);
+    data_.setUint8(49, cameraDeviceId);
+    return data_;
+  }
+}
+
+/// Camera absolute thermal range. This can be streamed when the associated VIDEO_STREAM_STATUS `flag` field bit VIDEO_STREAM_STATUS_FLAGS_THERMAL_RANGE_ENABLED is set, but a GCS may choose to only request it for the current active stream. Use MAV_CMD_SET_MESSAGE_INTERVAL to define message interval (param3 indicates the stream id of the current camera, or 0 for all streams, param4 indicates the target camera_device_id for autopilot-attached cameras or 0 for MAVLink cameras).
+///
+/// CAMERA_THERMAL_RANGE
+class CameraThermalRange implements MavlinkMessage {
+  static const int _mavlinkMessageId = 277;
+
+  static const int _mavlinkCrcExtra = 62;
+
+  static const int mavlinkEncodedLength = 30;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Timestamp (time since system boot).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// time_boot_ms
+  final uint32_t timeBootMs;
+
+  /// Temperature max.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: degC
+  ///
+  /// max
+  final float max;
+
+  /// Temperature max point x value (normalized 0..1, 0 is left, 1 is right), NAN if unknown.
+  ///
+  /// MAVLink type: float
+  ///
+  /// max_point_x
+  final float maxPointX;
+
+  /// Temperature max point y value (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown.
+  ///
+  /// MAVLink type: float
+  ///
+  /// max_point_y
+  final float maxPointY;
+
+  /// Temperature min.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: degC
+  ///
+  /// min
+  final float min;
+
+  /// Temperature min point x value (normalized 0..1, 0 is left, 1 is right), NAN if unknown.
+  ///
+  /// MAVLink type: float
+  ///
+  /// min_point_x
+  final float minPointX;
+
+  /// Temperature min point y value (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown.
+  ///
+  /// MAVLink type: float
+  ///
+  /// min_point_y
+  final float minPointY;
+
+  /// Video Stream ID (1 for first, 2 for second, etc.)
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// stream_id
+  final uint8_t streamId;
+
+  /// Camera id of a non-MAVLink camera attached to an autopilot (1-6).  0 if the component is a MAVLink camera (with its own component id).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// camera_device_id
+  final uint8_t cameraDeviceId;
+
+  CameraThermalRange({
+    required this.timeBootMs,
+    required this.max,
+    required this.maxPointX,
+    required this.maxPointY,
+    required this.min,
+    required this.minPointX,
+    required this.minPointY,
+    required this.streamId,
+    required this.cameraDeviceId,
+  });
+
+  CameraThermalRange copyWith({
+    uint32_t? timeBootMs,
+    float? max,
+    float? maxPointX,
+    float? maxPointY,
+    float? min,
+    float? minPointX,
+    float? minPointY,
+    uint8_t? streamId,
+    uint8_t? cameraDeviceId,
+  }) {
+    return CameraThermalRange(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      max: max ?? this.max,
+      maxPointX: maxPointX ?? this.maxPointX,
+      maxPointY: maxPointY ?? this.maxPointY,
+      min: min ?? this.min,
+      minPointX: minPointX ?? this.minPointX,
+      minPointY: minPointY ?? this.minPointY,
+      streamId: streamId ?? this.streamId,
+      cameraDeviceId: cameraDeviceId ?? this.cameraDeviceId,
+    );
+  }
+
+  factory CameraThermalRange.parse(ByteData data_) {
+    if (data_.lengthInBytes < CameraThermalRange.mavlinkEncodedLength) {
+      var len = CameraThermalRange.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var timeBootMs = data_.getUint32(0, Endian.little);
+    var max = data_.getFloat32(4, Endian.little);
+    var maxPointX = data_.getFloat32(8, Endian.little);
+    var maxPointY = data_.getFloat32(12, Endian.little);
+    var min = data_.getFloat32(16, Endian.little);
+    var minPointX = data_.getFloat32(20, Endian.little);
+    var minPointY = data_.getFloat32(24, Endian.little);
+    var streamId = data_.getUint8(28);
+    var cameraDeviceId = data_.getUint8(29);
+
+    return CameraThermalRange(
+        timeBootMs: timeBootMs,
+        max: max,
+        maxPointX: maxPointX,
+        maxPointY: maxPointY,
+        min: min,
+        minPointX: minPointX,
+        minPointY: minPointY,
+        streamId: streamId,
+        cameraDeviceId: cameraDeviceId);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, timeBootMs, Endian.little);
+    data_.setFloat32(4, max, Endian.little);
+    data_.setFloat32(8, maxPointX, Endian.little);
+    data_.setFloat32(12, maxPointY, Endian.little);
+    data_.setFloat32(16, min, Endian.little);
+    data_.setFloat32(20, minPointX, Endian.little);
+    data_.setFloat32(24, minPointY, Endian.little);
+    data_.setUint8(28, streamId);
+    data_.setUint8(29, cameraDeviceId);
     return data_;
   }
 }
@@ -30917,11 +35282,36 @@ class GimbalManagerInformation implements MavlinkMessage {
     required this.gimbalDeviceId,
   });
 
+  GimbalManagerInformation copyWith({
+    uint32_t? timeBootMs,
+    GimbalManagerCapFlags? capFlags,
+    float? rollMin,
+    float? rollMax,
+    float? pitchMin,
+    float? pitchMax,
+    float? yawMin,
+    float? yawMax,
+    uint8_t? gimbalDeviceId,
+  }) {
+    return GimbalManagerInformation(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      capFlags: capFlags ?? this.capFlags,
+      rollMin: rollMin ?? this.rollMin,
+      rollMax: rollMax ?? this.rollMax,
+      pitchMin: pitchMin ?? this.pitchMin,
+      pitchMax: pitchMax ?? this.pitchMax,
+      yawMin: yawMin ?? this.yawMin,
+      yawMax: yawMax ?? this.yawMax,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+    );
+  }
+
   factory GimbalManagerInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < GimbalManagerInformation.mavlinkEncodedLength) {
       var len =
           GimbalManagerInformation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -31041,10 +35431,33 @@ class GimbalManagerStatus implements MavlinkMessage {
     required this.secondaryControlCompid,
   });
 
+  GimbalManagerStatus copyWith({
+    uint32_t? timeBootMs,
+    GimbalManagerFlags? flags,
+    uint8_t? gimbalDeviceId,
+    uint8_t? primaryControlSysid,
+    uint8_t? primaryControlCompid,
+    uint8_t? secondaryControlSysid,
+    uint8_t? secondaryControlCompid,
+  }) {
+    return GimbalManagerStatus(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      flags: flags ?? this.flags,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+      primaryControlSysid: primaryControlSysid ?? this.primaryControlSysid,
+      primaryControlCompid: primaryControlCompid ?? this.primaryControlCompid,
+      secondaryControlSysid:
+          secondaryControlSysid ?? this.secondaryControlSysid,
+      secondaryControlCompid:
+          secondaryControlCompid ?? this.secondaryControlCompid,
+    );
+  }
+
   factory GimbalManagerStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < GimbalManagerStatus.mavlinkEncodedLength) {
       var len = GimbalManagerStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -31170,11 +35583,34 @@ class GimbalManagerSetAttitude implements MavlinkMessage {
     required this.gimbalDeviceId,
   });
 
+  GimbalManagerSetAttitude copyWith({
+    GimbalManagerFlags? flags,
+    List<float>? q,
+    float? angularVelocityX,
+    float? angularVelocityY,
+    float? angularVelocityZ,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? gimbalDeviceId,
+  }) {
+    return GimbalManagerSetAttitude(
+      flags: flags ?? this.flags,
+      q: q ?? this.q,
+      angularVelocityX: angularVelocityX ?? this.angularVelocityX,
+      angularVelocityY: angularVelocityY ?? this.angularVelocityY,
+      angularVelocityZ: angularVelocityZ ?? this.angularVelocityZ,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+    );
+  }
+
   factory GimbalManagerSetAttitude.parse(ByteData data_) {
     if (data_.lengthInBytes < GimbalManagerSetAttitude.mavlinkEncodedLength) {
       var len =
           GimbalManagerSetAttitude.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var flags = data_.getUint32(0, Endian.little);
@@ -31377,11 +35813,50 @@ class GimbalDeviceInformation implements MavlinkMessage {
     required this.gimbalDeviceId,
   });
 
+  GimbalDeviceInformation copyWith({
+    uint64_t? uid,
+    uint32_t? timeBootMs,
+    uint32_t? firmwareVersion,
+    uint32_t? hardwareVersion,
+    float? rollMin,
+    float? rollMax,
+    float? pitchMin,
+    float? pitchMax,
+    float? yawMin,
+    float? yawMax,
+    GimbalDeviceCapFlags? capFlags,
+    uint16_t? customCapFlags,
+    List<char>? vendorName,
+    List<char>? modelName,
+    List<char>? customName,
+    uint8_t? gimbalDeviceId,
+  }) {
+    return GimbalDeviceInformation(
+      uid: uid ?? this.uid,
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      firmwareVersion: firmwareVersion ?? this.firmwareVersion,
+      hardwareVersion: hardwareVersion ?? this.hardwareVersion,
+      rollMin: rollMin ?? this.rollMin,
+      rollMax: rollMax ?? this.rollMax,
+      pitchMin: pitchMin ?? this.pitchMin,
+      pitchMax: pitchMax ?? this.pitchMax,
+      yawMin: yawMin ?? this.yawMin,
+      yawMax: yawMax ?? this.yawMax,
+      capFlags: capFlags ?? this.capFlags,
+      customCapFlags: customCapFlags ?? this.customCapFlags,
+      vendorName: vendorName ?? this.vendorName,
+      modelName: modelName ?? this.modelName,
+      customName: customName ?? this.customName,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+    );
+  }
+
   factory GimbalDeviceInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < GimbalDeviceInformation.mavlinkEncodedLength) {
       var len =
           GimbalDeviceInformation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var uid = data_.getUint64(0, Endian.little);
@@ -31537,11 +36012,32 @@ class GimbalDeviceSetAttitude implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  GimbalDeviceSetAttitude copyWith({
+    List<float>? q,
+    float? angularVelocityX,
+    float? angularVelocityY,
+    float? angularVelocityZ,
+    GimbalDeviceFlags? flags,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return GimbalDeviceSetAttitude(
+      q: q ?? this.q,
+      angularVelocityX: angularVelocityX ?? this.angularVelocityX,
+      angularVelocityY: angularVelocityY ?? this.angularVelocityY,
+      angularVelocityZ: angularVelocityZ ?? this.angularVelocityZ,
+      flags: flags ?? this.flags,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory GimbalDeviceSetAttitude.parse(ByteData data_) {
     if (data_.lengthInBytes < GimbalDeviceSetAttitude.mavlinkEncodedLength) {
       var len =
           GimbalDeviceSetAttitude.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var q = MavlinkMessage.asFloat32List(data_, 0, 4);
@@ -31727,11 +36223,42 @@ class GimbalDeviceAttitudeStatus implements MavlinkMessage {
     required this.gimbalDeviceId,
   });
 
+  GimbalDeviceAttitudeStatus copyWith({
+    uint32_t? timeBootMs,
+    List<float>? q,
+    float? angularVelocityX,
+    float? angularVelocityY,
+    float? angularVelocityZ,
+    GimbalDeviceErrorFlags? failureFlags,
+    GimbalDeviceFlags? flags,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    float? deltaYaw,
+    float? deltaYawVelocity,
+    uint8_t? gimbalDeviceId,
+  }) {
+    return GimbalDeviceAttitudeStatus(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      q: q ?? this.q,
+      angularVelocityX: angularVelocityX ?? this.angularVelocityX,
+      angularVelocityY: angularVelocityY ?? this.angularVelocityY,
+      angularVelocityZ: angularVelocityZ ?? this.angularVelocityZ,
+      failureFlags: failureFlags ?? this.failureFlags,
+      flags: flags ?? this.flags,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      deltaYaw: deltaYaw ?? this.deltaYaw,
+      deltaYawVelocity: deltaYawVelocity ?? this.deltaYawVelocity,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+    );
+  }
+
   factory GimbalDeviceAttitudeStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < GimbalDeviceAttitudeStatus.mavlinkEncodedLength) {
       var len =
           GimbalDeviceAttitudeStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -31926,12 +36453,46 @@ class AutopilotStateForGimbalDevice implements MavlinkMessage {
     required this.angularVelocityZ,
   });
 
+  AutopilotStateForGimbalDevice copyWith({
+    uint64_t? timeBootUs,
+    List<float>? q,
+    uint32_t? qEstimatedDelayUs,
+    float? vx,
+    float? vy,
+    float? vz,
+    uint32_t? vEstimatedDelayUs,
+    float? feedForwardAngularVelocityZ,
+    EstimatorStatusFlags? estimatorStatus,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavLandedState? landedState,
+    float? angularVelocityZ,
+  }) {
+    return AutopilotStateForGimbalDevice(
+      timeBootUs: timeBootUs ?? this.timeBootUs,
+      q: q ?? this.q,
+      qEstimatedDelayUs: qEstimatedDelayUs ?? this.qEstimatedDelayUs,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      vEstimatedDelayUs: vEstimatedDelayUs ?? this.vEstimatedDelayUs,
+      feedForwardAngularVelocityZ:
+          feedForwardAngularVelocityZ ?? this.feedForwardAngularVelocityZ,
+      estimatorStatus: estimatorStatus ?? this.estimatorStatus,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      landedState: landedState ?? this.landedState,
+      angularVelocityZ: angularVelocityZ ?? this.angularVelocityZ,
+    );
+  }
+
   factory AutopilotStateForGimbalDevice.parse(ByteData data_) {
     if (data_.lengthInBytes <
         AutopilotStateForGimbalDevice.mavlinkEncodedLength) {
       var len = AutopilotStateForGimbalDevice.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootUs = data_.getUint64(0, Endian.little);
@@ -32077,11 +36638,34 @@ class GimbalManagerSetPitchyaw implements MavlinkMessage {
     required this.gimbalDeviceId,
   });
 
+  GimbalManagerSetPitchyaw copyWith({
+    GimbalManagerFlags? flags,
+    float? pitch,
+    float? yaw,
+    float? pitchRate,
+    float? yawRate,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? gimbalDeviceId,
+  }) {
+    return GimbalManagerSetPitchyaw(
+      flags: flags ?? this.flags,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      pitchRate: pitchRate ?? this.pitchRate,
+      yawRate: yawRate ?? this.yawRate,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+    );
+  }
+
   factory GimbalManagerSetPitchyaw.parse(ByteData data_) {
     if (data_.lengthInBytes < GimbalManagerSetPitchyaw.mavlinkEncodedLength) {
       var len =
           GimbalManagerSetPitchyaw.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var flags = data_.getUint32(0, Endian.little);
@@ -32204,12 +36788,35 @@ class GimbalManagerSetManualControl implements MavlinkMessage {
     required this.gimbalDeviceId,
   });
 
+  GimbalManagerSetManualControl copyWith({
+    GimbalManagerFlags? flags,
+    float? pitch,
+    float? yaw,
+    float? pitchRate,
+    float? yawRate,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? gimbalDeviceId,
+  }) {
+    return GimbalManagerSetManualControl(
+      flags: flags ?? this.flags,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      pitchRate: pitchRate ?? this.pitchRate,
+      yawRate: yawRate ?? this.yawRate,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      gimbalDeviceId: gimbalDeviceId ?? this.gimbalDeviceId,
+    );
+  }
+
   factory GimbalManagerSetManualControl.parse(ByteData data_) {
     if (data_.lengthInBytes <
         GimbalManagerSetManualControl.mavlinkEncodedLength) {
       var len = GimbalManagerSetManualControl.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var flags = data_.getUint32(0, Endian.little);
@@ -32346,10 +36953,35 @@ class EscInfo implements MavlinkMessage {
     required this.info,
   });
 
+  EscInfo copyWith({
+    uint64_t? timeUsec,
+    List<int32_t>? errorCount,
+    uint16_t? counter,
+    List<EscFailureFlags>? failureFlags,
+    List<int16_t>? temperature,
+    uint8_t? index,
+    uint8_t? count,
+    EscConnectionType? connectionType,
+    uint8_t? info,
+  }) {
+    return EscInfo(
+      timeUsec: timeUsec ?? this.timeUsec,
+      errorCount: errorCount ?? this.errorCount,
+      counter: counter ?? this.counter,
+      failureFlags: failureFlags ?? this.failureFlags,
+      temperature: temperature ?? this.temperature,
+      index: index ?? this.index,
+      count: count ?? this.count,
+      connectionType: connectionType ?? this.connectionType,
+      info: info ?? this.info,
+    );
+  }
+
   factory EscInfo.parse(ByteData data_) {
     if (data_.lengthInBytes < EscInfo.mavlinkEncodedLength) {
       var len = EscInfo.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -32457,10 +37089,27 @@ class EscStatus implements MavlinkMessage {
     required this.index,
   });
 
+  EscStatus copyWith({
+    uint64_t? timeUsec,
+    List<int32_t>? rpm,
+    List<float>? voltage,
+    List<float>? current,
+    uint8_t? index,
+  }) {
+    return EscStatus(
+      timeUsec: timeUsec ?? this.timeUsec,
+      rpm: rpm ?? this.rpm,
+      voltage: voltage ?? this.voltage,
+      current: current ?? this.current,
+      index: index ?? this.index,
+    );
+  }
+
   factory EscStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < EscStatus.mavlinkEncodedLength) {
       var len = EscStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -32548,10 +37197,25 @@ class WifiConfigAp implements MavlinkMessage {
     required this.response,
   });
 
+  WifiConfigAp copyWith({
+    List<char>? ssid,
+    List<char>? password,
+    WifiConfigApMode? mode,
+    WifiConfigApResponse? response,
+  }) {
+    return WifiConfigAp(
+      ssid: ssid ?? this.ssid,
+      password: password ?? this.password,
+      mode: mode ?? this.mode,
+      response: response ?? this.response,
+    );
+  }
+
   factory WifiConfigAp.parse(ByteData data_) {
     if (data_.lengthInBytes < WifiConfigAp.mavlinkEncodedLength) {
       var len = WifiConfigAp.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var ssid = MavlinkMessage.asInt8List(data_, 0, 32);
@@ -32757,10 +37421,51 @@ class AisVessel implements MavlinkMessage {
     required this.name,
   });
 
+  AisVessel copyWith({
+    uint32_t? mmsi,
+    int32_t? lat,
+    int32_t? lon,
+    uint16_t? cog,
+    uint16_t? heading,
+    uint16_t? velocity,
+    uint16_t? dimensionBow,
+    uint16_t? dimensionStern,
+    uint16_t? tslc,
+    AisFlags? flags,
+    int8_t? turnRate,
+    AisNavStatus? navigationalStatus,
+    AisType? type,
+    uint8_t? dimensionPort,
+    uint8_t? dimensionStarboard,
+    List<char>? callsign,
+    List<char>? name,
+  }) {
+    return AisVessel(
+      mmsi: mmsi ?? this.mmsi,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      cog: cog ?? this.cog,
+      heading: heading ?? this.heading,
+      velocity: velocity ?? this.velocity,
+      dimensionBow: dimensionBow ?? this.dimensionBow,
+      dimensionStern: dimensionStern ?? this.dimensionStern,
+      tslc: tslc ?? this.tslc,
+      flags: flags ?? this.flags,
+      turnRate: turnRate ?? this.turnRate,
+      navigationalStatus: navigationalStatus ?? this.navigationalStatus,
+      type: type ?? this.type,
+      dimensionPort: dimensionPort ?? this.dimensionPort,
+      dimensionStarboard: dimensionStarboard ?? this.dimensionStarboard,
+      callsign: callsign ?? this.callsign,
+      name: name ?? this.name,
+    );
+  }
+
   factory AisVessel.parse(ByteData data_) {
     if (data_.lengthInBytes < AisVessel.mavlinkEncodedLength) {
       var len = AisVessel.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var mmsi = data_.getUint32(0, Endian.little);
@@ -32900,10 +37605,30 @@ class UavcanNodeStatus implements MavlinkMessage {
     required this.subMode,
   });
 
+  UavcanNodeStatus copyWith({
+    uint64_t? timeUsec,
+    uint32_t? uptimeSec,
+    uint16_t? vendorSpecificStatusCode,
+    UavcanNodeHealth? health,
+    UavcanNodeMode? mode,
+    uint8_t? subMode,
+  }) {
+    return UavcanNodeStatus(
+      timeUsec: timeUsec ?? this.timeUsec,
+      uptimeSec: uptimeSec ?? this.uptimeSec,
+      vendorSpecificStatusCode:
+          vendorSpecificStatusCode ?? this.vendorSpecificStatusCode,
+      health: health ?? this.health,
+      mode: mode ?? this.mode,
+      subMode: subMode ?? this.subMode,
+    );
+  }
+
   factory UavcanNodeStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < UavcanNodeStatus.mavlinkEncodedLength) {
       var len = UavcanNodeStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -33030,10 +37755,35 @@ class UavcanNodeInfo implements MavlinkMessage {
     required this.swVersionMinor,
   });
 
+  UavcanNodeInfo copyWith({
+    uint64_t? timeUsec,
+    uint32_t? uptimeSec,
+    uint32_t? swVcsCommit,
+    List<char>? name,
+    uint8_t? hwVersionMajor,
+    uint8_t? hwVersionMinor,
+    List<int8_t>? hwUniqueId,
+    uint8_t? swVersionMajor,
+    uint8_t? swVersionMinor,
+  }) {
+    return UavcanNodeInfo(
+      timeUsec: timeUsec ?? this.timeUsec,
+      uptimeSec: uptimeSec ?? this.uptimeSec,
+      swVcsCommit: swVcsCommit ?? this.swVcsCommit,
+      name: name ?? this.name,
+      hwVersionMajor: hwVersionMajor ?? this.hwVersionMajor,
+      hwVersionMinor: hwVersionMinor ?? this.hwVersionMinor,
+      hwUniqueId: hwUniqueId ?? this.hwUniqueId,
+      swVersionMajor: swVersionMajor ?? this.swVersionMajor,
+      swVersionMinor: swVersionMinor ?? this.swVersionMinor,
+    );
+  }
+
   factory UavcanNodeInfo.parse(ByteData data_) {
     if (data_.lengthInBytes < UavcanNodeInfo.mavlinkEncodedLength) {
       var len = UavcanNodeInfo.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -33125,10 +37875,25 @@ class ParamExtRequestRead implements MavlinkMessage {
     required this.paramId,
   });
 
+  ParamExtRequestRead copyWith({
+    int16_t? paramIndex,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<char>? paramId,
+  }) {
+    return ParamExtRequestRead(
+      paramIndex: paramIndex ?? this.paramIndex,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      paramId: paramId ?? this.paramId,
+    );
+  }
+
   factory ParamExtRequestRead.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamExtRequestRead.mavlinkEncodedLength) {
       var len = ParamExtRequestRead.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var paramIndex = data_.getInt16(0, Endian.little);
@@ -33189,10 +37954,21 @@ class ParamExtRequestList implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  ParamExtRequestList copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return ParamExtRequestList(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory ParamExtRequestList.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamExtRequestList.mavlinkEncodedLength) {
       var len = ParamExtRequestList.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -33272,10 +38048,27 @@ class ParamExtValue implements MavlinkMessage {
     required this.paramType,
   });
 
+  ParamExtValue copyWith({
+    uint16_t? paramCount,
+    uint16_t? paramIndex,
+    List<char>? paramId,
+    List<char>? paramValue,
+    MavParamExtType? paramType,
+  }) {
+    return ParamExtValue(
+      paramCount: paramCount ?? this.paramCount,
+      paramIndex: paramIndex ?? this.paramIndex,
+      paramId: paramId ?? this.paramId,
+      paramValue: paramValue ?? this.paramValue,
+      paramType: paramType ?? this.paramType,
+    );
+  }
+
   factory ParamExtValue.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamExtValue.mavlinkEncodedLength) {
       var len = ParamExtValue.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var paramCount = data_.getUint16(0, Endian.little);
@@ -33365,10 +38158,27 @@ class ParamExtSet implements MavlinkMessage {
     required this.paramType,
   });
 
+  ParamExtSet copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<char>? paramId,
+    List<char>? paramValue,
+    MavParamExtType? paramType,
+  }) {
+    return ParamExtSet(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      paramId: paramId ?? this.paramId,
+      paramValue: paramValue ?? this.paramValue,
+      paramType: paramType ?? this.paramType,
+    );
+  }
+
   factory ParamExtSet.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamExtSet.mavlinkEncodedLength) {
       var len = ParamExtSet.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -33452,10 +38262,25 @@ class ParamExtAck implements MavlinkMessage {
     required this.paramResult,
   });
 
+  ParamExtAck copyWith({
+    List<char>? paramId,
+    List<char>? paramValue,
+    MavParamExtType? paramType,
+    ParamAck? paramResult,
+  }) {
+    return ParamExtAck(
+      paramId: paramId ?? this.paramId,
+      paramValue: paramValue ?? this.paramValue,
+      paramType: paramType ?? this.paramType,
+      paramResult: paramResult ?? this.paramResult,
+    );
+  }
+
   factory ParamExtAck.parse(ByteData data_) {
     if (data_.lengthInBytes < ParamExtAck.mavlinkEncodedLength) {
       var len = ParamExtAck.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var paramId = MavlinkMessage.asInt8List(data_, 0, 16);
@@ -33596,10 +38421,35 @@ class ObstacleDistance implements MavlinkMessage {
     required this.frame,
   });
 
+  ObstacleDistance copyWith({
+    uint64_t? timeUsec,
+    List<int16_t>? distances,
+    uint16_t? minDistance,
+    uint16_t? maxDistance,
+    MavDistanceSensor? sensorType,
+    uint8_t? increment,
+    float? incrementF,
+    float? angleOffset,
+    MavFrame? frame,
+  }) {
+    return ObstacleDistance(
+      timeUsec: timeUsec ?? this.timeUsec,
+      distances: distances ?? this.distances,
+      minDistance: minDistance ?? this.minDistance,
+      maxDistance: maxDistance ?? this.maxDistance,
+      sensorType: sensorType ?? this.sensorType,
+      increment: increment ?? this.increment,
+      incrementF: incrementF ?? this.incrementF,
+      angleOffset: angleOffset ?? this.angleOffset,
+      frame: frame ?? this.frame,
+    );
+  }
+
   factory ObstacleDistance.parse(ByteData data_) {
     if (data_.lengthInBytes < ObstacleDistance.mavlinkEncodedLength) {
       var len = ObstacleDistance.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -33837,10 +38687,53 @@ class Odometry implements MavlinkMessage {
     required this.quality,
   });
 
+  Odometry copyWith({
+    uint64_t? timeUsec,
+    float? x,
+    float? y,
+    float? z,
+    List<float>? q,
+    float? vx,
+    float? vy,
+    float? vz,
+    float? rollspeed,
+    float? pitchspeed,
+    float? yawspeed,
+    List<float>? poseCovariance,
+    List<float>? velocityCovariance,
+    MavFrame? frameId,
+    MavFrame? childFrameId,
+    uint8_t? resetCounter,
+    MavEstimatorType? estimatorType,
+    int8_t? quality,
+  }) {
+    return Odometry(
+      timeUsec: timeUsec ?? this.timeUsec,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      q: q ?? this.q,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      rollspeed: rollspeed ?? this.rollspeed,
+      pitchspeed: pitchspeed ?? this.pitchspeed,
+      yawspeed: yawspeed ?? this.yawspeed,
+      poseCovariance: poseCovariance ?? this.poseCovariance,
+      velocityCovariance: velocityCovariance ?? this.velocityCovariance,
+      frameId: frameId ?? this.frameId,
+      childFrameId: childFrameId ?? this.childFrameId,
+      resetCounter: resetCounter ?? this.resetCounter,
+      estimatorType: estimatorType ?? this.estimatorType,
+      quality: quality ?? this.quality,
+    );
+  }
+
   factory Odometry.parse(ByteData data_) {
     if (data_.lengthInBytes < Odometry.mavlinkEncodedLength) {
       var len = Odometry.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -34065,12 +38958,47 @@ class TrajectoryRepresentationWaypoints implements MavlinkMessage {
     required this.validPoints,
   });
 
+  TrajectoryRepresentationWaypoints copyWith({
+    uint64_t? timeUsec,
+    List<float>? posX,
+    List<float>? posY,
+    List<float>? posZ,
+    List<float>? velX,
+    List<float>? velY,
+    List<float>? velZ,
+    List<float>? accX,
+    List<float>? accY,
+    List<float>? accZ,
+    List<float>? posYaw,
+    List<float>? velYaw,
+    List<MavCmd>? command,
+    uint8_t? validPoints,
+  }) {
+    return TrajectoryRepresentationWaypoints(
+      timeUsec: timeUsec ?? this.timeUsec,
+      posX: posX ?? this.posX,
+      posY: posY ?? this.posY,
+      posZ: posZ ?? this.posZ,
+      velX: velX ?? this.velX,
+      velY: velY ?? this.velY,
+      velZ: velZ ?? this.velZ,
+      accX: accX ?? this.accX,
+      accY: accY ?? this.accY,
+      accZ: accZ ?? this.accZ,
+      posYaw: posYaw ?? this.posYaw,
+      velYaw: velYaw ?? this.velYaw,
+      command: command ?? this.command,
+      validPoints: validPoints ?? this.validPoints,
+    );
+  }
+
   factory TrajectoryRepresentationWaypoints.parse(ByteData data_) {
     if (data_.lengthInBytes <
         TrajectoryRepresentationWaypoints.mavlinkEncodedLength) {
       var len = TrajectoryRepresentationWaypoints.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -34213,12 +39141,33 @@ class TrajectoryRepresentationBezier implements MavlinkMessage {
     required this.validPoints,
   });
 
+  TrajectoryRepresentationBezier copyWith({
+    uint64_t? timeUsec,
+    List<float>? posX,
+    List<float>? posY,
+    List<float>? posZ,
+    List<float>? delta,
+    List<float>? posYaw,
+    uint8_t? validPoints,
+  }) {
+    return TrajectoryRepresentationBezier(
+      timeUsec: timeUsec ?? this.timeUsec,
+      posX: posX ?? this.posX,
+      posY: posY ?? this.posY,
+      posZ: posZ ?? this.posZ,
+      delta: delta ?? this.delta,
+      posYaw: posYaw ?? this.posYaw,
+      validPoints: validPoints ?? this.validPoints,
+    );
+  }
+
   factory TrajectoryRepresentationBezier.parse(ByteData data_) {
     if (data_.lengthInBytes <
         TrajectoryRepresentationBezier.mavlinkEncodedLength) {
       var len = TrajectoryRepresentationBezier.mavlinkEncodedLength -
           data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -34334,10 +39283,31 @@ class CellularStatus implements MavlinkMessage {
     required this.quality,
   });
 
+  CellularStatus copyWith({
+    uint16_t? mcc,
+    uint16_t? mnc,
+    uint16_t? lac,
+    CellularStatusFlag? status,
+    CellularNetworkFailedReason? failureReason,
+    CellularNetworkRadioType? type,
+    uint8_t? quality,
+  }) {
+    return CellularStatus(
+      mcc: mcc ?? this.mcc,
+      mnc: mnc ?? this.mnc,
+      lac: lac ?? this.lac,
+      status: status ?? this.status,
+      failureReason: failureReason ?? this.failureReason,
+      type: type ?? this.type,
+      quality: quality ?? this.quality,
+    );
+  }
+
   factory CellularStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < CellularStatus.mavlinkEncodedLength) {
       var len = CellularStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var mcc = data_.getUint16(0, Endian.little);
@@ -34459,10 +39429,33 @@ class IsbdLinkStatus implements MavlinkMessage {
     required this.rxSessionPending,
   });
 
+  IsbdLinkStatus copyWith({
+    uint64_t? timestamp,
+    uint64_t? lastHeartbeat,
+    uint16_t? failedSessions,
+    uint16_t? successfulSessions,
+    uint8_t? signalQuality,
+    uint8_t? ringPending,
+    uint8_t? txSessionPending,
+    uint8_t? rxSessionPending,
+  }) {
+    return IsbdLinkStatus(
+      timestamp: timestamp ?? this.timestamp,
+      lastHeartbeat: lastHeartbeat ?? this.lastHeartbeat,
+      failedSessions: failedSessions ?? this.failedSessions,
+      successfulSessions: successfulSessions ?? this.successfulSessions,
+      signalQuality: signalQuality ?? this.signalQuality,
+      ringPending: ringPending ?? this.ringPending,
+      txSessionPending: txSessionPending ?? this.txSessionPending,
+      rxSessionPending: rxSessionPending ?? this.rxSessionPending,
+    );
+  }
+
   factory IsbdLinkStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < IsbdLinkStatus.mavlinkEncodedLength) {
       var len = IsbdLinkStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timestamp = data_.getUint64(0, Endian.little);
@@ -34587,10 +39580,33 @@ class CellularConfig implements MavlinkMessage {
     required this.response,
   });
 
+  CellularConfig copyWith({
+    uint8_t? enableLte,
+    uint8_t? enablePin,
+    List<char>? pin,
+    List<char>? newPin,
+    List<char>? apn,
+    List<char>? puk,
+    uint8_t? roaming,
+    CellularConfigResponse? response,
+  }) {
+    return CellularConfig(
+      enableLte: enableLte ?? this.enableLte,
+      enablePin: enablePin ?? this.enablePin,
+      pin: pin ?? this.pin,
+      newPin: newPin ?? this.newPin,
+      apn: apn ?? this.apn,
+      puk: puk ?? this.puk,
+      roaming: roaming ?? this.roaming,
+      response: response ?? this.response,
+    );
+  }
+
   factory CellularConfig.parse(ByteData data_) {
     if (data_.lengthInBytes < CellularConfig.mavlinkEncodedLength) {
       var len = CellularConfig.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var enableLte = data_.getUint8(0);
@@ -34665,10 +39681,21 @@ class RawRpm implements MavlinkMessage {
     required this.index,
   });
 
+  RawRpm copyWith({
+    float? frequency,
+    uint8_t? index,
+  }) {
+    return RawRpm(
+      frequency: frequency ?? this.frequency,
+      index: index ?? this.index,
+    );
+  }
+
   factory RawRpm.parse(ByteData data_) {
     if (data_.lengthInBytes < RawRpm.mavlinkEncodedLength) {
       var len = RawRpm.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var frequency = data_.getFloat32(0, Endian.little);
@@ -34883,10 +39910,53 @@ class UtmGlobalPosition implements MavlinkMessage {
     required this.flags,
   });
 
+  UtmGlobalPosition copyWith({
+    uint64_t? time,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    int32_t? relativeAlt,
+    int32_t? nextLat,
+    int32_t? nextLon,
+    int32_t? nextAlt,
+    int16_t? vx,
+    int16_t? vy,
+    int16_t? vz,
+    uint16_t? hAcc,
+    uint16_t? vAcc,
+    uint16_t? velAcc,
+    uint16_t? updateRate,
+    List<int8_t>? uasId,
+    UtmFlightState? flightState,
+    UtmDataAvailFlags? flags,
+  }) {
+    return UtmGlobalPosition(
+      time: time ?? this.time,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      relativeAlt: relativeAlt ?? this.relativeAlt,
+      nextLat: nextLat ?? this.nextLat,
+      nextLon: nextLon ?? this.nextLon,
+      nextAlt: nextAlt ?? this.nextAlt,
+      vx: vx ?? this.vx,
+      vy: vy ?? this.vy,
+      vz: vz ?? this.vz,
+      hAcc: hAcc ?? this.hAcc,
+      vAcc: vAcc ?? this.vAcc,
+      velAcc: velAcc ?? this.velAcc,
+      updateRate: updateRate ?? this.updateRate,
+      uasId: uasId ?? this.uasId,
+      flightState: flightState ?? this.flightState,
+      flags: flags ?? this.flags,
+    );
+  }
+
   factory UtmGlobalPosition.parse(ByteData data_) {
     if (data_.lengthInBytes < UtmGlobalPosition.mavlinkEncodedLength) {
       var len = UtmGlobalPosition.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var time = data_.getUint64(0, Endian.little);
@@ -35009,10 +40079,25 @@ class DebugFloatArray implements MavlinkMessage {
     required this.data,
   });
 
+  DebugFloatArray copyWith({
+    uint64_t? timeUsec,
+    uint16_t? arrayId,
+    List<char>? name,
+    List<float>? data,
+  }) {
+    return DebugFloatArray(
+      timeUsec: timeUsec ?? this.timeUsec,
+      arrayId: arrayId ?? this.arrayId,
+      name: name ?? this.name,
+      data: data ?? this.data,
+    );
+  }
+
   factory DebugFloatArray.parse(ByteData data_) {
     if (data_.lengthInBytes < DebugFloatArray.mavlinkEncodedLength) {
       var len = DebugFloatArray.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -35110,10 +40195,29 @@ class OrbitExecutionStatus implements MavlinkMessage {
     required this.frame,
   });
 
+  OrbitExecutionStatus copyWith({
+    uint64_t? timeUsec,
+    float? radius,
+    int32_t? x,
+    int32_t? y,
+    float? z,
+    MavFrame? frame,
+  }) {
+    return OrbitExecutionStatus(
+      timeUsec: timeUsec ?? this.timeUsec,
+      radius: radius ?? this.radius,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      frame: frame ?? this.frame,
+    );
+  }
+
   factory OrbitExecutionStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < OrbitExecutionStatus.mavlinkEncodedLength) {
       var len = OrbitExecutionStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -35351,10 +40455,64 @@ class BatteryInfo implements MavlinkMessage {
     required this.name,
   });
 
+  BatteryInfo copyWith({
+    float? dischargeMinimumVoltage,
+    float? chargingMinimumVoltage,
+    float? restingMinimumVoltage,
+    float? chargingMaximumVoltage,
+    float? chargingMaximumCurrent,
+    float? nominalVoltage,
+    float? dischargeMaximumCurrent,
+    float? dischargeMaximumBurstCurrent,
+    float? designCapacity,
+    float? fullChargeCapacity,
+    uint16_t? cycleCount,
+    uint16_t? weight,
+    uint8_t? id,
+    MavBatteryFunction? batteryFunction,
+    MavBatteryType? type,
+    uint8_t? stateOfHealth,
+    uint8_t? cellsInSeries,
+    List<char>? manufactureDate,
+    List<char>? serialNumber,
+    List<char>? name,
+  }) {
+    return BatteryInfo(
+      dischargeMinimumVoltage:
+          dischargeMinimumVoltage ?? this.dischargeMinimumVoltage,
+      chargingMinimumVoltage:
+          chargingMinimumVoltage ?? this.chargingMinimumVoltage,
+      restingMinimumVoltage:
+          restingMinimumVoltage ?? this.restingMinimumVoltage,
+      chargingMaximumVoltage:
+          chargingMaximumVoltage ?? this.chargingMaximumVoltage,
+      chargingMaximumCurrent:
+          chargingMaximumCurrent ?? this.chargingMaximumCurrent,
+      nominalVoltage: nominalVoltage ?? this.nominalVoltage,
+      dischargeMaximumCurrent:
+          dischargeMaximumCurrent ?? this.dischargeMaximumCurrent,
+      dischargeMaximumBurstCurrent:
+          dischargeMaximumBurstCurrent ?? this.dischargeMaximumBurstCurrent,
+      designCapacity: designCapacity ?? this.designCapacity,
+      fullChargeCapacity: fullChargeCapacity ?? this.fullChargeCapacity,
+      cycleCount: cycleCount ?? this.cycleCount,
+      weight: weight ?? this.weight,
+      id: id ?? this.id,
+      batteryFunction: batteryFunction ?? this.batteryFunction,
+      type: type ?? this.type,
+      stateOfHealth: stateOfHealth ?? this.stateOfHealth,
+      cellsInSeries: cellsInSeries ?? this.cellsInSeries,
+      manufactureDate: manufactureDate ?? this.manufactureDate,
+      serialNumber: serialNumber ?? this.serialNumber,
+      name: name ?? this.name,
+    );
+  }
+
   factory BatteryInfo.parse(ByteData data_) {
     if (data_.lengthInBytes < BatteryInfo.mavlinkEncodedLength) {
       var len = BatteryInfo.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var dischargeMinimumVoltage = data_.getFloat32(0, Endian.little);
@@ -35557,10 +40715,39 @@ class GeneratorStatus implements MavlinkMessage {
     required this.generatorTemperature,
   });
 
+  GeneratorStatus copyWith({
+    MavGeneratorStatusFlag? status,
+    float? batteryCurrent,
+    float? loadCurrent,
+    float? powerGenerated,
+    float? busVoltage,
+    float? batCurrentSetpoint,
+    uint32_t? runtime,
+    int32_t? timeUntilMaintenance,
+    uint16_t? generatorSpeed,
+    int16_t? rectifierTemperature,
+    int16_t? generatorTemperature,
+  }) {
+    return GeneratorStatus(
+      status: status ?? this.status,
+      batteryCurrent: batteryCurrent ?? this.batteryCurrent,
+      loadCurrent: loadCurrent ?? this.loadCurrent,
+      powerGenerated: powerGenerated ?? this.powerGenerated,
+      busVoltage: busVoltage ?? this.busVoltage,
+      batCurrentSetpoint: batCurrentSetpoint ?? this.batCurrentSetpoint,
+      runtime: runtime ?? this.runtime,
+      timeUntilMaintenance: timeUntilMaintenance ?? this.timeUntilMaintenance,
+      generatorSpeed: generatorSpeed ?? this.generatorSpeed,
+      rectifierTemperature: rectifierTemperature ?? this.rectifierTemperature,
+      generatorTemperature: generatorTemperature ?? this.generatorTemperature,
+    );
+  }
+
   factory GeneratorStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < GeneratorStatus.mavlinkEncodedLength) {
       var len = GeneratorStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var status = data_.getUint64(0, Endian.little);
@@ -35652,10 +40839,23 @@ class ActuatorOutputStatus implements MavlinkMessage {
     required this.actuator,
   });
 
+  ActuatorOutputStatus copyWith({
+    uint64_t? timeUsec,
+    uint32_t? active,
+    List<float>? actuator,
+  }) {
+    return ActuatorOutputStatus(
+      timeUsec: timeUsec ?? this.timeUsec,
+      active: active ?? this.active,
+      actuator: actuator ?? this.actuator,
+    );
+  }
+
   factory ActuatorOutputStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < ActuatorOutputStatus.mavlinkEncodedLength) {
       var len = ActuatorOutputStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -35745,10 +40945,27 @@ class TimeEstimateToTarget implements MavlinkMessage {
     required this.commandedAction,
   });
 
+  TimeEstimateToTarget copyWith({
+    int32_t? safeReturn,
+    int32_t? land,
+    int32_t? missionNextItem,
+    int32_t? missionEnd,
+    int32_t? commandedAction,
+  }) {
+    return TimeEstimateToTarget(
+      safeReturn: safeReturn ?? this.safeReturn,
+      land: land ?? this.land,
+      missionNextItem: missionNextItem ?? this.missionNextItem,
+      missionEnd: missionEnd ?? this.missionEnd,
+      commandedAction: commandedAction ?? this.commandedAction,
+    );
+  }
+
   factory TimeEstimateToTarget.parse(ByteData data_) {
     if (data_.lengthInBytes < TimeEstimateToTarget.mavlinkEncodedLength) {
       var len = TimeEstimateToTarget.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var safeReturn = data_.getInt32(0, Endian.little);
@@ -35838,10 +41055,27 @@ class Tunnel implements MavlinkMessage {
     required this.payload,
   });
 
+  Tunnel copyWith({
+    MavTunnelPayloadType? payloadType,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? payloadLength,
+    List<int8_t>? payload,
+  }) {
+    return Tunnel(
+      payloadType: payloadType ?? this.payloadType,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      payloadLength: payloadLength ?? this.payloadLength,
+      payload: payload ?? this.payload,
+    );
+  }
+
   factory Tunnel.parse(ByteData data_) {
     if (data_.lengthInBytes < Tunnel.mavlinkEncodedLength) {
       var len = Tunnel.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var payloadType = data_.getUint16(0, Endian.little);
@@ -35937,10 +41171,29 @@ class CanFrame implements MavlinkMessage {
     required this.data,
   });
 
+  CanFrame copyWith({
+    uint32_t? id,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? bus,
+    uint8_t? len,
+    List<int8_t>? data,
+  }) {
+    return CanFrame(
+      id: id ?? this.id,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      bus: bus ?? this.bus,
+      len: len ?? this.len,
+      data: data ?? this.data,
+    );
+  }
+
   factory CanFrame.parse(ByteData data_) {
     if (data_.lengthInBytes < CanFrame.mavlinkEncodedLength) {
       var len = CanFrame.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var id = data_.getUint32(0, Endian.little);
@@ -36177,11 +41430,58 @@ class OnboardComputerStatus implements MavlinkMessage {
     required this.temperatureCore,
   });
 
+  OnboardComputerStatus copyWith({
+    uint64_t? timeUsec,
+    uint32_t? uptime,
+    uint32_t? ramUsage,
+    uint32_t? ramTotal,
+    List<int32_t>? storageType,
+    List<int32_t>? storageUsage,
+    List<int32_t>? storageTotal,
+    List<int32_t>? linkType,
+    List<int32_t>? linkTxRate,
+    List<int32_t>? linkRxRate,
+    List<int32_t>? linkTxMax,
+    List<int32_t>? linkRxMax,
+    List<int16_t>? fanSpeed,
+    uint8_t? type,
+    List<int8_t>? cpuCores,
+    List<int8_t>? cpuCombined,
+    List<int8_t>? gpuCores,
+    List<int8_t>? gpuCombined,
+    int8_t? temperatureBoard,
+    List<int8_t>? temperatureCore,
+  }) {
+    return OnboardComputerStatus(
+      timeUsec: timeUsec ?? this.timeUsec,
+      uptime: uptime ?? this.uptime,
+      ramUsage: ramUsage ?? this.ramUsage,
+      ramTotal: ramTotal ?? this.ramTotal,
+      storageType: storageType ?? this.storageType,
+      storageUsage: storageUsage ?? this.storageUsage,
+      storageTotal: storageTotal ?? this.storageTotal,
+      linkType: linkType ?? this.linkType,
+      linkTxRate: linkTxRate ?? this.linkTxRate,
+      linkRxRate: linkRxRate ?? this.linkRxRate,
+      linkTxMax: linkTxMax ?? this.linkTxMax,
+      linkRxMax: linkRxMax ?? this.linkRxMax,
+      fanSpeed: fanSpeed ?? this.fanSpeed,
+      type: type ?? this.type,
+      cpuCores: cpuCores ?? this.cpuCores,
+      cpuCombined: cpuCombined ?? this.cpuCombined,
+      gpuCores: gpuCores ?? this.gpuCores,
+      gpuCombined: gpuCombined ?? this.gpuCombined,
+      temperatureBoard: temperatureBoard ?? this.temperatureBoard,
+      temperatureCore: temperatureCore ?? this.temperatureCore,
+    );
+  }
+
   factory OnboardComputerStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < OnboardComputerStatus.mavlinkEncodedLength) {
       var len =
           OnboardComputerStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -36318,10 +41618,30 @@ class ComponentInformation implements MavlinkMessage {
     required this.peripheralsMetadataUri,
   });
 
+  ComponentInformation copyWith({
+    uint32_t? timeBootMs,
+    uint32_t? generalMetadataFileCrc,
+    uint32_t? peripheralsMetadataFileCrc,
+    List<char>? generalMetadataUri,
+    List<char>? peripheralsMetadataUri,
+  }) {
+    return ComponentInformation(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      generalMetadataFileCrc:
+          generalMetadataFileCrc ?? this.generalMetadataFileCrc,
+      peripheralsMetadataFileCrc:
+          peripheralsMetadataFileCrc ?? this.peripheralsMetadataFileCrc,
+      generalMetadataUri: generalMetadataUri ?? this.generalMetadataUri,
+      peripheralsMetadataUri:
+          peripheralsMetadataUri ?? this.peripheralsMetadataUri,
+    );
+  }
+
   factory ComponentInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < ComponentInformation.mavlinkEncodedLength) {
       var len = ComponentInformation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -36346,6 +41666,160 @@ class ComponentInformation implements MavlinkMessage {
     data_.setUint32(8, peripheralsMetadataFileCrc, Endian.little);
     MavlinkMessage.setInt8List(data_, 12, generalMetadataUri);
     MavlinkMessage.setInt8List(data_, 112, peripheralsMetadataUri);
+    return data_;
+  }
+}
+
+/// Basic component information data. Should be requested using MAV_CMD_REQUEST_MESSAGE on startup, or when required.
+///
+/// COMPONENT_INFORMATION_BASIC
+class ComponentInformationBasic implements MavlinkMessage {
+  static const int _mavlinkMessageId = 396;
+
+  static const int _mavlinkCrcExtra = 50;
+
+  static const int mavlinkEncodedLength = 160;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Component capability flags
+  ///
+  /// MAVLink type: uint64_t
+  ///
+  /// enum: [MavProtocolCapability]
+  ///
+  /// capabilities
+  final MavProtocolCapability capabilities;
+
+  /// Timestamp (time since system boot).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// time_boot_ms
+  final uint32_t timeBootMs;
+
+  /// Date of manufacture as a UNIX Epoch time (since 1.1.1970) in seconds.
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: s
+  ///
+  /// time_manufacture_s
+  final uint32_t timeManufactureS;
+
+  /// Name of the component vendor. Needs to be zero terminated. The field is optional and can be empty/all zeros.
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// vendor_name
+  final List<char> vendorName;
+
+  /// Name of the component model. Needs to be zero terminated. The field is optional and can be empty/all zeros.
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// model_name
+  final List<char> modelName;
+
+  /// Software version. The recommended format is SEMVER: 'major.minor.patch'  (any format may be used). The field must be zero terminated if it has a value. The field is optional and can be empty/all zeros.
+  ///
+  /// MAVLink type: char[24]
+  ///
+  /// software_version
+  final List<char> softwareVersion;
+
+  /// Hardware version. The recommended format is SEMVER: 'major.minor.patch'  (any format may be used). The field must be zero terminated if it has a value. The field is optional and can be empty/all zeros.
+  ///
+  /// MAVLink type: char[24]
+  ///
+  /// hardware_version
+  final List<char> hardwareVersion;
+
+  /// Hardware serial number. The field must be zero terminated if it has a value. The field is optional and can be empty/all zeros.
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// serial_number
+  final List<char> serialNumber;
+
+  ComponentInformationBasic({
+    required this.capabilities,
+    required this.timeBootMs,
+    required this.timeManufactureS,
+    required this.vendorName,
+    required this.modelName,
+    required this.softwareVersion,
+    required this.hardwareVersion,
+    required this.serialNumber,
+  });
+
+  ComponentInformationBasic copyWith({
+    MavProtocolCapability? capabilities,
+    uint32_t? timeBootMs,
+    uint32_t? timeManufactureS,
+    List<char>? vendorName,
+    List<char>? modelName,
+    List<char>? softwareVersion,
+    List<char>? hardwareVersion,
+    List<char>? serialNumber,
+  }) {
+    return ComponentInformationBasic(
+      capabilities: capabilities ?? this.capabilities,
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      timeManufactureS: timeManufactureS ?? this.timeManufactureS,
+      vendorName: vendorName ?? this.vendorName,
+      modelName: modelName ?? this.modelName,
+      softwareVersion: softwareVersion ?? this.softwareVersion,
+      hardwareVersion: hardwareVersion ?? this.hardwareVersion,
+      serialNumber: serialNumber ?? this.serialNumber,
+    );
+  }
+
+  factory ComponentInformationBasic.parse(ByteData data_) {
+    if (data_.lengthInBytes < ComponentInformationBasic.mavlinkEncodedLength) {
+      var len =
+          ComponentInformationBasic.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var capabilities = data_.getUint64(0, Endian.little);
+    var timeBootMs = data_.getUint32(8, Endian.little);
+    var timeManufactureS = data_.getUint32(12, Endian.little);
+    var vendorName = MavlinkMessage.asInt8List(data_, 16, 32);
+    var modelName = MavlinkMessage.asInt8List(data_, 48, 32);
+    var softwareVersion = MavlinkMessage.asInt8List(data_, 80, 24);
+    var hardwareVersion = MavlinkMessage.asInt8List(data_, 104, 24);
+    var serialNumber = MavlinkMessage.asInt8List(data_, 128, 32);
+
+    return ComponentInformationBasic(
+        capabilities: capabilities,
+        timeBootMs: timeBootMs,
+        timeManufactureS: timeManufactureS,
+        vendorName: vendorName,
+        modelName: modelName,
+        softwareVersion: softwareVersion,
+        hardwareVersion: hardwareVersion,
+        serialNumber: serialNumber);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint64(0, capabilities, Endian.little);
+    data_.setUint32(8, timeBootMs, Endian.little);
+    data_.setUint32(12, timeManufactureS, Endian.little);
+    MavlinkMessage.setInt8List(data_, 16, vendorName);
+    MavlinkMessage.setInt8List(data_, 48, modelName);
+    MavlinkMessage.setInt8List(data_, 80, softwareVersion);
+    MavlinkMessage.setInt8List(data_, 104, hardwareVersion);
+    MavlinkMessage.setInt8List(data_, 128, serialNumber);
     return data_;
   }
 }
@@ -36406,10 +41880,23 @@ class ComponentMetadata implements MavlinkMessage {
     required this.uri,
   });
 
+  ComponentMetadata copyWith({
+    uint32_t? timeBootMs,
+    uint32_t? fileCrc,
+    List<char>? uri,
+  }) {
+    return ComponentMetadata(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      fileCrc: fileCrc ?? this.fileCrc,
+      uri: uri ?? this.uri,
+    );
+  }
+
   factory ComponentMetadata.parse(ByteData data_) {
     if (data_.lengthInBytes < ComponentMetadata.mavlinkEncodedLength) {
       var len = ComponentMetadata.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
@@ -36483,10 +41970,25 @@ class PlayTuneV2 implements MavlinkMessage {
     required this.tune,
   });
 
+  PlayTuneV2 copyWith({
+    TuneFormat? format,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<char>? tune,
+  }) {
+    return PlayTuneV2(
+      format: format ?? this.format,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      tune: tune ?? this.tune,
+    );
+  }
+
   factory PlayTuneV2.parse(ByteData data_) {
     if (data_.lengthInBytes < PlayTuneV2.mavlinkEncodedLength) {
       var len = PlayTuneV2.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var format = data_.getUint32(0, Endian.little);
@@ -36557,10 +42059,23 @@ class SupportedTunes implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  SupportedTunes copyWith({
+    TuneFormat? format,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return SupportedTunes(
+      format: format ?? this.format,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory SupportedTunes.parse(ByteData data_) {
     if (data_.lengthInBytes < SupportedTunes.mavlinkEncodedLength) {
       var len = SupportedTunes.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var format = data_.getUint32(0, Endian.little);
@@ -36660,10 +42175,31 @@ class Event implements MavlinkMessage {
     required this.arguments,
   });
 
+  Event copyWith({
+    uint32_t? id,
+    uint32_t? eventTimeBootMs,
+    uint16_t? sequence,
+    uint8_t? destinationComponent,
+    uint8_t? destinationSystem,
+    uint8_t? logLevels,
+    List<int8_t>? arguments,
+  }) {
+    return Event(
+      id: id ?? this.id,
+      eventTimeBootMs: eventTimeBootMs ?? this.eventTimeBootMs,
+      sequence: sequence ?? this.sequence,
+      destinationComponent: destinationComponent ?? this.destinationComponent,
+      destinationSystem: destinationSystem ?? this.destinationSystem,
+      logLevels: logLevels ?? this.logLevels,
+      arguments: arguments ?? this.arguments,
+    );
+  }
+
   factory Event.parse(ByteData data_) {
     if (data_.lengthInBytes < Event.mavlinkEncodedLength) {
       var len = Event.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var id = data_.getUint32(0, Endian.little);
@@ -36735,10 +42271,21 @@ class CurrentEventSequence implements MavlinkMessage {
     required this.flags,
   });
 
+  CurrentEventSequence copyWith({
+    uint16_t? sequence,
+    MavEventCurrentSequenceFlags? flags,
+  }) {
+    return CurrentEventSequence(
+      sequence: sequence ?? this.sequence,
+      flags: flags ?? this.flags,
+    );
+  }
+
   factory CurrentEventSequence.parse(ByteData data_) {
     if (data_.lengthInBytes < CurrentEventSequence.mavlinkEncodedLength) {
       var len = CurrentEventSequence.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var sequence = data_.getUint16(0, Endian.little);
@@ -36807,10 +42354,25 @@ class RequestEvent implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  RequestEvent copyWith({
+    uint16_t? firstSequence,
+    uint16_t? lastSequence,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return RequestEvent(
+      firstSequence: firstSequence ?? this.firstSequence,
+      lastSequence: lastSequence ?? this.lastSequence,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory RequestEvent.parse(ByteData data_) {
     if (data_.lengthInBytes < RequestEvent.mavlinkEncodedLength) {
       var len = RequestEvent.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var firstSequence = data_.getUint16(0, Endian.little);
@@ -36897,10 +42459,28 @@ class ResponseEventError implements MavlinkMessage {
     required this.reason,
   });
 
+  ResponseEventError copyWith({
+    uint16_t? sequence,
+    uint16_t? sequenceOldestAvailable,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavEventErrorReason? reason,
+  }) {
+    return ResponseEventError(
+      sequence: sequence ?? this.sequence,
+      sequenceOldestAvailable:
+          sequenceOldestAvailable ?? this.sequenceOldestAvailable,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      reason: reason ?? this.reason,
+    );
+  }
+
   factory ResponseEventError.parse(ByteData data_) {
     if (data_.lengthInBytes < ResponseEventError.mavlinkEncodedLength) {
       var len = ResponseEventError.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var sequence = data_.getUint16(0, Endian.little);
@@ -36925,6 +42505,210 @@ class ResponseEventError implements MavlinkMessage {
     data_.setUint8(4, targetSystem);
     data_.setUint8(5, targetComponent);
     data_.setUint8(6, reason);
+    return data_;
+  }
+}
+
+/// Illuminator status
+///
+/// ILLUMINATOR_STATUS
+class IlluminatorStatus implements MavlinkMessage {
+  static const int _mavlinkMessageId = 440;
+
+  static const int _mavlinkCrcExtra = 66;
+
+  static const int mavlinkEncodedLength = 35;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Time since the start-up of the illuminator in ms
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// uptime_ms
+  final uint32_t uptimeMs;
+
+  /// Errors
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// enum: [IlluminatorErrorFlags]
+  ///
+  /// error_status
+  final IlluminatorErrorFlags errorStatus;
+
+  /// Illuminator brightness
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// brightness
+  final float brightness;
+
+  /// Illuminator strobing period in seconds
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: s
+  ///
+  /// strobe_period
+  final float strobePeriod;
+
+  /// Illuminator strobing duty cycle
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// strobe_duty_cycle
+  final float strobeDutyCycle;
+
+  /// Temperature in Celsius
+  ///
+  /// MAVLink type: float
+  ///
+  /// temp_c
+  final float tempC;
+
+  /// Minimum strobing period in seconds
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: s
+  ///
+  /// min_strobe_period
+  final float minStrobePeriod;
+
+  /// Maximum strobing period in seconds
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: s
+  ///
+  /// max_strobe_period
+  final float maxStrobePeriod;
+
+  /// 0: Illuminators OFF, 1: Illuminators ON
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enable
+  final uint8_t enable;
+
+  /// Supported illuminator modes
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [IlluminatorMode]
+  ///
+  /// mode_bitmask
+  final IlluminatorMode modeBitmask;
+
+  /// Illuminator mode
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [IlluminatorMode]
+  ///
+  /// mode
+  final IlluminatorMode mode;
+
+  IlluminatorStatus({
+    required this.uptimeMs,
+    required this.errorStatus,
+    required this.brightness,
+    required this.strobePeriod,
+    required this.strobeDutyCycle,
+    required this.tempC,
+    required this.minStrobePeriod,
+    required this.maxStrobePeriod,
+    required this.enable,
+    required this.modeBitmask,
+    required this.mode,
+  });
+
+  IlluminatorStatus copyWith({
+    uint32_t? uptimeMs,
+    IlluminatorErrorFlags? errorStatus,
+    float? brightness,
+    float? strobePeriod,
+    float? strobeDutyCycle,
+    float? tempC,
+    float? minStrobePeriod,
+    float? maxStrobePeriod,
+    uint8_t? enable,
+    IlluminatorMode? modeBitmask,
+    IlluminatorMode? mode,
+  }) {
+    return IlluminatorStatus(
+      uptimeMs: uptimeMs ?? this.uptimeMs,
+      errorStatus: errorStatus ?? this.errorStatus,
+      brightness: brightness ?? this.brightness,
+      strobePeriod: strobePeriod ?? this.strobePeriod,
+      strobeDutyCycle: strobeDutyCycle ?? this.strobeDutyCycle,
+      tempC: tempC ?? this.tempC,
+      minStrobePeriod: minStrobePeriod ?? this.minStrobePeriod,
+      maxStrobePeriod: maxStrobePeriod ?? this.maxStrobePeriod,
+      enable: enable ?? this.enable,
+      modeBitmask: modeBitmask ?? this.modeBitmask,
+      mode: mode ?? this.mode,
+    );
+  }
+
+  factory IlluminatorStatus.parse(ByteData data_) {
+    if (data_.lengthInBytes < IlluminatorStatus.mavlinkEncodedLength) {
+      var len = IlluminatorStatus.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var uptimeMs = data_.getUint32(0, Endian.little);
+    var errorStatus = data_.getUint32(4, Endian.little);
+    var brightness = data_.getFloat32(8, Endian.little);
+    var strobePeriod = data_.getFloat32(12, Endian.little);
+    var strobeDutyCycle = data_.getFloat32(16, Endian.little);
+    var tempC = data_.getFloat32(20, Endian.little);
+    var minStrobePeriod = data_.getFloat32(24, Endian.little);
+    var maxStrobePeriod = data_.getFloat32(28, Endian.little);
+    var enable = data_.getUint8(32);
+    var modeBitmask = data_.getUint8(33);
+    var mode = data_.getUint8(34);
+
+    return IlluminatorStatus(
+        uptimeMs: uptimeMs,
+        errorStatus: errorStatus,
+        brightness: brightness,
+        strobePeriod: strobePeriod,
+        strobeDutyCycle: strobeDutyCycle,
+        tempC: tempC,
+        minStrobePeriod: minStrobePeriod,
+        maxStrobePeriod: maxStrobePeriod,
+        enable: enable,
+        modeBitmask: modeBitmask,
+        mode: mode);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, uptimeMs, Endian.little);
+    data_.setUint32(4, errorStatus, Endian.little);
+    data_.setFloat32(8, brightness, Endian.little);
+    data_.setFloat32(12, strobePeriod, Endian.little);
+    data_.setFloat32(16, strobeDutyCycle, Endian.little);
+    data_.setFloat32(20, tempC, Endian.little);
+    data_.setFloat32(24, minStrobePeriod, Endian.little);
+    data_.setFloat32(28, maxStrobePeriod, Endian.little);
+    data_.setUint8(32, enable);
+    data_.setUint8(33, modeBitmask);
+    data_.setUint8(34, mode);
     return data_;
   }
 }
@@ -36996,10 +42780,29 @@ class CanfdFrame implements MavlinkMessage {
     required this.data,
   });
 
+  CanfdFrame copyWith({
+    uint32_t? id,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? bus,
+    uint8_t? len,
+    List<int8_t>? data,
+  }) {
+    return CanfdFrame(
+      id: id ?? this.id,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      bus: bus ?? this.bus,
+      len: len ?? this.len,
+      data: data ?? this.data,
+    );
+  }
+
   factory CanfdFrame.parse(ByteData data_) {
     if (data_.lengthInBytes < CanfdFrame.mavlinkEncodedLength) {
       var len = CanfdFrame.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var id = data_.getUint32(0, Endian.little);
@@ -37100,10 +42903,29 @@ class CanFilterModify implements MavlinkMessage {
     required this.numIds,
   });
 
+  CanFilterModify copyWith({
+    List<int16_t>? ids,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? bus,
+    CanFilterOp? operation,
+    uint8_t? numIds,
+  }) {
+    return CanFilterModify(
+      ids: ids ?? this.ids,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      bus: bus ?? this.bus,
+      operation: operation ?? this.operation,
+      numIds: numIds ?? this.numIds,
+    );
+  }
+
   factory CanFilterModify.parse(ByteData data_) {
     if (data_.lengthInBytes < CanFilterModify.mavlinkEncodedLength) {
       var len = CanFilterModify.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var ids = MavlinkMessage.asUint16List(data_, 0, 16);
@@ -37182,10 +43004,23 @@ class WheelDistance implements MavlinkMessage {
     required this.count,
   });
 
+  WheelDistance copyWith({
+    uint64_t? timeUsec,
+    List<double>? distance,
+    uint8_t? count,
+  }) {
+    return WheelDistance(
+      timeUsec: timeUsec ?? this.timeUsec,
+      distance: distance ?? this.distance,
+      count: count ?? this.count,
+    );
+  }
+
   factory WheelDistance.parse(ByteData data_) {
     if (data_.lengthInBytes < WheelDistance.mavlinkEncodedLength) {
       var len = WheelDistance.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -37304,10 +43139,33 @@ class WinchStatus implements MavlinkMessage {
     required this.temperature,
   });
 
+  WinchStatus copyWith({
+    uint64_t? timeUsec,
+    float? lineLength,
+    float? speed,
+    float? tension,
+    float? voltage,
+    float? current,
+    MavWinchStatusFlag? status,
+    int16_t? temperature,
+  }) {
+    return WinchStatus(
+      timeUsec: timeUsec ?? this.timeUsec,
+      lineLength: lineLength ?? this.lineLength,
+      speed: speed ?? this.speed,
+      tension: tension ?? this.tension,
+      voltage: voltage ?? this.voltage,
+      current: current ?? this.current,
+      status: status ?? this.status,
+      temperature: temperature ?? this.temperature,
+    );
+  }
+
   factory WinchStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < WinchStatus.mavlinkEncodedLength) {
       var len = WinchStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timeUsec = data_.getUint64(0, Endian.little);
@@ -37416,10 +43274,29 @@ class OpenDroneIdBasicId implements MavlinkMessage {
     required this.uasId,
   });
 
+  OpenDroneIdBasicId copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? idOrMac,
+    MavOdidIdType? idType,
+    MavOdidUaType? uaType,
+    List<int8_t>? uasId,
+  }) {
+    return OpenDroneIdBasicId(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      idOrMac: idOrMac ?? this.idOrMac,
+      idType: idType ?? this.idType,
+      uaType: uaType ?? this.uaType,
+      uasId: uasId ?? this.uasId,
+    );
+  }
+
   factory OpenDroneIdBasicId.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdBasicId.mavlinkEncodedLength) {
       var len = OpenDroneIdBasicId.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -37654,10 +43531,55 @@ class OpenDroneIdLocation implements MavlinkMessage {
     required this.timestampAccuracy,
   });
 
+  OpenDroneIdLocation copyWith({
+    int32_t? latitude,
+    int32_t? longitude,
+    float? altitudeBarometric,
+    float? altitudeGeodetic,
+    float? height,
+    float? timestamp,
+    uint16_t? direction,
+    uint16_t? speedHorizontal,
+    int16_t? speedVertical,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? idOrMac,
+    MavOdidStatus? status,
+    MavOdidHeightRef? heightReference,
+    MavOdidHorAcc? horizontalAccuracy,
+    MavOdidVerAcc? verticalAccuracy,
+    MavOdidVerAcc? barometerAccuracy,
+    MavOdidSpeedAcc? speedAccuracy,
+    MavOdidTimeAcc? timestampAccuracy,
+  }) {
+    return OpenDroneIdLocation(
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      altitudeBarometric: altitudeBarometric ?? this.altitudeBarometric,
+      altitudeGeodetic: altitudeGeodetic ?? this.altitudeGeodetic,
+      height: height ?? this.height,
+      timestamp: timestamp ?? this.timestamp,
+      direction: direction ?? this.direction,
+      speedHorizontal: speedHorizontal ?? this.speedHorizontal,
+      speedVertical: speedVertical ?? this.speedVertical,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      idOrMac: idOrMac ?? this.idOrMac,
+      status: status ?? this.status,
+      heightReference: heightReference ?? this.heightReference,
+      horizontalAccuracy: horizontalAccuracy ?? this.horizontalAccuracy,
+      verticalAccuracy: verticalAccuracy ?? this.verticalAccuracy,
+      barometerAccuracy: barometerAccuracy ?? this.barometerAccuracy,
+      speedAccuracy: speedAccuracy ?? this.speedAccuracy,
+      timestampAccuracy: timestampAccuracy ?? this.timestampAccuracy,
+    );
+  }
+
   factory OpenDroneIdLocation.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdLocation.mavlinkEncodedLength) {
       var len = OpenDroneIdLocation.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var latitude = data_.getInt32(0, Endian.little);
@@ -37825,11 +43747,36 @@ class OpenDroneIdAuthentication implements MavlinkMessage {
     required this.authenticationData,
   });
 
+  OpenDroneIdAuthentication copyWith({
+    uint32_t? timestamp,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? idOrMac,
+    MavOdidAuthType? authenticationType,
+    uint8_t? dataPage,
+    uint8_t? lastPageIndex,
+    uint8_t? length,
+    List<int8_t>? authenticationData,
+  }) {
+    return OpenDroneIdAuthentication(
+      timestamp: timestamp ?? this.timestamp,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      idOrMac: idOrMac ?? this.idOrMac,
+      authenticationType: authenticationType ?? this.authenticationType,
+      dataPage: dataPage ?? this.dataPage,
+      lastPageIndex: lastPageIndex ?? this.lastPageIndex,
+      length: length ?? this.length,
+      authenticationData: authenticationData ?? this.authenticationData,
+    );
+  }
+
   factory OpenDroneIdAuthentication.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdAuthentication.mavlinkEncodedLength) {
       var len =
           OpenDroneIdAuthentication.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var timestamp = data_.getUint32(0, Endian.little);
@@ -37931,10 +43878,27 @@ class OpenDroneIdSelfId implements MavlinkMessage {
     required this.description,
   });
 
+  OpenDroneIdSelfId copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? idOrMac,
+    MavOdidDescType? descriptionType,
+    List<char>? description,
+  }) {
+    return OpenDroneIdSelfId(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      idOrMac: idOrMac ?? this.idOrMac,
+      descriptionType: descriptionType ?? this.descriptionType,
+      description: description ?? this.description,
+    );
+  }
+
   factory OpenDroneIdSelfId.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdSelfId.mavlinkEncodedLength) {
       var len = OpenDroneIdSelfId.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -38124,10 +44088,47 @@ class OpenDroneIdSystem implements MavlinkMessage {
     required this.classEu,
   });
 
+  OpenDroneIdSystem copyWith({
+    int32_t? operatorLatitude,
+    int32_t? operatorLongitude,
+    float? areaCeiling,
+    float? areaFloor,
+    float? operatorAltitudeGeo,
+    uint32_t? timestamp,
+    uint16_t? areaCount,
+    uint16_t? areaRadius,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? idOrMac,
+    MavOdidOperatorLocationType? operatorLocationType,
+    MavOdidClassificationType? classificationType,
+    MavOdidCategoryEu? categoryEu,
+    MavOdidClassEu? classEu,
+  }) {
+    return OpenDroneIdSystem(
+      operatorLatitude: operatorLatitude ?? this.operatorLatitude,
+      operatorLongitude: operatorLongitude ?? this.operatorLongitude,
+      areaCeiling: areaCeiling ?? this.areaCeiling,
+      areaFloor: areaFloor ?? this.areaFloor,
+      operatorAltitudeGeo: operatorAltitudeGeo ?? this.operatorAltitudeGeo,
+      timestamp: timestamp ?? this.timestamp,
+      areaCount: areaCount ?? this.areaCount,
+      areaRadius: areaRadius ?? this.areaRadius,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      idOrMac: idOrMac ?? this.idOrMac,
+      operatorLocationType: operatorLocationType ?? this.operatorLocationType,
+      classificationType: classificationType ?? this.classificationType,
+      categoryEu: categoryEu ?? this.categoryEu,
+      classEu: classEu ?? this.classEu,
+    );
+  }
+
   factory OpenDroneIdSystem.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdSystem.mavlinkEncodedLength) {
       var len = OpenDroneIdSystem.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var operatorLatitude = data_.getInt32(0, Endian.little);
@@ -38247,11 +44248,28 @@ class OpenDroneIdOperatorId implements MavlinkMessage {
     required this.operatorId,
   });
 
+  OpenDroneIdOperatorId copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? idOrMac,
+    MavOdidOperatorIdType? operatorIdType,
+    List<char>? operatorId,
+  }) {
+    return OpenDroneIdOperatorId(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      idOrMac: idOrMac ?? this.idOrMac,
+      operatorIdType: operatorIdType ?? this.operatorIdType,
+      operatorId: operatorId ?? this.operatorId,
+    );
+  }
+
   factory OpenDroneIdOperatorId.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdOperatorId.mavlinkEncodedLength) {
       var len =
           OpenDroneIdOperatorId.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -38349,11 +44367,30 @@ class OpenDroneIdMessagePack implements MavlinkMessage {
     required this.messages,
   });
 
+  OpenDroneIdMessagePack copyWith({
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? idOrMac,
+    uint8_t? singleMessageSize,
+    uint8_t? msgPackSize,
+    List<int8_t>? messages,
+  }) {
+    return OpenDroneIdMessagePack(
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      idOrMac: idOrMac ?? this.idOrMac,
+      singleMessageSize: singleMessageSize ?? this.singleMessageSize,
+      msgPackSize: msgPackSize ?? this.msgPackSize,
+      messages: messages ?? this.messages,
+    );
+  }
+
   factory OpenDroneIdMessagePack.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdMessagePack.mavlinkEncodedLength) {
       var len =
           OpenDroneIdMessagePack.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var targetSystem = data_.getUint8(0);
@@ -38422,10 +44459,21 @@ class OpenDroneIdArmStatus implements MavlinkMessage {
     required this.error,
   });
 
+  OpenDroneIdArmStatus copyWith({
+    MavOdidArmStatus? status,
+    List<char>? error,
+  }) {
+    return OpenDroneIdArmStatus(
+      status: status ?? this.status,
+      error: error ?? this.error,
+    );
+  }
+
   factory OpenDroneIdArmStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdArmStatus.mavlinkEncodedLength) {
       var len = OpenDroneIdArmStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var status = data_.getUint8(0);
@@ -38518,11 +44566,30 @@ class OpenDroneIdSystemUpdate implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  OpenDroneIdSystemUpdate copyWith({
+    int32_t? operatorLatitude,
+    int32_t? operatorLongitude,
+    float? operatorAltitudeGeo,
+    uint32_t? timestamp,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return OpenDroneIdSystemUpdate(
+      operatorLatitude: operatorLatitude ?? this.operatorLatitude,
+      operatorLongitude: operatorLongitude ?? this.operatorLongitude,
+      operatorAltitudeGeo: operatorAltitudeGeo ?? this.operatorAltitudeGeo,
+      timestamp: timestamp ?? this.timestamp,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory OpenDroneIdSystemUpdate.parse(ByteData data_) {
     if (data_.lengthInBytes < OpenDroneIdSystemUpdate.mavlinkEncodedLength) {
       var len =
           OpenDroneIdSystemUpdate.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var operatorLatitude = data_.getInt32(0, Endian.little);
@@ -38601,10 +44668,23 @@ class HygrometerSensor implements MavlinkMessage {
     required this.id,
   });
 
+  HygrometerSensor copyWith({
+    int16_t? temperature,
+    uint16_t? humidity,
+    uint8_t? id,
+  }) {
+    return HygrometerSensor(
+      temperature: temperature ?? this.temperature,
+      humidity: humidity ?? this.humidity,
+      id: id ?? this.id,
+    );
+  }
+
   factory HygrometerSensor.parse(ByteData data_) {
     if (data_.lengthInBytes < HygrometerSensor.mavlinkEncodedLength) {
       var len = HygrometerSensor.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var temperature = data_.getInt16(0, Endian.little);
@@ -38956,6 +45036,8 @@ class MavlinkDialectCommon implements MavlinkDialect {
         return CameraTrackingImageStatus.parse(data);
       case 276:
         return CameraTrackingGeoStatus.parse(data);
+      case 277:
+        return CameraThermalRange.parse(data);
       case 280:
         return GimbalManagerInformation.parse(data);
       case 281:
@@ -39034,6 +45116,8 @@ class MavlinkDialectCommon implements MavlinkDialect {
         return OnboardComputerStatus.parse(data);
       case 395:
         return ComponentInformation.parse(data);
+      case 396:
+        return ComponentInformationBasic.parse(data);
       case 397:
         return ComponentMetadata.parse(data);
       case 400:
@@ -39048,6 +45132,8 @@ class MavlinkDialectCommon implements MavlinkDialect {
         return RequestEvent.parse(data);
       case 413:
         return ResponseEventError.parse(data);
+      case 440:
+        return IlluminatorStatus.parse(data);
       case 387:
         return CanfdFrame.parse(data);
       case 388:
@@ -39406,6 +45492,8 @@ class MavlinkDialectCommon implements MavlinkDialect {
         return CameraTrackingImageStatus._mavlinkCrcExtra;
       case 276:
         return CameraTrackingGeoStatus._mavlinkCrcExtra;
+      case 277:
+        return CameraThermalRange._mavlinkCrcExtra;
       case 280:
         return GimbalManagerInformation._mavlinkCrcExtra;
       case 281:
@@ -39484,6 +45572,8 @@ class MavlinkDialectCommon implements MavlinkDialect {
         return OnboardComputerStatus._mavlinkCrcExtra;
       case 395:
         return ComponentInformation._mavlinkCrcExtra;
+      case 396:
+        return ComponentInformationBasic._mavlinkCrcExtra;
       case 397:
         return ComponentMetadata._mavlinkCrcExtra;
       case 400:
@@ -39498,6 +45588,8 @@ class MavlinkDialectCommon implements MavlinkDialect {
         return RequestEvent._mavlinkCrcExtra;
       case 413:
         return ResponseEventError._mavlinkCrcExtra;
+      case 440:
+        return IlluminatorStatus._mavlinkCrcExtra;
       case 387:
         return CanfdFrame._mavlinkCrcExtra;
       case 388:
