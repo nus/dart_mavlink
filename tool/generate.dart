@@ -700,6 +700,20 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     }
     content += '\n';
 
+    // copyWith builder
+    content += '${msg.nameForDart} copyWith({\n';
+    for (var f in msg.orderedFields) {
+      content += '${asDartType(f.type, f.enum_)}? ${f.nameForDart},\n';
+    }
+    content += '}){\n';
+    content += 'return ${msg.nameForDart}(\n';
+    for (var f in msg.orderedFields) {
+      content +=
+          '${f.nameForDart}: ${f.nameForDart} ?? this.${f.nameForDart},\n';
+    }
+    content += ');';
+    content += '}';
+
     // parse constructor.
     content += '''factory ${msg.nameForDart}.parse(ByteData data_) {
     if (data_.lengthInBytes < ${msg.nameForDart}.mavlinkEncodedLength) {
