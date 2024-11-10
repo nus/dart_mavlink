@@ -1,8 +1,12 @@
 import 'package:dart_mavlink/dialects/common.dart';
+import 'package:dart_mavlink/mavlink.dart';
 import 'package:dart_mavlink/mavlink_parser.dart';
 import 'package:dart_mavlink/mavlink_version.dart';
 import 'package:test/test.dart';
 import 'dart:typed_data';
+import 'dart:convert';
+
+import 'package:xml/xml.dart';
 
 void main() {
   MavlinkParser? parser;
@@ -95,4 +99,25 @@ void main() {
       expect(serialized[i], d[i]);
     }
   });
+
+test("Testing multiple statustext messages back to back. Testing truncated zeros being handled correct", () async {
+  // The following bytes are 5 status text messages with ["lorem","ipsum","dolor","sit","amet"] as their contents 
+  // Sent from a sender with sysId:compId 255:190
+ var d = Uint8List.fromList([253, 6, 0, 0, 0, 255, 190, 253, 0, 0, 6, 108, 111, 114, 101, 109, 127, 220, 253, 6, 0, 0, 1, 255, 190, 253, 0, 0, 6, 105, 112, 115, 117, 109, 199, 138, 253, 6, 0, 0, 2, 255, 190, 253, 0, 0, 6, 100, 111, 108, 111, 114, 189, 254, 253, 4, 0, 0, 3, 255, 190, 253, 0, 0, 6, 115, 105, 116, 57, 191, 253, 5, 0, 0, 4, 255, 190, 253, 0, 0, 6, 97, 109, 101, 116, 7, 103]);
+
+  var parser = MavlinkParser(MavlinkDialectCommon());
+  String str = "";
+  parser.stream.listen((MavlinkFrame frame){
+    if (frame.message is Statustext){
+      var msg = frame.message as Statustext;
+      List<int> trimmed = List.from(msg.text);
+      trimmed.removeWhere((item) => item == 0x00);
+      str += utf8.decode(trimmed);
+    }
+  });
+
+  parser.parse(d);
+  await Future.delayed(Duration(milliseconds: 500));
+  expect(str, "loremipsumdolorsitamet");
+});
 }
