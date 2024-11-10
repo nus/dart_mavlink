@@ -79,7 +79,18 @@ class MavlinkFrame {
     int incompatibilityFlags = 0;
     int compatibilityFlags = 0;
     var payload = message.serialize();
-    var payloadLength = payload.lengthInBytes;
+    var payloadBytes = payload.buffer.asUint8List().sublist(0);
+
+    // Truncate any zero's off of the payload. Can't be shorter than 1 byte even if all zeros
+    while(payloadBytes.length > 1){
+      if(payloadBytes.last == 0x00){
+        payloadBytes = payloadBytes.sublist(0, payloadBytes.length - 1);
+      }
+      else {
+        break;
+      }
+    }
+    var payloadLength = payloadBytes.length;
     var messageIdBytes = [
       message.mavlinkMessageId & 0xff,
       (message.mavlinkMessageId >> 8) & 0xff,
@@ -97,6 +108,9 @@ class MavlinkFrame {
     bytes.setUint8(7, messageIdBytes[0]);
     bytes.setUint8(8, messageIdBytes[1]);
     bytes.setUint8(9, messageIdBytes[2]);
+    for(int i = 0; i < payloadLength; i++){
+      bytes.setUint8(10 + i, payloadBytes[i]);
+    }
 
     var crc = CrcX25();
     crc.accumulate(payloadLength);
@@ -108,11 +122,8 @@ class MavlinkFrame {
     crc.accumulate(messageIdBytes[0]);
     crc.accumulate(messageIdBytes[1]);
     crc.accumulate(messageIdBytes[2]);
-
-    var payloadBytes = payload.buffer.asUint8List();
-    for (var i = 0; i < payloadLength; i++) {
-      bytes.setUint8(10 + i, payloadBytes[i]);
-      crc.accumulate(payloadBytes[i]);
+    for(final byte in payloadBytes){
+      crc.accumulate(byte);
     }
     crc.accumulate(message.mavlinkCrcExtra);
 
