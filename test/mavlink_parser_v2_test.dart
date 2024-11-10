@@ -1,12 +1,10 @@
 import 'package:dart_mavlink/dialects/common.dart';
-import 'package:dart_mavlink/mavlink.dart';
 import 'package:dart_mavlink/mavlink_parser.dart';
 import 'package:dart_mavlink/mavlink_version.dart';
+import 'package:dart_mavlink/mavlink_frame.dart';
 import 'package:test/test.dart';
 import 'dart:typed_data';
 import 'dart:convert';
-
-import 'package:xml/xml.dart';
 
 void main() {
   MavlinkParser? parser;
