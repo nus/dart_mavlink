@@ -105,17 +105,19 @@ test("Testing multiple statustext messages back to back. Testing truncated zeros
 
   var parser = MavlinkParser(MavlinkDialectCommon());
   String str = "";
+  var numParsed = 0;
   parser.stream.listen((MavlinkFrame frame){
     if (frame.message is Statustext){
       var msg = frame.message as Statustext;
       List<int> trimmed = List.from(msg.text);
       trimmed.removeWhere((item) => item == 0x00);
       str += utf8.decode(trimmed);
+      numParsed += 1;
     }
   });
 
   parser.parse(d);
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.doWhile(() => Future(() async {return numParsed <5;}));
   expect(str, "loremipsumdolorsitamet");
 });
 }
