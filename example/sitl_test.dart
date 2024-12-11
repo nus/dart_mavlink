@@ -9,9 +9,11 @@ const mySystemId = 255;
 int sequence = 0;
 Socket? sitlSocket;
 SysStatus? lastSysStatus;
+Heartbeat? lastHeartbeat;
 VfrHud? lastVfrHud;
 Attitude? lastAttitude;
 GlobalPositionInt? lastGlobalPositionInt;
+bool ardupilotReady = false;
 
 void main() async {
   var dialect = MavlinkDialectCommon(); // Declare which dialect we're going to use
@@ -65,6 +67,16 @@ void main() async {
     printSystemState();
   });
 
+  // Wait for Ardupilot to boot up. handleStatusText will set the bool when it hears that APM is ready.
+  // Theres probably a more elegent way to check for this but this works for demonstration.
+  await Future.doWhile(() async {
+    await Future.delayed(Duration(seconds: 1));
+    if (ardupilotReady) {
+      return false;
+    }
+    return true;
+  });
+
   // Ask the device to stream data to us
   requestDataStreamAll();
 
@@ -84,7 +96,6 @@ void main() async {
 
   // arm the device
   sendArmCommand();
-
   // Send a takeoff command
   sendTakeoffCommand();
 
@@ -173,11 +184,20 @@ void sendTakeoffCommand() {
 }
 
 void handleHeartbeat(Heartbeat msg) {
+  lastHeartbeat = msg;
   print("Heartbeat: BaseMode: ${msg.baseMode} State: ${msg.systemStatus} CustomMode: ${msg.customMode}");
 }
 
 void handleStatusText(Statustext msg) {
-  print("Status Text: ${convertMavlinkCharListToString(msg.text)}");
+  String decoded = convertMavlinkCharListToString(msg.text);
+  print("Status Text: $decoded");
+  if (!ardupilotReady && decoded == "ArduPilot Ready") {
+    ardupilotReady = true;
+  }
+}
+
+void handleBatteryStatus(BatteryStatus msg){
+
 }
 
 void handleCommandAck(CommandAck msg) {
