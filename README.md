@@ -1,6 +1,6 @@
 # dart_mavlink
 
-This is a Dart package which parse and serialize MAVLink v1/v2 packets.
+This is a Dart package for parsing and serializing MAVLink v1/v2 packets.
 
 ## Basic Usage
 
@@ -31,6 +31,7 @@ The ```MavlinkParser``` has a Stream that emits ```MavlinkFrame``` objects when 
         break;
       case Statustext:
         doSomethingWithStatusText(message as Statustext);
+        break;
       case BatteryStatus:
         doSomethingWithBatteryStatus(message as BatteryStatus)
         break;
@@ -123,7 +124,7 @@ An example script has been provided that sends/receives commands from a simulate
 
 Download the Ardupilot SITL binary and a default parameter file from the Ardupilot github, give it executable permission, then run it. This is assuming x86-64 Linux, but it should work the same in WSL
 
-``` bash
+``` shell
 mkdir example/ardupilot_sitl && cd example/ardupilot_sitl
 wget https://firmware.ardupilot.org/Copter/stable-4.5.7/SITL_x86_64_linux_gnu/arducopter
 wget https://raw.githubusercontent.com/ArduPilot/ardupilot/42ad2a7911f1239e9320ca9ba67877d09840545f/Tools/autotest/default_params/copter.parm
@@ -133,7 +134,7 @@ chmod +x arducopter
 
 In another window, or in your IDE, run the `sitl_test.dart` example in the examples folder
 
-``` bash
+``` shell
 dart ./example/sitl_test.dart
 ```
 
