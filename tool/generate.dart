@@ -653,16 +653,16 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     content += '/// ${msg.name}\n';
     content += 'class ${msg.nameForDart} implements MavlinkMessage {\n';
     content += '\n';
-    content += 'static const int _mavlinkMessageId = ${msg.id};\n';
+    content += 'static const int msgId = ${msg.id};\n';
     content += '\n';
-    content += 'static const int _mavlinkCrcExtra = ${msg.calculateCrcExtra()};\n';
+    content += 'static const int crcExtra = ${msg.calculateCrcExtra()};\n';
     content += '\n';
     content += 'static const int mavlinkEncodedLength = ${msg.calculateEncodedLength()};\n';
 
     content +='\n';
-    content +='@override int get mavlinkMessageId => _mavlinkMessageId;\n';
+    content +='@override int get mavlinkMessageId => msgId;\n';
     content +='\n';
-    content +='@override int get mavlinkCrcExtra => _mavlinkCrcExtra;\n';
+    content +='@override int get mavlinkCrcExtra => crcExtra;\n';
 
     for (var field in msg.orderedFields) {
       content += generateAsDartDocumentation(field.description);
@@ -713,6 +713,16 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     }
     content += ');';
     content += '}';
+
+    // toJson builder
+    content += '@override Map<String, dynamic> toJson() => {\n';
+    content += '\'msgId\': msgId, \n';
+     for (var f in msg.orderedFields) {
+      content +=
+          '\'${f.nameForDart}\': ${f.nameForDart},\n';
+    }
+    content += '};\n';
+    content += '\n';
 
     // parse constructor.
     content += '''factory ${msg.nameForDart}.parse(ByteData data_) {
@@ -843,7 +853,7 @@ switch (messageID) {
   ''';
   for (var msg in doc.messages) {
     content += '''case ${msg.id}:
-return ${msg.nameForDart}._mavlinkCrcExtra;
+return ${msg.nameForDart}.crcExtra;
 ''';
   }
 
