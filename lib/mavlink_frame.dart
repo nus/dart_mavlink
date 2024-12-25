@@ -27,6 +27,16 @@ class MavlinkFrame {
     return MavlinkFrame(MavlinkVersion.v2, sequence, systemId, componentId, message);
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'version': version.name,
+      'sequence': sequence,
+      'systemId': systemId,
+      'componentId': componentId,
+      'message': message.toJson(),
+    };
+  }
+
   Uint8List serialize() {
     if (version == MavlinkVersion.v1) {
       return _serializeV1();

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:collection';
 import 'dart:math';
 import 'package:xml/xml.dart';
+import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 import 'package:dart_mavlink/crc.dart';
 
@@ -653,16 +654,16 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     content += '/// ${msg.name}\n';
     content += 'class ${msg.nameForDart} implements MavlinkMessage {\n';
     content += '\n';
-    content += 'static const int _mavlinkMessageId = ${msg.id};\n';
+    content += 'static const int msgId = ${msg.id};\n';
     content += '\n';
-    content += 'static const int _mavlinkCrcExtra = ${msg.calculateCrcExtra()};\n';
+    content += 'static const int crcExtra = ${msg.calculateCrcExtra()};\n';
     content += '\n';
     content += 'static const int mavlinkEncodedLength = ${msg.calculateEncodedLength()};\n';
 
     content +='\n';
-    content +='@override int get mavlinkMessageId => _mavlinkMessageId;\n';
+    content +='@override int get mavlinkMessageId => msgId;\n';
     content +='\n';
-    content +='@override int get mavlinkCrcExtra => _mavlinkCrcExtra;\n';
+    content +='@override int get mavlinkCrcExtra => crcExtra;\n';
 
     for (var field in msg.orderedFields) {
       content += generateAsDartDocumentation(field.description);
@@ -713,6 +714,16 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     }
     content += ');';
     content += '}';
+
+    // toJson builder
+    content += '@override Map<String, dynamic> toJson() => {\n';
+    content += '\'msgId\': msgId, \n';
+     for (var f in msg.orderedFields) {
+      content +=
+          '\'${f.nameForDart}\': ${f.nameForDart},\n';
+    }
+    content += '};\n';
+    content += '\n';
 
     // parse constructor.
     content += '''factory ${msg.nameForDart}.parse(ByteData data_) {
@@ -843,7 +854,7 @@ switch (messageID) {
   ''';
   for (var msg in doc.messages) {
     content += '''case ${msg.id}:
-return ${msg.nameForDart}._mavlinkCrcExtra;
+return ${msg.nameForDart}.crcExtra;
 ''';
   }
 
@@ -898,13 +909,34 @@ Future<void> runFormatter(String path) async {
   await Process.run('dart', ['format', path]);
 }
 
-void main() async {
-  final dir = await Directory('mavlink/message_definitions/v1.0/').list()
-    .map((f) => f.path.toString())
-    .where((f) =>
-      (!f.endsWith('all.xml')) && (!f.contains('test'))
-    )
-    .toList();
+void main(List<String> arguments) async {
+  ArgParser parser = ArgParser();
+  parser.addOption("dialect",
+      help:
+          "Path to the dialect.xml file to generate dart files from. Leave emtpy to parse all dialect files in the default location.",
+      abbr: "d");
+  parser.addFlag("help",
+      abbr: "h", negatable: false, help: "display usage help", callback: (display) {
+    if(!display) return;
+    print(parser.usage);
+    exit(0);
+  });
+
+  ArgResults argResults = parser.parse(arguments);
+  final String? dialect = argResults["dialect"];
+
+  List dir;
+  if (dialect == null) {
+    dir = await Directory('mavlink/message_definitions/v1.0/')
+        .list()
+        .map((f) => f.path.toString())
+        .where((f) => (!f.endsWith('all.xml')) && (!f.contains('test')))
+        .toList();
+  }
+  else
+  {
+    dir = [dialect];
+  }
 
   var dstDir = 'lib/dialects';
   await Directory(dstDir).create(recursive: true);

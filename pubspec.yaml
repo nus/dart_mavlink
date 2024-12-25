@@ -3,7 +3,7 @@ description: MAVLink library for Dart.
 version: 0.1.0
 repository: https://github.com/nus/dart_mavlink
 environment:
-  sdk: '>=2.13.0 <3.0.0'
+  sdk: '>=2.15.0 <3.0.0'
 dev_dependencies:
   lints: ^1.0.0
   path: ^1.8.0
