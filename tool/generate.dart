@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:collection';
 import 'dart:math';
 import 'package:xml/xml.dart';
+import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 import 'package:dart_mavlink/crc.dart';
 
@@ -908,13 +909,34 @@ Future<void> runFormatter(String path) async {
   await Process.run('dart', ['format', path]);
 }
 
-void main() async {
-  final dir = await Directory('mavlink/message_definitions/v1.0/').list()
-    .map((f) => f.path.toString())
-    .where((f) =>
-      (!f.endsWith('all.xml')) && (!f.contains('test'))
-    )
-    .toList();
+void main(List<String> arguments) async {
+  ArgParser parser = ArgParser();
+  parser.addOption("dialect",
+      help:
+          "Path to the dialect.xml file to generate dart files from. Leave emtpy to parse all dialect files in the default location.",
+      abbr: "d");
+  parser.addFlag("help",
+      abbr: "h", negatable: false, help: "display usage help", callback: (display) {
+    if(!display) return;
+    print(parser.usage);
+    exit(0);
+  });
+
+  ArgResults argResults = parser.parse(arguments);
+  final String? dialect = argResults["dialect"];
+
+  List dir;
+  if (dialect == null) {
+    dir = await Directory('mavlink/message_definitions/v1.0/')
+        .list()
+        .map((f) => f.path.toString())
+        .where((f) => (!f.endsWith('all.xml')) && (!f.contains('test')))
+        .toList();
+  }
+  else
+  {
+    dir = [dialect];
+  }
 
   var dstDir = 'lib/dialects';
   await Directory(dstDir).create(recursive: true);
