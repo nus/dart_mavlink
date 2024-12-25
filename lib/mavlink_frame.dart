@@ -29,7 +29,7 @@ class MavlinkFrame {
 
   Map<String, dynamic> toJson() {
     return {
-      'version': version,
+      'version': version.name,
       'sequence': sequence,
       'systemId': systemId,
       'componentId': componentId,
