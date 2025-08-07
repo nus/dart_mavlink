@@ -1,0 +1,25 @@
+{
+    "name": "Dart & PX4 SITL",
+    "dockerFile": "Dockerfile",
+    "context": ".",
+    "runArgs": [
+        "--privileged",
+        "-e", "DISPLAY=${env:DISPLAY}",
+        "-v", "/tmp/.X11-unix:/tmp/.X11-unix"
+    ],
+    "containerEnv": {
+        "DISPLAY": "${env:DISPLAY}"
+    },
+    "remoteUser": "vscode",
+    "forwardPorts": [
+        14570
+    ],
+    "extensions": [
+        "dart-code.dart-code",
+        "dart-code.flutter"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "postCreateCommand": "sudo chown -R vscode /home/vscode/PX4-Autopilot"
+}
